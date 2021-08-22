@@ -1,6 +1,16 @@
 
 
-# Getting Started
+# PreLGetting Started
+
+## Overview
+
+The purpose of this lab is to introduce some of the functionality and structure of Google Earth Engine (GEE) before we get into the practical labs. This tutorial will provide a brief introduction to the GEE Javascript  interface (the Code Editor) and using GEE resources. At the completion of the lab, you will be able to access GEE imagery, upload your own assets, and explore the metadata for a given feature. 
+
+ **Learning Outcomes:** 
+
+- Understand the value of using GEE
+- Get acquainted with the GEE Resources
+- Understand the major data types and their associated methods
 
 ## Setting up an Account
 
