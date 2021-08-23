@@ -1,4 +1,4 @@
-# Lab 1: Remote Sensing Background
+# Remote Sensing Background
 
 ## Overview
 
