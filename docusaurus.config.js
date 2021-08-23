@@ -55,8 +55,6 @@ module.exports = {
             },
           ],
         },
-          ],
-        },
       ],
       copyright: `Copyright © ${new Date().getFullYear()} Loz Analytics, LLC. Built with Docusaurus.`,
     },
