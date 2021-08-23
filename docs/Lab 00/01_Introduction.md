@@ -1,6 +1,6 @@
 
 
-# PreLGetting Started
+# PreLab: Getting Started
 
 ## Overview
 
