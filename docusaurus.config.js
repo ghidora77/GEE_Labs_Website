@@ -14,7 +14,7 @@ module.exports = {
   projectName: 'remote-sensing', // Usually your repo name.
   themeConfig: {
     navbar: {
-      title: 'Remote Sensing Documentation',
+      title: 'Remote Sensing',
       logo: {
         alt: 'Loz Analytics',
         src: 'img/logo-bold-small.svg',
@@ -55,17 +55,6 @@ module.exports = {
             },
           ],
         },
-        {
-          title: 'More',
-          items: [
-            {
-              label: 'Blog',
-              to: '/blog',
-            },
-            {
-              label: 'GitHub',
-              href: 'https://github.com/LozAnalytics/remote-sensing',
-            },
           ],
         },
       ],
