@@ -9,17 +9,17 @@ Google Earth Engine starts with an introduction of data structures and the opera
 - [`Image`](https://developers.google.com/earth-engine/guides/image_overview)
   - Raster Image, a fundamental data type within Earth Engine
 - [`ImageCollection`](https://developers.google.com/earth-engine/guides/ic_creating)
-  - Stack, or time-series of images with the same attributes
+  - A "stack" or sequence of images with the same attributes
 - [`Geometry`](https://developers.google.com/earth-engine/guides/geometries)
-  - Vector data, either built within Earth Engine or imported
+  - Vector data either built within Earth Engine or imported
 - [`Feature`](https://developers.google.com/earth-engine/guides/features)
   -  `Geometry` with specific attributes.
 - [`FeatureCollection`](https://developers.google.com/earth-engine/guides/feature_collections)
   - Set of features that share a similar theme
 - [`Reducer`](https://developers.google.com/earth-engine/guides/reducers_intro)
-  - Object used to compute statistics or perform aggregations on the data
+  - A method used to compute statistics or perform aggregations on the data over space, time, bands, arrays, and other data structures.
 - [`Join`](https://developers.google.com/earth-engine/guides/joins_intro)
-  - Combine datasets (`Image` or `Feature` collections) based on time, location, or an attribute
+  - A method to combine datasets (`Image` or `Feature` collections) based on time, location, or another specified attribute 
 - [`Array`](https://developers.google.com/earth-engine/guides/arrays_intro)
-  - Multi-dimensional analyses.
+  - A flexible (albeit sometimes inefficient) data structure that can be used for multi-dimensional analyses.
 
