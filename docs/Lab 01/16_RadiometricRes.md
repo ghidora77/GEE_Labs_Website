@@ -1,6 +1,6 @@
 # Radiometric Resolution
 
-<Add explanation of radiometric resolution, an image may be useful>
+*Add explanation of radiometric resolution, an image may be useful*
 
 Radiometric resolution is determined from the minimum radiance to which the detector is sensitive (*L**min*), the maximum radiance at which the sensor saturates (*L**max*), and the number of bits used to store the DNs (*Q*): 
 
