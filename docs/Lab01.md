@@ -227,15 +227,15 @@ In the present context, spatial resolution often means pixel size. In practice, 
 
 
     3. For some hints about why the TM data is not the same date as the MSS data, see [this page](https://www.usgs.gov/core-science-systems/nli/landsat/landsat-5?qt-science_support_page_related_con=0#qt-science_support_page_related_con).
-
+    
     4. Check the scale (in meters) as previously:
-
+    
         ```javascript
         // Get the scale of the TM data from its projection:
         var tmScale = tmImage.select('B1').projection().nominalScale();
         print('TM scale:', tmScale);
         ```
-        
+
 4. **NAIP**. The National Agriculture Imagery Program ([NAIP](http://www.fsa.usda.gov/programs-and-services/aerial-photography/imagery-programs/naip-imagery/)) is an effort to acquire imagery over the continental US on a 3-year rotation using airborne sensors. The imagery has a spatial resolution of 1-2 meters. 
       
     1. Search for 'naip' and import the data set for *'NAIP: National Agriculture Imagery Program'*. Name the import naip. Since NAIP imagery is distributed as quarters of Digital Ortho Quads at irregular cadence, load everything from the closest year to the examples in its acquisition cycle (2012) over the study area and [mosaic()](https://developers.google.com/earth-engine/guides/ic_composite_mosaic) it:
@@ -271,11 +271,8 @@ In the present context, spatial resolution often means pixel size. In practice, 
 
 Spectral resolution refers to the number and width of spectral bands in which the sensor takes measurements. You can think of the width of spectral bands as the wavelength intervals for each band. A sensor that measures radiance in multiple bands is called a *multispectral* sensor (generally 3-10 bands), while a sensor with many bands (possibly hundreds) is called a *hyperspectral* sensor (these are not hard and fast definitions). For example, compare the [multi-spectral OLI](http://landsat.gsfc.nasa.gov/?p=5779) aboard Landsat 8 to [Hyperion](https://eo1.usgs.gov/sensors/hyperioncoverage), a hyperspectral sensor aboard the [EO-1 satellite](https://eo1.usgs.gov/).
 
-A figure representing common optical sensors and their spectral resolution can be viewed below [(image source)](https://www.researchgate.net/figure/Spectral-resolution-of-currently-available-optical-satellite-sensors-grouped-by-different_fig1_348695518):
+A figure representing common optical sensors and their spectral resolution can be viewed below [(image source)](https://www.researchgate.net/figure/Spectral-resolution-of-currently-available-optical-satellite-sensors-grouped-by-different_fig1_348695518): (Insert im_1)
 
-<p align="center">
-  <img width="800" height="450" src="https://user-images.githubusercontent.com/17105526/131231582-1b0ca02b-8b9b-4be1-a6f6-c997e9b6d60a.png" alt = "common_optical_sensors_spectral_resolution">
-</p>
 
 
 There is an easy way to check the number of bands in Earth Engine, but no way to get an understanding of the relative *spectral response* of the bands, where spectral response is a function measured in the laboratory to characterize the detector. 
@@ -367,17 +364,17 @@ What is the temporal resolution of the Sentinel-2 satellites? How can you determ
 
 Radiometric resolution refers to the ability of an imaging system to record many levels of brightness: _coarse_ radiometric resolution would record a scene with only a few brightness levels, whereas _fine_ radiometric resolution would record the same scene using many levels of brightness. Some also consider radiometric resolution to refer to the _precision_ of the sensing, or the level of _quantization_.
 
-<p align="center">
-  <img width="500" height="200" src="https://user-images.githubusercontent.com/17105526/131238342-3ae706a1-999e-4622-994b-28be8d50c2f8.jpeg" alt = "sample_radiometric_resolution">
-</p>
+
+
+Insert image 3
+
 
 
 Radiometric resolution is determined from the minimum radiance to which the detector is sensitive (L<sub>min</sub>), the maximum radiance at which the sensor saturates (L<sub>max</sub>), and the number of bits used to store the DNs (Q): 
 
 
-<div align="center">
-Radiometric resolution = (L<sub>max</sub> - L<sub>min</sub>)/2<sub>Q</sup>.
-</div>
+//Radiometric resolution = (L<sub>max</sub> - L<sub>min</sub>)/2Q.
+
   
 
 It might be possible to dig around in the metadata to find values for L<sub>min</sub> and L<sub>max</sub>, but computing radiometric resolution is generally not necessary unless you're studying phenomena that are distinguished by very subtle changes in radiance.
