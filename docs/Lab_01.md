@@ -379,17 +379,12 @@ print('TM series:', tmSeries);
 
 Radiometric resolution refers to the ability of an imaging system to record many levels of brightness: _coarse_ radiometric resolution would record a scene with only a few brightness levels, whereas _fine_ radiometric resolution would record the same scene using many levels of brightness. Some also consider radiometric resolution to refer to the _precision_ of the sensing, or the level of _quantization_.
 
-<p align="center">
-<img width="500" height="200" src="https://user-images.githubusercontent.com/17105526/131238342-3ae706a1-999e-4622-994b-28be8d50c2f8.jpeg" alt = "sample_radiometric_resolution">
-</p>
-
+![im_01_05](im/im_01_05.jpeg)
 
 Radiometric resolution is determined from the minimum radiance to which the detector is sensitive (L<sub>min</sub>), the maximum radiance at which the sensor saturates (L<sub>max</sub>), and the number of bits used to store the DNs (Q): 
 
 
-$$  \text{Radiometric resolution} = \frac{(L_{max} - L_{min})}{2^Q} $$ 
-
-
+$$  \text{Radiometric resolution} = \frac{(L_{max} - L_{min})}{2^Q} $$
 
 
 It might be possible to dig around in the metadata to find values for L<sub>min</sub> and L<sub>max</sub>, but computing radiometric resolution is generally not necessary unless you're studying phenomena that are distinguished by very subtle changes in radiance.
@@ -438,7 +433,6 @@ The scale is determined from the map's zoom level. When you add something to thi
 Now that we have some familiarity with higher quality images, lets look at a few from the (broken) Landsat 7 satellite. Using your downloading skills, select an image that contains the Blacksburg area with minimal cloud cover from Landsat 7 (for now, using the Collection 1 Tier 1 calibrated top-of-atmosphere (TOA) reflectance data product).  Look at the image. 
 
 ![im_q](./im/im_q.png)**Question 5: What is the obvious (hint: post-2003) problem with the Landsat 7 image? What is the nature of that problem and what have some researchers done to try to correct it? Please research online in addition to using what you have learned in class/from the book.** 
-
 
 **![im_q](./im/im_q.png)Question 6: Name three major changes you can view in the Blacksburg Area in the last decade using any of the above imagery (and state the source).**
 
