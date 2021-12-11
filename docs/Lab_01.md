@@ -23,17 +23,11 @@ A digital image is a matrix of same-sized pixels that are each defined by two ma
 
 A digital image 8 pixels wide by 8 pixels tall could thus look like the image below. Note though you can reference the position from a given axis, typically, image processing uses the top-left of an image as the reference point, as in the below image.
 
-```{r digimage, fig.cap='Digital Image Example', out.width='50%', fig.asp=.75, echo = FALSE, fig.align = "center"}
-
-knitr::include_graphics("./im/im_02_01.png")
-
-```
+![im_02_01](./im/im_02_01.png)
 
 A "traditional" optical photograph typically represents three layers (often the brightness values represented in the Red, Blue, and Green portions of the electromagnetic spectrum). Together, these three layers create a full-color photograph that is represented by a three dimensional matrix where pixel position is characterized by the (1) row (2) column (3) _and_ layer.
 
 Digital images are also often called [rasters](https://en.wikipedia.org/wiki/Raster_graphics), and ESRI has a great overview of rasters used in geospatial analysis featured [here](https://desktop.arcgis.com/en/arcmap/10.3/manage-data/raster-and-images/what-is-raster-data.htm).
-<!-- , is a block of [pixels](https://en.wikipedia.org/wiki/Pixel)  -->
-<!-- [(Besag 1986)](https://www.jstor.org/stable/2345426).  -->
 
 
 ### From digital image to geospatial image
@@ -53,7 +47,6 @@ Furthermore, remote sensing data often consists of more than the three Red-Green
 Whereas Planet (formerly Planet Labs) Multispectral has a Blue, Green, Red, Near InfraRed and Panchromatic, the last of which has a different resolution than the other layers. 
 
 In sum, understanding the bands available in your datasets, identifying which bands are necessary (and appropriate) for your analysis, and ensuring that these data represent consistent spatial locations is essential. While GEE simplifies many complex calculations behind the scenes, this lab will help us unpack the products available to us and their essential characteristics.
-
 
 #### Summary
 Each pixel has a position, measured with respect to the axes of some coordinate reference system (CRS), such as a [geographic coordinate system](https://en.wikipedia.org/wiki/Geographic_coordinate_system). A CRS in Earth Engine is often referred to as a projection, since it combines a shape of the Earth with a [datum](https://en.wikipedia.org/wiki/Geodetic_datum) and a transformation from that spherical shape to a flat map, called a [projection](https://en.wikipedia.org/wiki/Map_projection). 
@@ -281,7 +274,7 @@ The National Agriculture Imagery Program ([NAIP](http://www.fsa.usda.gov/program
 ---
 
 
-![im_q](/Users/ozzycampos/OneDrive/03_Projects/03_GoogleEarthEngineLabs/01_LabMarkdowns/im_q-9259239.png)**Question 2: What is the scale of the most recent round of NAIP imagery for the sample area (2018), and how did you determine the scale?**
+![im_q](./im/im_q.png)**Question 2: What is the scale of the most recent round of NAIP imagery for the sample area (2018), and how did you determine the scale?**
 
 
 ---
@@ -313,7 +306,7 @@ There is an easy way to check the number of bands in Earth Engine, but no way to
 ---
 
 
-![im_q](/Users/ozzycampos/OneDrive/03_Projects/03_GoogleEarthEngineLabs/01_LabMarkdowns/im_q-9259518.png)**Question 3.1: What is the spectral resolution of the MODIS instrument, and how did you determine it?**                                                                           
+![im_q](./im/im_q.png)**Question 3.1: What is the spectral resolution of the MODIS instrument, and how did you determine it?**                                                                           
 
 
 ![im_q](./im/im_q.png)**Question 3.2: Investigate the bands available for the USDA NASS Cropland Data Layers (CDL). What does the band information for the CDL represent? Which band(s) would you select if you were interested in evaluating the extent of pasture areas in the US? **
@@ -341,13 +334,12 @@ Landsats (5 and later) produce imagery at 16-day cadence. TM and MSS are on the 
 
 ```javascript
 
-   // Filter to get a year's worth of TM scenes.
-  var tmSeries = tm
+// Filter to get a year's worth of TM scenes.
+var tmSeries = tm
   .filterBounds(Map.getCenter())
   .filterDate('2011-01-01', '2011-12-31');
-  
-  // Print the filtered TM ImageCollection. 
-  print('TM series:', tmSeries);
+// Print the filtered TM ImageCollection. 
+print('TM series:', tmSeries);
   
 ```
 
