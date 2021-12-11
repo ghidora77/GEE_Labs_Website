@@ -350,7 +350,7 @@ If you print `trainingImage` to the console, you will see that the format of the
 
 $$ y = \beta_0 + \beta_1X_1 + ... + \beta_nX_n + \epsilon $$
 
-![Im_05_01](im/Im_05_01.png)
+![Im_05_01](./im/Im_05_01.png)
 
 Sample 1000 pixels out of `trainingImage`, to get a table of Feature Collections, each containing a value for each band (1-7), a value for the 'Percent Tree Cover', and a constant (value of 1).
 
@@ -389,7 +389,7 @@ var regression = training.reduceColumns({
 
 Print `regression` - we now have a coefficient for each of the predictor variables (in the order specified by the inputs list), along with a value for residuals (the difference between the observed and predicted values).
 
-![im_05_02](im/im_05_02.png)
+![im_05_02](./im/im_05_02.png)
 To use the coefficients to make a prediction in every pixel, first turn the output coefficients into an image, then perform the multiplication and addition that implements $\beta_p$: 
 
 ```javascript
