@@ -49,8 +49,6 @@ Map.addLayer(region, {}, "Region");
 Map.centerObject(region, 10);
 ```
 
- 
-
 ```javascript
 // Function to mask clouds based on the pixel_qa band of Landsat 8 SR data.
 function maskL8sr(image) {
@@ -350,7 +348,7 @@ If you print `trainingImage` to the console, you will see that the format of the
 
 $$ y = \beta_0 + \beta_1X_1 + ... + \beta_nX_n + \epsilon $$
 
-![Im_05_01](./im/Im_05_01.png)
+![Im_05_01](./im/im_05_01.png)
 
 Sample 1000 pixels out of `trainingImage`, to get a table of Feature Collections, each containing a value for each band (1-7), a value for the 'Percent Tree Cover', and a constant (value of 1).
 
