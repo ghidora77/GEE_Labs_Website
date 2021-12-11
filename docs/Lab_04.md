@@ -269,8 +269,6 @@ print(ui.Chart.array.values({
 
 You should see something like the following chart, in which the number of trees is on the x-axis and estimated accuracy is on the y-axis:
 
-![Chart, scatter chart  Description automatically generated](./im/im_05_01.png)
-
 First, note that we always get very good accuracy in this simple example. Second, note that 10 is not the optimal number of trees, but after adding more (up to about 20 or 30), we don't get much more accuracy for the increased computational burden. So 20 trees is probably a good number to use in the context of this example.
 
 ## Classification Assignment
@@ -347,8 +345,6 @@ var trainingImage = ee.Image(1)
 If you print `trainingImage` to the console, you will see that the format of the data that we have follows the typical equation for linear regression. 
 
 $$ y = \beta_0 + \beta_1X_1 + ... + \beta_nX_n + \epsilon $$
-
-![Im_05_01](./im/im_05_01.png)
 
 Sample 1000 pixels out of `trainingImage`, to get a table of Feature Collections, each containing a value for each band (1-7), a value for the 'Percent Tree Cover', and a constant (value of 1).
 
@@ -448,5 +444,4 @@ Use the 'inspector' to compare the linear regression to the CART regression.
 ---
 
 Although CART can work in both classification and regression mode, not all classifiers are as easily adaptable. 
-
 
