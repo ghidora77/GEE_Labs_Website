@@ -1,4 +1,4 @@
-# Lab 07- Night Lights Code Appendix
+# Lab 06 - Nighttime Lights Appendix
 
 ## Overview
 
