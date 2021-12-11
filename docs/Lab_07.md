@@ -79,7 +79,7 @@ Map.addLayer(viirs2019_12_clipped, nighttimeLightsVis, 'Clipped to Buffer');
 
 
 
-![im_07_01](./im_07_01.png)
+![im_07_01](./im/im_07_01.png)
 
 You can do the same thing with either your own polygon vector files (import shapefile, kml), or use one of the vector files that GEE maintains - we can test use the TIGER state boundary file and clip the image to California. 
 
@@ -105,7 +105,7 @@ Map.setCenter(center_lon, center_lat, zoomlevel);
 Map.addLayer(viirs2019_12_clipped, nighttimeLightsVis, 'California NightTime Lights'); 
 ```
 
-![im_07_02](./im_07_02.png)
+![im_07_02](./im/im_07_02.png)
 
 The previous two examples showed the process of clipping individual images - to clip an entire image 		collection and extract a composite image, we can follow the same general approach, but use the `map` function to clip each image of the collection to our boundary. However, note that depending on the use case and the size of the image collection, this might take time to run and still leave you with a large amount of data. Before exporting all the data, perhaps reduce the image collection by extracting mean / median values, or use the reduce function. 
 
@@ -197,7 +197,7 @@ Map.setCenter(lon, lat, 8);
 Map.addLayer(viirs2019_12.mask(viirs2019_12_mask), nighttimeVis,  'Nighttime');
 ```
 
-![im_07_03](./im_07_03.png)
+![im_07_03](./im/im_07_03.png)
 
 Note that just like in the lab, you can chain together conditionals to make a layered mask, and build a customized pallette. 
 
@@ -209,7 +209,7 @@ Map.setCenter(lon, lat, 8);
 Map.addLayer(zones.mask(zones), {'palette':['#cc0909','#e67525','#fff825']}, 'zones');
 ```
 
-![im_07_04](./im_07_04.png)
+![im_07_04](./im/im_07_04.png)
 
 4. **Cell Statistics and Band Math**
 
@@ -235,7 +235,7 @@ Map.setCenter(126.25, -8.5, 9);
 Map.addLayer(ntl_tls, nighttimeLightsVis, '"VIIRS-DNB Dec 2017"');
 ```
 
-![im_07_05](./im_07_05.png)
+![im_07_05](./im/im_07_05.png)
 
 ```javascript
 // Reduce image to find the mean and standard deviation
@@ -258,7 +258,7 @@ Map.setCenter(126.25, -8.5, 9);
 Map.addLayer(ntl_tls_std, nighttimeLightsVis, 'Scaled Image');
 ```
 
-![im_07_06](./im_07_06.png)
+![im_07_06](./im/im_07_06.png)
 
 5. **Expressions**
 
@@ -277,7 +277,7 @@ Map.setCenter(lon, lat, 7);
 Map.addLayer(dmsp1996, nighttimeLightsVis, '1996 Composite')
 ```
 
-![im_07_07](./im_07_07.png)
+![im_07_07](./im/im_07_07.png)
 
 ```javascript
 // Use Expression to invert the pixels
@@ -285,7 +285,7 @@ var dmsp1996_inv = dmsp1996.multiply(-1).add(63)
 Map.addLayer(dmsp1996_inv, nighttimeLightsVis, '1996 Composite Inverse')
 ```
 
- ![im_07_08](./im_07_08.png)
+ ![im_07_08](./im/im_07_08.png)
 
 6. **Expression (Continued)**
 
@@ -321,7 +321,7 @@ Map.setCenter(lon, lat, 7);
 Map.addLayer(viirs2015med.mask(viirs2015med), nighttimeLightsVis, '2015 Monthly Median')
 ```
 
-![im_07_09](./im_07_09.png)
+![im_07_09](./im/im_07_09.png)
 
 ------> Research alternative to loop - convert function in 7.4.3 to `.map`
 
