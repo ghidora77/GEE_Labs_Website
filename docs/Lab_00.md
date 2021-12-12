@@ -6,17 +6,17 @@ The purpose of this lab is to introduce some of the functionality and structure 
 #### Learning Outcomes
 
 - Navigate basic GEE Resources
-- Describe the major GEE data types and their associated methods
+- Describe and understand the major GEE data types and their associated methods
 
 #### Setting up an Account
 To begin, ensure you sign-up for the Google Earth Engine [here](https://signup.earthengine.google.com). Registration is free and straightforward, but it takes approximately 24 hours to be approved to use the code editor. While waiting, let's get familiar with the Google Earth Engine. The video below is a quick introduction to Google Earth Engine that Ozzy assembled to to get you familiar with the available resources.
 
 [Video](https://www.youtube.com/watch?v=Ypo28T6wPbQ)
 
-#### Importing data
-In addition to the petabytes of satellite imagery and products that GEE has available, Google Earth Engine also allows you to work with your own raster, vector, and tabular data and incorporate those assets into your analysis. This is process is automatically linked to the Google Drive account that signed up for GEE. 
+#### Getting Set Up
+In addition to the petabytes of satellite imagery and products that GEE has available, Google Earth Engine also allows you to work with your own raster, vector, and tabular data and incorporate those assets into your analysis. This is process is automatically linked to the same Google Drive account that signed up for GEE. 
 
-If you are not familiar with Google Drive, the '[Getting Started Guide](https://support.google.com/a/users/answer/9282958?hl=en)' reviews the basics of initializing and organizing your Google Drive account. Although Google Cloud Platform Storage is beyond the scope of this course, below is some additional helpful documentation on working with external data. 
+If you are not familiar with Google Drive, the '[Getting Started Guide](https://support.google.com/a/users/answer/9282958?hl=en)' reviews the basics of initializing and organizing your Google Drive account. Although Google Cloud Platform Storage is beyond the scope of this course, below is some additional helpful documentation on working with external data. We will going more in-depth on this later
 
 * [Managing Assets](https://developers.google.com/earth-engine/guides/asset_manager)
 * [Import Raster](https://developers.google.com/earth-engine/guides/image_upload)
@@ -26,7 +26,7 @@ If you are not familiar with Google Drive, the '[Getting Started Guide](https://
 * [Exporting Data](https://developers.google.com/earth-engine/guides/exporting)
 
 #### Gecomputation with GEE: Server vs. Client
-Understanding the basics of how Google Earth Engine works is critical for its effective use. The Developer's [overview](https://developers.google.com/earth-engine/guides/concepts_overview) provides much more detail on the intricacies of how GEE processes data on the Google Cloud Platform, but in the simplest terms, there are two sides to the process - the `client` side and `server` side. 
+Understanding how Google Earth Engine works is critical for its effective use. The Developer's [overview](https://developers.google.com/earth-engine/guides/concepts_overview) provides much more detail on the intricacies of how GEE processes data on the Google Cloud Platform, but in the simplest terms, there are two sides to the process - the `client` side and `server` side. 
 
 When you open your web browser and begin to work in the code editor, that is considered the `client` side. You can write JavaScript code in the editor and the code will be processed within your browser. The code below simply creates a variables `x` and `y`, adds them together as the variable `z` and prints the result, which shows up in the console of the code editor. Even though the code is written in the GEE editor, it plays no role in the execution of this code - your browser executes it. 
 
@@ -36,7 +36,7 @@ var z = x + y;
 print(z)
 ```
 
-To begin using the cloud computing resources of GEE effectively, we can then call upon the server side of the operations. Let's say we want to import an image collection. In the snippet below, you can see that there is an `ee` before the `ImageCollection` constructor. In simple terms, this signals to Earth Engine that we will be using its resources. Without that indicator, GEE will cede operations to the server.
+To begin using the cloud computing resources of GEE effectively, we can then call upon the server side of the operations. Let's say we want to import an image collection. In the snippet below, you can see that there is an `ee` before the `ImageCollection` constructor. In simple terms, this signals to Earth Engine that we will be using its resources. Without that indicator, GEE will cede operations to the to the JavaScript and process within the browser.
 
 ```javascript
 var sentinelCollection = ee.ImageCollection('COPERNICUS/S2_SR');
@@ -96,9 +96,7 @@ Most Google Earth Engine tutorials begin with an introduction to the data struct
 
 - Metadata, stored as a set of properties for that band. 
 
-You can create images from constants, lists, or other objects. In the code editor 'docs', you'll find numerous processes you can apply to images. 
-
-Ensure that you do not confuse an individual image with an image collection, which is a set of images grouped together, most often as a time series, and often known as a `stack`.
+You can create images from constants, lists, or other objects. In the code editor 'docs', you'll find numerous processes you can apply to images. Ensure that you do not confuse an individual image with an image collection, which is a set of images grouped together, most often as a time series, and often known as a `stack`.
 
 ## Image Collections
 

@@ -11,7 +11,7 @@ The purpose of this lab is to enable you to search, find and visualize imagery i
 - Use the Inspector tab to assess pixel values
 - Understand the difference between radiance and reflectance through visualization
 
-## Searching for Imagery (Exercise 1)
+## Searching for Imagery
 
 The Landsat program is a joint NASA/USGS program that has launched a sequence of Earth observation satellites, named Landsat 1, 2,... etc. The Landsat program has resulted in the [longest continuous observation of the Earth's surface](https://www.youtube.com/embed/ZZx1xmNGcXI?list=PLD240BBC85537B9BE). In this exercise, you will load a Landsat scene over your area of interest, inspect the units and make a plot of radiance.  Specifically, use imagery from the Landsat 8, the most recent of the [sequence of Landsat satellites](https://www.usgs.gov/core-science-systems/nli/landsat/landsat-8). To inspect a Landsat 8 image (also called a *scene*) in your region of interest (ROI), define your ROI as a point, filter the image collection to get a scene with few clouds, and display some information about the image in the console.
 
@@ -58,7 +58,6 @@ Recall that [Landsat 8 measures radiance in multiple spectral bands](https://svs
 a. Add the image found in exercise 1 to the map display with the following code: 
 
 ```javascript
-
 //  Define visualization parameters in a JavaScript dictionary.   
 var trueColor = {    
   bands: ['B4', 'B3', 'B2'],    
@@ -66,7 +65,6 @@ var trueColor = {
   max: 12000};  
 // Add the image to the  map, using the visualization parameters.   
 Map.addLayer(image, trueColor, 'true-color image');  
-
 ```
 
 b. Observe that this Image is displayed according to the visualization instructions in the trueColor dictionary object. Specifically, bands is a list of three bands to display as red, green and blue, respectively (first band is red, second is green, third is blue). To understand where these band names come from, inspect the bands property of the image in the **Console**. To understand how to match bands to colors, see [this helpful page](http://landsat.usgs.gov/band_designations_landsat_satellites.php) and [this  one](http://landsat.usgs.gov/L8_band_combos.php).
@@ -171,7 +169,7 @@ print(chart);
 
 There are several new methods in this code. The Point constructor takes a list of coordinates as input, as an alternative to a "hand-made" point from the geometry drawing tools that is imported to the script. The `slice()` method gets entries in a list based on starting and ending indices. Search the docs (on the **Docs** tab) for 'slice' to find other places this method can be used. Construction of the chart is handled by an object of customization parameters ([learn more about customizing charts](https://developers.google.com/earth-engine/charts_image_histogram)) passed to [Chart.image.regions()](https://developers.google.com/earth-engine/charts_image_regions).
 
-## Plot Surface Reflectance 
+## Surface Reflectance 
 
 The ratio of upward radiance *at the Earth's surface* to downward radiance *at the Earth's surface* is called surface reflectance. Unlike TOA reflectance, in which those radiances are at the sensor, the radiances at the Earth's surface have been affected by the atmosphere. The radiance incident on the target is affected by its downward path through the atmosphere. The radiance reflected by the target is affected by its upward path through the atmosphere to the sensor. Unravelling those effects is called atmospheric correction ("compensation" is probably a more accurate term) and is beyond our scope. However, helpful scientists at the USGS have already performed this correction for us. 
 

@@ -21,6 +21,8 @@ The purpose of this lab is to introduce digital images, datum, and projections, 
 ## What is a digital image? 
 A digital image is a matrix of same-sized pixels that are each defined by two main attributes: (1) the position, as defined by rows and columns and (2) the a value associated with that position. 
 
+Before we discuss geospatial imagery, let's discuss a digital image. It is a matrix of uniformly-sized pixels that have a position defined by their row and column and a value associated with that position. The simplified digital image below might be 8 pixels wide by 8 pixels tall - you can reference the position from a given axis (it depends on the context, but most image processing uses the top-left of an image as the reference point). In addition to this, a traditional color photograph has three layers consisting of identically-sized matrices, signifying a Red, Blue and Green layer. Each layer has a value for each pixel position, which compose into a full-color photograph and creates a three dimensional matrix -  now consisting of row, column and layer. 
+
 A digital image 8 pixels wide by 8 pixels tall could thus look like the image below. Note though you can reference the position from a given axis, typically, image processing uses the top-left of an image as the reference point, as in the below image.
 
 ![im_02_01](./im/im_02_01.png)
@@ -116,7 +118,7 @@ You've learned about how an image stores pixel data in each band as digital numb
 2. To apply a [histogram equalization](https://en.wikipedia.org/wiki/Histogram_equalization) stretch, use the [`sldStyle()`](https://devsite.googleplex.com/earth-engine/image_visualization#styled-layer-descriptors) method
 
 
-~~~javascript
+```javascript
 // Define a RasterSymbolizer element with '_enhance_' for a placeholder.
   var histogram_sld =
     '<RasterSymbolizer>' +
@@ -139,11 +141,12 @@ You've learned about how an image stores pixel data in each band as digital numb
 ```
 
 The [`sldStyle()`](https://devsite.googleplex.com/earth-engine/image_visualization#styled-layer-descriptors) method requires image statistics to be computed in a region (to determine the histogram).
-```
-~~~
 
 ## Spatial Resolution                                                     
-In the present context, spatial resolution often means pixel size. In practice, spatial resolution depends on the projection of the sensor's instantaneous field of view (IFOV) on the ground and how a set of radiometric measurements are resampled into a regular grid. To see the difference in spatial resolution resulting from different sensors, let's visualize data at different scales from different sensors.
+
+In the present context, spatial resolution refers to pixel size. This ranges widely, with Maxar announcing 15cm [resolution]([Introducing 15 cm HD: The Highest Clarity From Commercial Satellite… (maxar.com)](https://blog.maxar.com/earth-intelligence/2020/introducing-15-cm-hd-the-highest-clarity-from-commercial-satellite-imagery)), Landsat at 30m, and large global products covering multiple squared kilometers.  The key point in dealing with spatial resolution is ensuring that your analysis drives your data collection. Using high resolution imagery will be extremely expensive, both monetarily and computationally, if conducting continent wide analysis. Yet using low-resolution imagery will not be effective in identifying individual buildings or small vehicles. Understanding the appropriate spatial resolution needed for your analysis is essential. 
+
+In practice, spatial resolution depends on the projection of the sensor's instantaneous field of view (IFOV) of the ground and how a set of radiometric measurements are resampled into a regular grid. To see the difference in spatial resolution resulting from different sensors, visualize data at different scales from different sensors.
 
 ### MODIS 
 There are two Moderate Resolution Imaging Spectro-Radiometers ([MODIS](http://modis.gsfc.nasa.gov/)) aboard the [Terra](http://terra.nasa.gov/) and [Aqua](http://aqua.nasa.gov/) satellites. Different MODIS [bands](http://modis.gsfc.nasa.gov/about/specifications.php) produce data at different spatial resolutions. For the visible bands, the lowest common resolution is 500 meters (red and NIR are 250 meters). Data from the MODIS platforms are used to produce a large number of data sets having daily, weekly, 16-day, monthly, and annual data sets. Outside this lab, you can find a list of MODIS land products [here](https://lpdaac.usgs.gov/dataset_discovery/modis/modis_products_table). 
