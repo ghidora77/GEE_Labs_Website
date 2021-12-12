@@ -267,7 +267,7 @@ print(ui.Chart.array.values({
 }));  
 ```
 
-You should see something like the following chart, in which the number of trees is on the x-axis and estimated accuracy is on the y-axis:![Im_04_04](im/Im_04_04.png)
+You should see something like the following chart, in which the number of trees is on the x-axis and estimated accuracy is on the y-axis:![Im_04_04](./im/im_04_04.png)
 
 First, note that we always get very good accuracy in this simple example. Second, note that 10 is not the optimal number of trees, but after adding more (up to about 20 or 30), we don't get much more accuracy for the increased computational burden. So 20 trees is probably a good number to use in the context of this example.
 
