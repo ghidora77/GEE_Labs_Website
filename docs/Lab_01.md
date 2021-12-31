@@ -3,36 +3,64 @@
 
 ## Overview
 
-The purpose of this lab is to introduce digital images, datum, and projections, as well as demonstrate concepts of spatial, spectral, temporal and radiometric resolution. You will be introduced to image data from several sensors aboard various platforms. At the completion of the lab, you will be able to understand the difference between remotely sensed datasets based on sensor characteristics and how to choose an appropriate dataset based on these concepts. 
+The purpose of this lab is to introduce you to the core concepts of remote sensing. We will cover digital images, datum and projections, and the different types of resolution: spatial, spectral, temporal and radiometric. We will also cover some of the most well-known satellite platforms that we will be working extensively with. At the completion of this lab, you will be able to work within Google Earth Engine to select the data that is the best fit for your use case, visualize the data and begin to extract insight from it. 
 
 
 #### Learning Outcomes
 
 
-1. Describe the following terms:
+1. Understand and describe the following terms:
     - Digital image
-    - Datum 
+    - Datum
     - Projection
     - Resolution (spatial, spectral, temporal, radiometric)
-2. Navigate the Google Earth Engine console to gather information about a digital image
-3. Evaluate the projection and attributes of a digital image
-4. Apply image visualization code in GEE to visualize a digital image
+2. Navigate the Google Earth Engine console to gather information about the imagery contained within a satellite platform
+4. Visualize a digital image within Google Earth Engine and use inspector to look at pixel values
 
-## What is a digital image? 
-A digital image is a matrix of same-sized pixels that are each defined by two main attributes: (1) the position, as defined by rows and columns and (2) the a value associated with that position. 
+## Digital Image
+A digital image is a matrix of equally-sized square pixels that are each defined by two main attributes:
 
-Before we discuss geospatial imagery, let's discuss a digital image. It is a matrix of uniformly-sized pixels that have a position defined by their row and column and a value associated with that position. The simplified digital image below might be 8 pixels wide by 8 pixels tall - you can reference the position from a given axis (it depends on the context, but most image processing uses the top-left of an image as the reference point). In addition to this, a traditional color photograph has three layers consisting of identically-sized matrices, signifying a Red, Blue and Green layer. Each layer has a value for each pixel position, which compose into a full-color photograph and creates a three dimensional matrix -  now consisting of row, column and layer. 
+1. The position, as defined by row, column and layer
+2. A value associated with that position. 
 
-A digital image 8 pixels wide by 8 pixels tall could thus look like the image below. Note though you can reference the position from a given axis, typically, image processing uses the top-left of an image as the reference point, as in the below image.
+In the context of geospatial imagery, we will refer to these pixel-based data structures as 'raster', as opposed to 'vector' data (points, lines, polygons). Before we discuss geospatial imagery, let's explain how a photograph is created. All of the images below were used from example photographs in the documentation in MatLab and OpenCV. 
 
-![im_02_01](./im/im_02_01.png)
+#### One Layer Grayscale
 
-A "traditional" optical photograph typically represents three layers (often the brightness values represented in the Red, Blue, and Green portions of the electromagnetic spectrum). Together, these three layers create a full-color photograph that is represented by a three dimensional matrix where pixel position is characterized by the (1) row (2) column (3) _and_ layer.
+Let's start with a grayscale image of some peppers. This image contains 384 rows of pixels and 512 columns of pixels - because it is greyscale, there is only one brightness magnitude value (between 0 and 255) for each position.
 
-Digital images are also often called [rasters](https://en.wikipedia.org/wiki/Raster_graphics), and ESRI has a great overview of rasters used in geospatial analysis featured [here](https://desktop.arcgis.com/en/arcmap/10.3/manage-data/raster-and-images/what-is-raster-data.htm).
+![im_01_01](im/im_01_01.png)
+
+Below is a part of the matrix of the greyscale image between rows 50 and 60 and columns 50 and 60. Note that when working with imagery, the row/column position starts on the top left. Using our row/column designation:
+
+* `greyscale(54, 50)`  has a value of 52
+* `greyscale(50, 54)` has a value of 49
+* `greyscale(60, 60)` has a value of 47
+
+![im_01_02](im/im_01_02.png)
+
+#### Three Layer Color Image
+
+The image is still the same, although this now has color. The number of rows, columns and the size of each pixel remain the same, but unlike the Greyscale, we now have three layers, or bands. Each band represents a value in our three primary colors: Red, Green, Blue. If we look at the size of our matrix, it is now 384x512x3. For each row and columns position, we now have 3 separate values between 0 and 255, which blends together into a color that we, as humans, can process. 
+
+![im_01_03](im/im_01_03.png)
 
 
-### From digital image to geospatial image
+
+#### Extension to Geospatial Imagery
+
+Geospatial imagery poses two additional complications on top of a traditional color photograph. To make cohesive analysis, we need to be able to tie our imagery to the real world. For the image of peppers, each pixel was built on an arbitrary axis of rows and columns that start at zero. However, this gives us no meaningful information about where in the world the red bell pepper is. With geospatial imagery, we need to associate pixels with location. We need to know the exact size of the pixel, and position on earth. The high-resolution imagery below is produced by the 'National Agriculture Imagery Program'. This imagery has a red, green and blue value and a latitude and longitude (-74.01, 40.72), in addition to a size (each pixel represents 1 meter by 1 meter). With this information, we can associate our pixel values with location on earth (New York), and aggregating the information we need. 
+
+![im_01_04](im/im_01_04.png)
+
+The other complexity we are faced with is that satellite imagery often has many layers. While our image of peppers had only a red, green and blue value, satellite platforms are equipped to provide much more. Most platforms have a value in the Near Infra-red range, while Landsat has numerous bands, with different scales and resolutions. For instance, Landsat collects information in the ultra-blue range, shortwave infrared and other thermal metrics. Note that while each pixel size must be the same within each individual layer, the layers can be different. We often build false or pseudocolor images by utilizing different combintions of bands.  
+
+![im_01_05](im/im_01_05.png)
+
+As said before, digital images are often referred to as 'raster' and ESRI has a great overview of rasters used in geospatial analysis featured [here](https://desktop.arcgis.com/en/arcmap/10.3/manage-data/raster-and-images/what-is-raster-data.htm).
+
+
+### From Digital Image to Geospatial Image
 A digital image is a flat, square surface. However, the earth is round (spherical).
 
 Thus to make use of the synoptic properties of remote sensing data, we need to align the pixels in our image to a real-world location. There's quite a bit of mathematics involved in this process, but we will focus on two main components - establishing a Geographic Coordinate System (GCS) and a Projected Coordinate System (PCS).
@@ -262,8 +290,8 @@ The National Agriculture Imagery Program ([NAIP](http://www.fsa.usda.gov/program
     var naipImage = naipImages.mosaic();
     // Display the NAIP mosaic as a color-IR composite.
     Map.addLayer(naipImage, {bands: ['N', 'R', 'G']}, 'NAIP');
-    ```
-    
+  ```
+  
 2. Check the scale by getting the first image from the mosaic (a mosaic doesn't know what its projection is, since the mosaicked images might all have different projections), getting its projection, and getting its scale (meters):
 
     ```javascript
@@ -382,7 +410,7 @@ print('TM series:', tmSeries);
 
 Radiometric resolution refers to the ability of an imaging system to record many levels of brightness: _coarse_ radiometric resolution would record a scene with only a few brightness levels, whereas _fine_ radiometric resolution would record the same scene using many levels of brightness. Some also consider radiometric resolution to refer to the _precision_ of the sensing, or the level of _quantization_.
 
-![im_01_05](im/im_01_05.jpeg)
+![im_01_05](im/im_01_09.jpeg)
 
 Radiometric resolution is determined from the minimum radiance to which the detector is sensitive (L<sub>min</sub>), the maximum radiance at which the sensor saturates (L<sub>max</sub>), and the number of bits used to store the DNs (Q): 
 
