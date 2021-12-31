@@ -51,7 +51,7 @@ An extension of this topic is listed [here](https://developers.google.com/earth-
 
 
 #### JavaScript
-The intent of this course is not to teach the intricacies of programming within JavaScript. JavaScript is the core language for web development and you will likely find that many of the tutorials and resources you find will not be directly relevant to the type of JavaScript that you will need to work in Earth Engine (ie, working with React, JQuery, dynamic app development, etc). JavaScript was chosen because it is an extremely popular language (~97% of websites use it in some fashion) and as an object-oriented language, it is well-suited to pair objects (in this case, imagery provided by Google Earth Engine) with methods (such as using the `reduce` function to summarize the analytical information from a processed image). 
+The intent of this course is not to teach the intricacies of programming within JavaScript. JavaScript is the core language for web development and many of the tutorials and resources you find will not be directly relevant to the type of JavaScript that you will need to work in Earth Engine (e.g., React, JQuery, dynamic app development). JavaScript was chosen because it is an extremely popular language (~97% of websites use it in some fashion) and as an object-oriented language, it is well-suited to pair objects (in this case, imagery provided by Google Earth Engine) with methods (such as using the `reduce` function to summarize the analytical information from a processed image). 
 
 Several excellent resources exist that can help you in working with JavaScript. One such resource is [Javascript.info](https://javascript.info), which provides a thorough overview of working with JavaScript. In this tutorial, focus on part I, as part II and III are directed towards web development and not relevant for this purpose. 
 
@@ -115,7 +115,7 @@ The next four steps further refine the extraction of an image from an image coll
 
 1. `.filterBounds` filters data to the area specified, in this case a geometry `Point` that was created within GEE.
 2. `.filterDate` filters between the two dates specified (filtering down to images collected in 2019)
-3. `.sort` organizes the image collection in descending order based upon the perentage of cloudy pixels 
+3. `.sort` organizes the image collection in descending order based upon the percentage of cloudy pixels 
    1. This is an attribute of the image, which can be found in the 'Image Properties' tab in the dataset documentation 
 
 4. `.first` is a JavaScript method of choosing the first image in the list of sorted images
@@ -126,7 +126,7 @@ As a result, we can now use the JavaScript variable 'first' to visualize the ima
 
 `Map.addLayer()` adds the visualization layer to the map. Images and image collections each have a unique naming convention of their bands, so you will have to reference the documentation for each one you use. GEE uses Red-Green-Blue ordering (as opposed to the popular Computer Vision framework, OpenCV, which uses a Blue-Green-Red convention). `min` and `max` are the values that normalize the value of each pixel to the conventional 0-255 color scale. In this case, although the maximum value of a pixel in all three of those bands is 2000, for visualization purposes GEE will normalize that to 255, the max value in a standard 8-bit image. 
 
-There is a comprehensive [guide](https://developers.google.com/earth-engine/guides/image_visualization) to working on visualization with different types of imagery that goes quite in-depth. It is a worthwhile read, and covers some interesting topics such as false-color composites, mosaicking and single-band visualization. Work with some of the code-snippets to understand how to build visualizations for different sets of imagery. 
+There is a comprehensive [guide](https://developers.google.com/earth-engine/guides/image_visualization) to working on visualization with different types of imagery that goes quite in-depth. It is a worthwhile read and covers some interesting topics such as false-color composites, mosaicking and single-band visualization. Work with some of the code-snippets to understand how to build visualizations for different sets of imagery. 
 
 ```js
 var first = ee.ImageCollection('COPERNICUS/S2_SR')
@@ -172,7 +172,7 @@ Once you have a set of geometries, there are geometric operations you can use fo
 ## Features and Feature Collections
 
 ### Features
-A Feature in GEE is an object which stores a `geometry`  (`Point`, `Line`, `Polygon`) along with it's associated properties. GEE uses the GeoJSON data format to store and transmit these features. In the previous video, we saw how to build geometries within Google Earth Engine, while a feature adds meaningful information to it. This would be a good section to review working with dictionaries within JavaScript.
+A Feature in GEE is an object which stores a `geometry`  (`Point`, `Line`, `Polygon`) along with its associated properties. GEE uses the GeoJSON data format to store and transmit these features. In the previous video, we saw how to build geometries within Google Earth Engine, while a feature adds meaningful information to it. This would be a good section to review working with dictionaries within JavaScript.
 
 Let's say we created an individual point, which we want to associate with data that we collected. The first line establishes the variable `point`, which is then used as the `geometry` to create a `feature`. The curly braces represent a JavaScript dictionary, which creates `Key:Value` pairs, which in our case is the type of tree and a measurement of the size. This new variable, `treeFeature`, now contains geographic information along with attribute data about that point. 
 
@@ -236,11 +236,11 @@ There are hundreds of different operations for using `Reducer`, with the functio
 If you have programmed in the past, joining data together is a familiar concept. This process associates information from different dataset together. Let's say you have an Image Collection of Landsat data that is filtered to the first six months of the year 2016 and a bounding box of your area of study. You also have a table of Redwood tree locations that is filtered to the same area of study, although it contains information over the past decade. You can use a Join to associate information about the trees from the Feature Collection and include it in the Image Collection, keeping only the relevant data that falls within that timeframe. You now have a consolidated dataset with useful information from both the Image Collection and Feature Collection. Although there are different types of joins, the process brings information together, keeping only relevant information. The [documentation](https://developers.google.com/earth-engine/guides/joins_save_all) on Joins goes over specific examples and concepts, but a crucial component is understanding the type of join you need the three most prominent within GEE are: 
 
 * Left Join
-  * Keeps all the information from the primary dataset, and only information that joins from the secondary datset
+  * Keeps all the information from the primary dataset, and only information that joins from the secondary dataset
 * Inner Join
   * Keeps only the information where the primary and secondary data match
 * Spatial Join
-  * A join based on spatial location (ie, keep only the geometry points that fall within a polygon)
+  * A join based on spatial location (e.g., keep only the geometry points that fall within a polygon)
 
 GEE provides some unique types of joins, including 'Save-All', 'Save-Best' and 'Save-First', which are useful if you want to look at a specific area.  
 
