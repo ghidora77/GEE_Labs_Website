@@ -73,144 +73,116 @@ ESRI has an [article](https://www.esri.com/arcgis-blog/products/arcgis-pro/mappi
 
 Understanding the bands available in your datasets, identifying which bands are necessary (and appropriate) for your analysis, and ensuring that these data represent consistent spatial locations is essential. While GEE simplifies many complex calculations behind the scenes, this lab will help us unpack the products available to us and their essential characteristics.
 
-#### Summary
-Each pixel has a position, measured with respect to the axes of some coordinate reference system (CRS), such as a [geographic coordinate system](https://en.wikipedia.org/wiki/Geographic_coordinate_system). A CRS in Earth Engine is often referred to as a projection, since it combines a shape of the Earth with a [datum](https://en.wikipedia.org/wiki/Geodetic_datum) and a transformation from that spherical shape to a flat map, called a [projection](https://en.wikipedia.org/wiki/Map_projection). 
-![im_02_02](./im/im_02_02.png)
-
 
 ### Visualize a Digital Image
 
-Let’s view a digital image in GEE to better understand this concept:
+Let’s view a digital image in GEE to better understand this concept. 
 
-1. In the map window of GEE, click on the Point geometry tool using the [geometry drawing tools](https://developers.google.com/earth-engine/playground#geometry-tools) to define your area of interest (for the purposes of consistency in this exercise, place a point on the Virginia Tech Drillfield, which will bring you roughly to`[-80.42,37.23]`). As a reminder, you can find more information on geometry drawing tools in GEE’s Guides. Name the import `point`.
-  
-2. Import NAIP imagery by searching for 'naip' and choosing the *'NAIP: National Agriculture Imagery Program'* raster dataset. Name the import `naip`. 
+Remeber, there are three major ways to import imagery within GEE. 
 
-3. Get a single, recent NAIP image over your study area and inspect it:
-  
-   ```javascript
-   //  Get a single NAIP image over the area of interest.  
-   var  image = ee.Image(naip  
-                         .filterBounds(point)
-                         .sort('system:time_start', false)
-                         .first());      
-   //  Print the image to the console.  
-   print('Inspect the image object:', image);     
-   //  Display the image with the default visualization.  
-   Map.centerObject(point, 18);  
-   Map.addLayer(image, {}, 'Original image');
-   ```
-   
-4. Expand the image object that is printed to the console by clicking on the dropdown triangles. Expand the property called `bands` and expand one of the bands (0, for example). Note that the CRS transform is stored in the `crs_transform` property underneath the band dropdown and the CRS is stored in the `crs` property, which references an EPSG code. 
+1. You can navigate to the GEE [datasets](https://developers.google.com/earth-engine/datasets/) page, choose the image collection you would like to work with and import the code example, which is normally located at the bottom of each dataset page. This code example is normally a standalone code chunk that will correctly visualize and process the data. ![im_01_06](im/im_01_06.png)
 
-    > **EPSG Codes** are 4-5 digit numbers that represent CRS definitions. The acronym EPGS, comes from the (now defunct) European Petroleum Survey Group.  The CRS of this image is [EPSG:26917](https://spatialreference.org/ref/epsg/nad83-utm-zone-17n/). You can often learn more about those [EPSG codes](http://www.epsg-registry.org/) from [thespatialreference.org](http://spatialreference.org/) or from the [ESPG homepage](https://epsg.org/home.html). 
-  
-    > The CRS transform is a list  `[m00, m01, m02, m10, m11, m12]`  in the notation of [this reference](http://docs.oracle.com/javase/7/docs/api/java/awt/geom/AffineTransform.html).  The CRS transform defines how to map pixel coordinates to their associated spherical coordinate through an affine transformation. While affine transformations are beyond the scope of this class, more information can be found at [Rasterio](https://rasterio.readthedocs.io/en/latest/topics/georeferencing.html), which provides detailed documentation for the popular Python library designed for working with geospatial data. 
-    
-5. In addition to using the dropdowns, you can also access these data programmatically with the `.projection()` method:
-                                                                                             
-    ```javascript
-    // Display the projection of band 0
-    print('Inspect the projection of band 0:', image.select(0).projection());
-    ```
-    
-6. Note that the projection can differ by band, which is why it's good practice to inspect the projection of individual image bands. 
+2. In the search bar of the code editor, you can search for the specific imagery you are looking for. When you click on it, a pop-up window will come up that allows you to either import the image directly (bottom right) or copy the path to the image collection (left-hand side). They both work the same way, using the import button will incorporate it into you variable list directly, where you have to define the variable if you copy the path to the image collection. 
 
-7. (If you call `.projection()` on an image for which the projection differs by band, you'll get an error.) Exchange the NAIP imagery with the Planet SkySat MultiSpectral image collection, and note that the error occurs because the 'P' band has a different pixel size than the others.
+   ![im_01_07](im/im_01_07.png)
 
-8. Explore the `ee.Projection` docs to learn about useful methods offered by the `Projection` object. To play with projections offline, try [this tool](http://www.giss.nasa.gov/tools/gprojector/).
+In the map window of GEE, click on the Point geometry tool using the [geometry drawing tools](https://developers.google.com/earth-engine/playground#geometry-tools) to define your area of interest. For the purpose of consistency in this exercise, place a point on the Virginia Tech Drillfield, which will bring you roughly to (-80.42, 37.23). As a reminder, you can find more information on geometry drawing tools in GEE’s Guides. Name the import `point`.
 
+> Note: some programming languages and frameworks read in latitude and longitude differently - Most read in the values as longitude / latitude. Double check your values, if you are importing data from Google Maps, you will have to switch the latitude and longitude when using within GEE
 
-### Digital Image Visualization and Stretching
+Import NAIP imagery by searching for 'naip' and choosing the *'NAIP: National Agriculture Imagery Program'* raster dataset. Name the import `naip`. 
 
-You've learned about how an image stores pixel data in each band as digital numbers (DNs) and how the pixels are organized spatially. When you add an image to the map, Earth Engine handles the spatial display for you by recognizing the projection and putting all the pixels in the right place. However, you must specify how to stretch the DNs to make an 8-bit display image (e.g., the `min` and `max` visualization parameters). Specifying `min` and `max` applies (where DN' is the displayed value):
-
-   $$ DN' =   \frac{ 255 (DN - min)}{(max - min)} $$
-
-1. To apply a [gamma correction](https://en.wikipedia.org/wiki/Gamma_correction) (DN' = DN$_\gamma$), use:
-
-    ```javascript
-    // Display gamma stretches of the input image.
-    Map.addLayer(image.visualize({gamma: 0.5}), {}, 'gamma = 0.5');
-    Map.addLayer(image.visualize({gamma: 1.5}), {}, 'gamma = 1.5');
-    ```
-  
-    Note that gamma is supplied as an argument to [image.visualize()](https://developers.google.com/earth-engine/apidocs/ee-image-visualize) so that you can click on the map to see the difference in pixel values (try it!). It's possible to specify `gamma`, `min`, and `max` to achieve other unique visualizations.
-
-
-2. To apply a [histogram equalization](https://en.wikipedia.org/wiki/Histogram_equalization) stretch, use the [`sldStyle()`](https://devsite.googleplex.com/earth-engine/image_visualization#styled-layer-descriptors) method
-
+Get a single, recent NAIP image over your study area and inspect it:
 
 ```javascript
-// Define a RasterSymbolizer element with '_enhance_' for a placeholder.
-  var histogram_sld =
-    '<RasterSymbolizer>' +
-      '<ContrastEnhancement><Histogram/></ContrastEnhancement>' +
-      '<ChannelSelection>' +
-        '<RedChannel>' +
-          '<SourceChannelName>R</SourceChannelName>' +
-        '</RedChannel>' +
-        '<GreenChannel>' +
-          '<SourceChannelName>G</SourceChannelName>' +
-        '</GreenChannel>' +
-        '<BlueChannel>' +
-          '<SourceChannelName>B</SourceChannelName>' +
-        '</BlueChannel>' +
-      '</ChannelSelection>' +
-    '</RasterSymbolizer>';
-
-  // Display the image with a histogram equalization stretch.
-  Map.addLayer(image.sldStyle(histogram_sld), {}, 'Equalized');
+// Point at Virginia Tech  
+var point = ee.Geometry.Point([-80.42, 37.22]);
+// Import the NAIP imagery
+var naip = ee.ImageCollection("USDA/NAIP/DOQQ")
+//  Get a single NAIP image over the area of interest.  
+var  image = ee.Image(naip  
+                      .filterBounds(point)
+                      .sort('system:time_start', false)
+                      .first());
+//  Print the image to the console.  
+print('Inspect the image object:', image);     
+//  Display the image with the default visualization.  
+Map.centerObject(point, 18);  
+Map.addLayer(image, {}, 'Original image');
 ```
 
-The [`sldStyle()`](https://devsite.googleplex.com/earth-engine/image_visualization#styled-layer-descriptors) method requires image statistics to be computed in a region (to determine the histogram).
+Expand the image object that is printed to the console by clicking on the dropdown triangles. Expand the property called `bands` and expand one of the bands (0, for example). Note that the CRS transform is stored in the `crs_transform` property underneath the band dropdown and the CRS is stored in the `crs` property, which references an EPSG code. 
+
+> **EPSG Codes** are 4-5 digit numbers that represent CRS definitions. The acronym EPSG, comes from the (now defunct) European Petroleum Survey Group. The CRS of this image is [EPSG:26917](https://spatialreference.org/ref/epsg/nad83-utm-zone-17n/). You can learn more about these codes from the [ESPG homepage](https://epsg.org/home.html). 
+
+> The CRS transform is a list `[m00, m01, m02, m10, m11, m12]`in the notation of [this reference](http://docs.oracle.com/javase/7/docs/api/java/awt/geom/AffineTransform.html).  The CRS transform defines how to map pixel coordinates to their associated spherical coordinate through an affine transformation. While affine transformations are beyond the scope of this class, more information can be found at [Rasterio](https://rasterio.readthedocs.io/en/latest/topics/georeferencing.html), which provides detailed documentation for the popular Python library designed for working with geospatial data. 
+
+In addition to using the dropdowns, you can also access these data programmatically with the `.projection()` method:
+```javascript
+// Display the projection of band 0
+print('Inspect the projection of band 0:', image.select(0).projection());
+```
+
+Note that the projection can differ by band, which is why it's good practice to inspect the projection of individual image bands. If you call `.projection()` on an image for which the projection differs by band, you'll get an error. Exchange the NAIP imagery with the Planet SkySat MultiSpectral image collection, and note that the error occurs because the 'P' band has a different pixel size than the others. Explore the `ee.Projection` docs to learn about useful methods offered by the `Projection` object. To play with projections offline, try [this tool](http://www.giss.nasa.gov/tools/gprojector/).
 
 ## Spatial Resolution                                                     
 
-In the present context, spatial resolution refers to pixel size. This ranges widely, with Maxar announcing 15cm [resolution]([Introducing 15 cm HD: The Highest Clarity From Commercial Satellite… (maxar.com)](https://blog.maxar.com/earth-intelligence/2020/introducing-15-cm-hd-the-highest-clarity-from-commercial-satellite-imagery)), Landsat at 30m, and large global products covering multiple squared kilometers.  The key point in dealing with spatial resolution is ensuring that your analysis drives your data collection. Using high resolution imagery will be extremely expensive, both monetarily and computationally, if conducting continent wide analysis. Yet using low-resolution imagery will not be effective in identifying individual buildings or small vehicles. Understanding the appropriate spatial resolution needed for your analysis is essential. 
+In the present context, spatial resolution refers to pixel size. This ranges widely, with the private satellite company Maxar announcing 15cm [resolution]([Introducing 15 cm HD: The Highest Clarity From Commercial Satellite… (maxar.com)](https://blog.maxar.com/earth-intelligence/2020/introducing-15-cm-hd-the-highest-clarity-from-commercial-satellite-imagery)), Sentinel at 10m, Landsat at 30m, and large global products with spatial resolution in kilometers. The key point in dealing with spatial resolution is ensuring that your analysis drives your data collection. Using high resolution imagery will be extremely expensive, both monetarily and computationally, if conducting continent wide analysis. Yet using low-resolution imagery will not be effective in identifying individual buildings or small vehicles. Understanding the appropriate spatial resolution needed for your analysis is essential, and is why there different platforms focus on different spatial resolutions.
 
 In practice, spatial resolution depends on the projection of the sensor's instantaneous field of view (IFOV) of the ground and how a set of radiometric measurements are resampled into a regular grid. To see the difference in spatial resolution resulting from different sensors, visualize data at different scales from different sensors.
 
 ### MODIS 
-There are two Moderate Resolution Imaging Spectro-Radiometers ([MODIS](http://modis.gsfc.nasa.gov/)) aboard the [Terra](http://terra.nasa.gov/) and [Aqua](http://aqua.nasa.gov/) satellites. Different MODIS [bands](http://modis.gsfc.nasa.gov/about/specifications.php) produce data at different spatial resolutions. For the visible bands, the lowest common resolution is 500 meters (red and NIR are 250 meters). Data from the MODIS platforms are used to produce a large number of data sets having daily, weekly, 16-day, monthly, and annual data sets. Outside this lab, you can find a list of MODIS land products [here](https://lpdaac.usgs.gov/dataset_discovery/modis/modis_products_table). 
+There are two Moderate Resolution Imaging Spectro-Radiometers ([MODIS](http://modis.gsfc.nasa.gov/)) aboard the [Terra](http://terra.nasa.gov/) and [Aqua](http://aqua.nasa.gov/) satellites. Different MODIS [bands](http://modis.gsfc.nasa.gov/about/specifications.php) produce data at different spatial resolutions. For the visible bands, the lowest common resolution is 500 meters. Data from the MODIS platforms are used to produce a large number of data sets having daily, weekly, 16-day, monthly, and annual data sets. Outside this lab, you can find a list of MODIS land products [here](https://lpdaac.usgs.gov/dataset_discovery/modis/modis_products_table). 
 
-1. Search for '[MYD09GA](https://lpdaac.usgs.gov/dataset_discovery/modis/modis_products_table/myd09ga_v006)' and import '*MYD09GA.006 Aqua Surface Reflectance Daily Global 1km and 500m*'. Name the import `myd09`. 
-  
-2. Zoom the map to San Francisco (SFO) airport:
+In the code below, we are working with the MODIS Terra Surface Reflectance 8-day Global 500m resolution data. Change the number in the `zoom` variable to scroll in and out - notice that when scrolled in each pixel is quite large and granular. 
 
-    ```javascript
-    // Define a region of interest as a point at SFO airport.
-    var sfoPoint = ee.Geometry.Point(-122.3774, 37.6194);
-    // Center the map at that point.
-    Map.centerObject(sfoPoint, 16);
-    ```
-    
-3. To display a false-color MODIS image, select an image acquired by the Aqua MODIS sensor and display it for SFO:
+```javascript
+var dataset = ee.ImageCollection('MODIS/006/MOD09A1')
+                  .filter(ee.Filter.date('2018-01-01', '2018-05-01'))
+                  .first();
+var trueColor =
+    dataset.select(['sur_refl_b01', 'sur_refl_b04', 'sur_refl_b03']);
+var trueColorVis = {
+  min: -100.0,
+  max: 3000.0,
+};
+var zoom = 10
+// Set Center on Virginia Tech
+Map.setCenter(-80.42, 37.22, zoom);
+Map.addLayer(trueColor, trueColorVis, 'True Color');
+```
 
-    ```javascript
-    // Get a surface reflectance image from the MODIS MYD09GA collection.
-    var modisImage = ee.Image(myd09.filterDate('2017-07-01').first());
-    // Use these MODIS bands for red, green, blue, respectively.
-    var modisBands = ['sur_refl_b01', 'sur_refl_b04', 'sur_refl_b03'];
-    // Define visualization parameters for MODIS.
-    var modisVis = {bands: modisBands, min: 0, max: 3000};
-    // Add the MODIS image to the map
-    Map.addLayer(modisImage, modisVis, 'MODIS');
-    ```
-    
-4. Note the size of pixels with respect to objects on the ground. (It may help to turn on the satellite basemap to see high-resolution data for comparison.) Print the size of the pixels (in meters) with:
+We will discuss some of the benefits of working with a false-color imagery in later sections, but we can modify the bands we want to visualize. In this case, we are using a random set of bands, where band six will be visualized with the red, band 3 will be visualized with the green, and band 01 will be blue. Because the value of band 6 has a higher range, this image shows up with a heavy red presence. 
 
-    ```javascript
-    // Get the scale of the data from the first band's projection:
-    var modisScale = modisImage.select('sur_refl_b01')
-    .projection().nominalScale();
-    
-    print('MODIS scale:', modisScale);
-    ```
-    
-5. Note these `MYD09` data are surface reflectance scaled by 10000 (not TOA reflectance), meaning that clever NASA scientists have done a fancy atmospheric correction for you!
+```javascript
+var dataset = ee.ImageCollection('MODIS/006/MOD09A1')
+                  .filter(ee.Filter.date('2018-01-01', '2018-05-01'))
+                  .first();
+var modisBands = ['sur_refl_b06', 'sur_refl_b03', 'sur_refl_b01'];
+// Define visualization parameters for MODIS.
+var modisVis = {bands: modisBands, min: 0, max: 3000};
+var zoom = 10
+// Set Center on Virginia Tech
+Map.setCenter(-80.42, 37.22, zoom);
+// Add the MODIS image to the map
+Map.addLayer(dataset, modisVis, 'MODIS');
+```
 
-### Multispectral Scanners  
+Compare the the size of MODIS pixels with respect to objects on the ground. It may help to turn on the satellite basemap and lower the opacity of the layer (top right of map section of code editor) to see high-resolution data for comparison.
+
+Print the size of the pixels (in meters) with:
+
+```javascript
+// Get the scale of the data from the first band's projection:
+var modisScale = dataset.select('sur_refl_b01')
+    .projection()
+    .nominalScale();
+print('MODIS scale:', modisScale);
+```
+
+This data is the surface reflectance value scaled by 10000 (not top of atmosphere reflectance), meaning that clever NASA scientists have done some complex atmospheric correction for you!
+
+### Multispectral Scanners
 
 Multi-spectral scanners were flown aboard Landsats 1-5.  ([MSS](https://landsat.gsfc.nasa.gov/multispectral-scanner-system)) data have a spatial resolution of 60 meters.                                                                
 1. Search for 'landsat 5 mss' and import the result called *'USGS Landsat 5 MSS Collection 1 Tier 2 Raw Scenes'*. Name the import `mss`.
@@ -412,8 +384,41 @@ Radiometric resolution is determined from the minimum radiance to which the dete
 
 $$  \text{Radiometric resolution} = \frac{(L_{max} - L_{min})}{2^Q} $$
 
-
 It might be possible to dig around in the metadata to find values for L<sub>min</sub> and L<sub>max</sub>, but computing radiometric resolution is generally not necessary unless you're studying phenomena that are distinguished by very subtle changes in radiance.
+
+### Digital Image Visualization and Stretching
+
+You've learned about how an image stores pixel data in each band as digital numbers (DNs) and how the pixels are organized spatially. When you add an image to the map, Earth Engine handles the spatial display for you by recognizing the projection and putting all the pixels in the right place. However, you must specify how to stretch the DNs to make an 8-bit display image (e.g., the `min` and `max` visualization parameters). Specifying `min` and `max` applies (where DN' is the displayed value):
+
+   $$ DN' =   \frac{ 255 (DN - min)}{(max - min)} $$
+
+For instance, if you are working with NAIP imagery, you can set the min radiometric resolution to 0 and the max to 255 to model 8-bit radiometric resolution. 
+
+```javascript
+var dataset = ee.ImageCollection('USDA/NAIP/DOQQ')
+                  .filter(ee.Filter.date('2017-01-01', '2018-12-31'));
+var trueColor = dataset.select(['R', 'G', 'B']);
+// Scale of min, max
+var trueColorVis = {
+  min: 0.0,
+  max: 255.0,
+};
+Map.setCenter(-80.42, 37.22, 15);
+Map.addLayer(trueColor, trueColorVis, 'True Color');
+```
+
+By contrast, the Planet MultiSpectral SkySat imagery has 
+
+```js
+var dataset = ee.ImageCollection('SKYSAT/GEN-A/PUBLIC/ORTHO/MULTISPECTRAL');
+var falseColor = dataset.select(['R', 'G', 'B']);
+var falseColorVis = {
+  min: 200.0,
+  max: 6000.0,
+};
+Map.setCenter(-70.892, 41.6555, 15);
+Map.addLayer(falseColor, falseColorVis, 'False Color');
+```
 
 ## Resampling and ReProjection
 
