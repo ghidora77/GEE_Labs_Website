@@ -80,13 +80,13 @@ Let’s view a digital image in GEE to better understand this concept.
 
 Remeber, there are three major ways to import imagery within GEE. 
 
-1. You can navigate to the GEE [datasets](https://developers.google.com/earth-engine/datasets/) page, choose the image collection you would like to work with and import the code example, which is normally located at the bottom of each dataset page. This code example is normally a standalone code chunk that will correctly visualize and process the data. ![im_01_06](im/im_01_06.png)
+1. You can navigate to the GEE [datasets](https://developers.google.com/earth-engine/datasets/) page, choose the image collection you would like to work with and import the code example, which is normally located at the bottom of each dataset page. This code example is a standalone code chunk that will correctly visualize the data. This is an excellent way to get an understanding for the different satellite platforms - feel free to change variables and inputs to see what happens. ![im_01_06](im/im_01_06.png)
 
-2. In the search bar of the code editor, you can search for the specific imagery you are looking for. When you click on it, a pop-up window will come up that allows you to either import the image directly (bottom right) or copy the path to the image collection (left-hand side). They both work the same way, using the import button will incorporate it into you variable list directly, where you have to define the variable if you copy the path to the image collection. 
+2. In the search bar of the code editor, you can search for the specific imagery you are looking for. When you click on it, a pop-up window will come up that allows you to either import the image directly (bottom right) or copy the path to the image collection (left-hand side). They both work the same way, using the import button will incorporate it into the variable list directly (separated top section of the editor), where you have to specifically define the variable if you copy the path to the image collection. 
 
    ![im_01_07](im/im_01_07.png)
 
-In the map window of GEE, click on the Point geometry tool using the [geometry drawing tools](https://developers.google.com/earth-engine/playground#geometry-tools) to define your area of interest. For the purpose of consistency in this exercise, place a point on the Virginia Tech Drillfield, which will bring you roughly to (-80.42, 37.23). As a reminder, you can find more information on geometry drawing tools in GEE’s Guides. Name the import `point`.
+In the map window of GEE, click on the `point` geometry tool using the [geometry drawing tools](https://developers.google.com/earth-engine/playground#geometry-tools) to define your area of interest. For the purpose of consistency in this exercise, place a point on the Virginia Tech Drillfield, which will bring you roughly to (-80.42, 37.23). As a reminder, you can find more information on geometry drawing tools in GEE’s Guides. Name the import `point`.
 
 > Note: some programming languages and frameworks read in latitude and longitude differently - Most read in the values as longitude / latitude. Double check your values, if you are importing data from Google Maps, you will have to switch the latitude and longitude when using within GEE
 
@@ -127,11 +127,12 @@ Note that the projection can differ by band, which is why it's good practice to 
 
 ## Spatial Resolution                                                     
 
-In the present context, spatial resolution refers to pixel size. This ranges widely, with the private satellite company Maxar announcing 15cm [resolution]([Introducing 15 cm HD: The Highest Clarity From Commercial Satellite… (maxar.com)](https://blog.maxar.com/earth-intelligence/2020/introducing-15-cm-hd-the-highest-clarity-from-commercial-satellite-imagery)), Sentinel at 10m, Landsat at 30m, and large global products with spatial resolution in kilometers. The key point in dealing with spatial resolution is ensuring that your analysis drives your data collection. Using high resolution imagery will be extremely expensive, both monetarily and computationally, if conducting continent wide analysis. Yet using low-resolution imagery will not be effective in identifying individual buildings or small vehicles. Understanding the appropriate spatial resolution needed for your analysis is essential, and is why there different platforms focus on different spatial resolutions.
+In the present context, spatial resolution refers to the real-world representation of each pixel. This ranges widely, with the private satellite company Maxar announcing 15cm [resolution]([Introducing 15 cm HD: The Highest Clarity From Commercial Satellite… (maxar.com)](https://blog.maxar.com/earth-intelligence/2020/introducing-15-cm-hd-the-highest-clarity-from-commercial-satellite-imagery)), Sentinel at 10m, Landsat at 30m, and large global products with spatial resolution in kilometers. The key point in dealing with spatial resolution is ensuring that your analysis drives your data collection. Using high resolution imagery will be extremely expensive, both monetarily and computationally, if conducting continent wide analysis. Yet using low-resolution imagery will not be effective in identifying individual buildings or small vehicles. Understanding the appropriate spatial resolution needed for your analysis is essential, and is why there are different platforms that focus on different spatial resolutions.
 
-In practice, spatial resolution depends on the projection of the sensor's instantaneous field of view (IFOV) of the ground and how a set of radiometric measurements are resampled into a regular grid. To see the difference in spatial resolution resulting from different sensors, visualize data at different scales from different sensors.
+In practice, spatial resolution depends on the projection of the sensor's instantaneous field of view (IFOV) of the ground and how a set of radiometric measurements are resampled into a regular grid. To see the difference in spatial resolution resulting from different sensors, visualize data from different sensors.
 
-### MODIS 
+#### MODIS 
+
 There are two Moderate Resolution Imaging Spectro-Radiometers ([MODIS](http://modis.gsfc.nasa.gov/)) aboard the [Terra](http://terra.nasa.gov/) and [Aqua](http://aqua.nasa.gov/) satellites. Different MODIS [bands](http://modis.gsfc.nasa.gov/about/specifications.php) produce data at different spatial resolutions. For the visible bands, the lowest common resolution is 500 meters. Data from the MODIS platforms are used to produce a large number of data sets having daily, weekly, 16-day, monthly, and annual data sets. Outside this lab, you can find a list of MODIS land products [here](https://lpdaac.usgs.gov/dataset_discovery/modis/modis_products_table). 
 
 In the code below, we are working with the MODIS Terra Surface Reflectance 8-day Global 500m resolution data. Change the number in the `zoom` variable to scroll in and out - notice that when scrolled in each pixel is quite large and granular. 
@@ -152,7 +153,7 @@ Map.setCenter(-80.42, 37.22, zoom);
 Map.addLayer(trueColor, trueColorVis, 'True Color');
 ```
 
-We will discuss some of the benefits of working with a false-color imagery in later sections, but we can modify the bands we want to visualize. In this case, we are using a random set of bands, where band six will be visualized with the red, band 3 will be visualized with the green, and band 01 will be blue. Because the value of band 6 has a higher range, this image shows up with a heavy red presence. 
+We will discuss some of the benefits of working with a false-color imagery in later sections, but we can modify the bands we want to visualize. In this case, we are using a random set of bands, where the value of band six is visualized with red, band three is visualized with green, and band one with blue. Because the value of band six has a higher range, this image shows up with a heavy red presence. 
 
 ```javascript
 var dataset = ee.ImageCollection('MODIS/006/MOD09A1')
@@ -168,9 +169,9 @@ Map.setCenter(-80.42, 37.22, zoom);
 Map.addLayer(dataset, modisVis, 'MODIS');
 ```
 
-Compare the the size of MODIS pixels with respect to objects on the ground. It may help to turn on the satellite basemap and lower the opacity of the layer (top right of map section of code editor) to see high-resolution data for comparison.
+![im_01_08](im/im_01_08.png)Compare the  size of MODIS pixels to objects on the ground. It may help to turn on the satellite basemap and lower the opacity of the layer (top right of map section of code editor) to see high-resolution data for comparison.
 
-Print the size of the pixels (in meters) with:
+Print the size of the pixels (in meters) to the console. You can read more about how Google Earth Engine works with scale in their [documentation](https://developers.google.com/earth-engine/guides/scale). While the listed pixel resolution for this satellite platform is 500m, the printout is likely different - this is due to the way that GEE aggregates pixels to fit into a 256x256 tile. The details of this process are outside the scope of this course, but understand that GEE is conducting projections and resampling behind the scenes.  
 
 ```javascript
 // Get the scale of the data from the first band's projection:
@@ -180,141 +181,124 @@ var modisScale = dataset.select('sur_refl_b01')
 print('MODIS scale:', modisScale);
 ```
 
-This data is the surface reflectance value scaled by 10000 (not top of atmosphere reflectance), meaning that clever NASA scientists have done some complex atmospheric correction for you!
+#### Multispectral Scanners
 
-### Multispectral Scanners
+Multi-spectral [scanners](https://landsat.gsfc.nasa.gov/multispectral-scanner-system) (MSS) were flown aboard Landsat missions 1-5 and have a spatial resolution of 60 meters. Let's look at the Landsat 5 MSS Collection 1 Tier 1 Raw Scenes - note that in the 'Bands' description of the dataset, there is no band related to blue (Green, Red, Near InfraRed 1 & 2). In this case, we will have to visualize the image using the near infrared, resulting in a false color composite. 
 
-Multi-spectral scanners were flown aboard Landsats 1-5.  ([MSS](https://landsat.gsfc.nasa.gov/multispectral-scanner-system)) data have a spatial resolution of 60 meters.                                                                
-1. Search for 'landsat 5 mss' and import the result called *'USGS Landsat 5 MSS Collection 1 Tier 2 Raw Scenes'*. Name the import `mss`.
+```javascript
+// Landsat 5 Collection 1 Tier 1 
+// Images between 1985 and 1989
+var dataset = ee.ImageCollection('LANDSAT/LM05/C01/T1')
+                  .filterDate('1985-01-01', '1989-12-31');
+// NIR, Red Green Band                
+var nearInfrared321 = dataset.select(['B3', 'B2', 'B1']);
+Map.setCenter(-80.42, 37.22, 12);
+Map.addLayer(nearInfrared321, {}, 'Near Infrared (321)');
+```
 
-2. To visualize MSS data over SFO (for a relatively cloud-free) image, use:
-  
-    ```javascript
-    // Filter MSS imagery by location, date and cloudiness.   
-    var mssImage = ee.Image(mss     
-                            .filterBounds(Map.getCenter())     
-                            .filterDate('2011-05-01',  '2011-10-01')     
-                            .sort('CLOUD_COVER')     
-                            //  Get the least cloudy image.     
-                            .first());  
-    
-    // Display the MSS image as a color-IR composite.
-    Map.addLayer(mssImage, {bands: ['B3', 'B2', 'B1'], min: 0, max: 200}, 'MSS');
-    ```
-3. Check the scale (in meters) as before:
+As before, let's extract the nominal scale from the image and print it to the console. 
 
-    ```javascript
-    // Get the scale of the MSS data from its projection:
-    var mssScale = mssImage.select('B1').projection().nominalScale();
-    print('MSS scale:', mssScale);
-    ```
+```javascript
+// Get the scale of the MSS data from its projection:
+var mssScale = nearInfrared321.first().projection().nominalScale();
+print('MSS scale:', mssScale);
+```
 
-### Thematic Mapper (TM)
-The Thematic Mapper ([TM](https://landsat.gsfc.nasa.gov/landsat-4-5/tm)) was flown aboard Landsats 4-5. (It was succeeded by the Enhanced Thematic Mapper ([ETM+](https://landsat.gsfc.nasa.gov/about/enhanced-thematic-mapper)) aboard Landsat 7 and the Operational Land Imager ([OLI](https://landsat.gsfc.nasa.gov/landsat-8/operational-land-imager)) / Thermal Infrared Sensor ([TIRS](https://landsat.gsfc.nasa.gov/landsat-8/thermal-infrared-sensor-tirs)) sensors aboard Landsat 8.) TM data have a spatial resolution of 30 meters.
+#### Thematic Mapper (TM)
 
-1. Search for 'landsat 5 toa' and import the first result (which should be '*USGS Landsat 5 TM Collection 1 Tier 1 TOA Reflectance*'. Name the import `tm`.
-
-2. To visualize TM data over SFO, for approximately the same time as the MODIS image, use:
+The Thematic Mapper ([TM](https://landsat.gsfc.nasa.gov/thematic-mapper/)) was flown aboard Landsat 4-5 and then succeeded by the Enhanced Thematic Mapper ([ETM+](https://landsat.gsfc.nasa.gov/the-enhanced-thematic-mapper-plus-etm/)) aboard Landsat 7 and the Operational Land Imager ([OLI](https://landsat.gsfc.nasa.gov/landsat-8/operational-land-imager)) / Thermal Infrared Sensor ([TIRS](https://landsat.gsfc.nasa.gov/landsat-8/thermal-infrared-sensor-tirs)) sensors aboard Landsat 8. TM data have a spatial resolution of 30 meters, which has remained the Landsat standard resolution. We can check this by importing the '*USGS Landsat 5 TM Collection 1 Tier 1 TOA Reflectance*', visualizing and printing our scale results. For some additional discussion about the transition from MSS to TM data, see [this page](https://www.usgs.gov/core-science-systems/nli/landsat/landsat-5?qt-science_support_page_related_con=0#qt-science_support_page_related_con).
 
 
 ```javascript
+var tm = ee.ImageCollection("LANDSAT/LT05/C01/T1_TOA");
 // Filter TM imagery by location, date and cloudiness.
 var tmImage = ee.Image(tm
             .filterBounds(Map.getCenter())
             .filterDate('2011-05-01', '2011-10-01')
             .sort('CLOUD_COVER')
             .first());
-  
 // Display the TM image as a color-IR composite.
 Map.addLayer(tmImage, {bands: ['B4', 'B3', 'B2'], min: 0, max: 0.4}, 'TM'); 
+// Get the scale of the TM data from its projection:
+var tmScale = tmImage.select('B1').projection().nominalScale();
+print('TM scale:', tmScale);
 ```
 
-3. For some hints about why the TM data is not the same date as the MSS data, see [this page](https://www.usgs.gov/core-science-systems/nli/landsat/landsat-5?qt-science_support_page_related_con=0#qt-science_support_page_related_con).
+> **Question 1**: By assigning the NIR, red, and green bands to RGB (4-3-2), what features appear bright red in a Landsat 5 image and why? Explore water bodies, urban centers, farms and forests to find relationships between the bands. 
 
-4. Check the scale (in meters) as previously:
+#### National Agriculture Imagery Program (NAIP)                           
 
-     ```javascript
-    // Get the scale of the TM data from its projection:
-     var tmScale = tmImage.select('B1').projection().nominalScale();
-    print('TM scale:', tmScale);
-    ```
+The National Agriculture Imagery Program ([NAIP](http://www.fsa.usda.gov/programs-and-services/aerial-photography/imagery-programs/naip-imagery/)) is an effort by the USDA to acquire imagery over the continental US on a 3-year rotation using airborne sensors (aircraft as opposed to satellites). Because aircraft are much closer to land than a satellite (and is not dealing with as many atmospheric effects) imagery has a spatial resolution averaging 1 meter. This is considered 'high resolution data'.
 
--------------------------
+Since NAIP imagery is distributed as 'quarters' of Digital Ortho Quads at irregular intervals, load everything from 2012 and [mosaic()](https://developers.google.com/earth-engine/guides/ic_composite_mosaic) the image together.
+```javascript
+var naip = ee.ImageCollection("USDA/NAIP/DOQQ");
+// Get NAIP images for the study period and region of interest.
+var naipImages = naip.filterDate('2012-01-01', '2012-12-31')
+                      .filterBounds(Map.getCenter());
+// Mosaic adjacent images into a single image.
+var naipImage = naipImages.mosaic();
+// Display the NAIP mosaic as a color-IR composite.
+Map.addLayer(naipImage, {bands: ['R', 'G', 'B']}, 'NAIP');
+```
 
-![im_q](./im/im_q.png)**Question 1: By assigning the NIR, red, and green bands in RGB (4-3-2), what features appear bright red in a Landsat 5 image and why?**
+Look at the difference in the resolution - with Landsat and MODIS, each pixel could broadly identify the land type, but NAIP imagery has very high resolution - you can see individual parked cars, the outline of small trees, building envelopes, etc. Start asking yourself how the spatial resolutions of different platforms could help you answer unique questions. 
 
----
+![im_01_09](im/im_01_09.png)
 
-### National Agriculture Imagery Program (NAIP)                           
-The National Agriculture Imagery Program ([NAIP](http://www.fsa.usda.gov/programs-and-services/aerial-photography/imagery-programs/naip-imagery/)) is an effort to acquire imagery over the continental US on a 3-year rotation using airborne sensors. The imagery has a spatial resolution of 1-2 meters. 
+Check the scale of NAIP by getting the first image from the mosaic (images within the mosaic might have different projections) and getting its scale (meters):
 
-1. Search for 'naip' and import the data set for *'NAIP: National Agriculture Imagery Program'*. Name the import naip. Since NAIP imagery is distributed as quarters of Digital Ortho Quads at irregular cadence, load everything from the closest year to the examples in its acquisition cycle (2012) over the study area and [mosaic()](https://developers.google.com/earth-engine/guides/ic_composite_mosaic) it:
-  ```javascript
-  // Get NAIP images for the study period and region of interest.
-    var naipImages = naip.filterDate('2012-01-01', '2012-12-31')
-    .filterBounds(Map.getCenter());
-    // Mosaic adjacent images into a single image.
-    var naipImage = naipImages.mosaic();
-    // Display the NAIP mosaic as a color-IR composite.
-    Map.addLayer(naipImage, {bands: ['N', 'R', 'G']}, 'NAIP');
-  ```
-  
-2. Check the scale by getting the first image from the mosaic (a mosaic doesn't know what its projection is, since the mosaicked images might all have different projections), getting its projection, and getting its scale (meters):
+```javascript
+// Get the NAIP resolution from the first image in the mosaic.
+var naipScale = ee.Image(naipImages.first()).
+              projection().nominalScale();   
+print('NAIP scale:', naipScale);
+```
 
-    ```javascript
-    // Get the NAIP resolution from the first image in the mosaic.
-    var naipScale = ee.Image(naipImages.first()).
-                  projection().nominalScale();   
-    print('NAIP scale:', naipScale);
-    ```
-
-
----
-
-
-![im_q](./im/im_q.png)**Question 2: What is the scale of the most recent round of NAIP imagery for the sample area (2018), and how did you determine the scale?**
-
-
----
+> **Question 2**: We looked at NAIP imagery from 2012 and found that the spatial resolution was 1m around Blacksburg. What is the scale of the most recent round (2018) of NAIP imagery for the area around Blacksburg, VA? How did you determine the scale?
 
 
 ## Spectral Resolution
 
-Spectral resolution refers to the number and width of spectral bands in which the sensor takes measurements. You can think of the width of spectral bands as the wavelength intervals for each band. A sensor that measures radiance in multiple bands is called a *multispectral* sensor (generally 3-10 bands), while a sensor with many bands (possibly hundreds) is called a *hyperspectral* sensor (these are not hard and fast definitions). For example, compare the [multi-spectral OLI](http://landsat.gsfc.nasa.gov/?p=5779) aboard Landsat 8 to [Hyperion](https://eo1.usgs.gov/sensors/hyperioncoverage), a hyperspectral sensor aboard the [EO-1 satellite](https://eo1.usgs.gov/).
+Spectral resolution refers to the number and width of spectral bands in which the sensor takes measurements. You can think of the width of spectral bands as the wavelength interval on the electromagnetic spectrum for each band. A sensor that measures radiance in multiple bands (e.g., collects a value for red, green, blue and near infrared) is called a *multispectral* sensor (generally 3-10 bands), while a sensor with many bands (possibly hundreds) is called a *hyperspectral* sensor (these are not hard and fast definitions). For example, compare the [multi-spectral OLI](http://landsat.gsfc.nasa.gov/?p=5779) aboard Landsat 8 to [Hyperion](https://eo1.usgs.gov/sensors/hyperioncoverage), a hyperspectral sensor that collects 220 unique spectral channels aboard the EO-1 satellite.
 
-A figure representing common optical sensors and their spectral resolution can be viewed below [(image source)](https://www.researchgate.net/figure/Spectral-resolution-of-currently-available-optical-satellite-sensors-grouped-by-different_fig1_348695518):
+A figure representing common optical sensors and their spectral resolution is below. 
 
 ![im_02_03](./im/im_02_03.png)
 
-There is an easy way to check the number of bands in Earth Engine, but no way to get an understanding of the relative *spectral response* of the bands, where spectral response is a function measured in the laboratory to characterize the detector. 
+You can use the code below to check the number of bands in Earth Engine, but you will have to read through the documentation for each image collection to understand the spectral response of the bands. 
 
-1. To see the number of bands in an image, use:
+To see the number of bands in an image, use:
 
-    ```javascript
-    // Get the MODIS band names as a List
-    var modisBands = modisImage.bandNames();
-    // Print the list.
-    print('MODIS bands:', modisBands);
-    // Print the length of the list.
-    print('Length of the bands list:', modisBands.length());
-    ```
-    
-2. Note that only some of those bands contain radiometric data. Lots of them have other information, like quality control data. So the band listing isn't necessarily an indicator of spectral resolution, but can inform your investigation of the spectral resolution of the dataset. Try printing the bands from some of the other sensors to get a sense of spectral resolution.
-  
----
+```javascript
+var dataset = ee.ImageCollection('MODIS/006/MOD09A1')
+                  .filter(ee.Filter.date('2018-01-01', '2018-05-01'))
+                  .first();
+// Get the MODIS band names as a List
+var modisBands = dataset.bandNames();
+// Print the list.
+print('MODIS bands:', modisBands);
+// Print the length of the list.
+print('Length of the bands list:', modisBands.length());
+```
 
+While the code gives us a list of each band, the documentation explains the wavelength and min/max value of each band. For band `sur_refl_b01` we see that it is collecting the brightness value between the wavelength of 620-670nm, while `sur_refl_b05` is between 1628 and 1652 nm.    
 
-![im_q](./im/im_q.png)**Question 3.1: What is the spectral resolution of the MODIS instrument, and how did you determine it?**                                                                           
+![im_01_10](im/im_01_10.png)
 
+**Important note**: not all bands contain radiometric data. Some are quality control data, while others include information about the zenith or cloud coverage. You can use these other bands to either mask out low-quality pixels or conduct additional calculations. It is a good idea to read through the documentation of each dataset you will be working with to get a good understanding of the band structure. 
 
-![im_q](./im/im_q.png)**Question 3.2: Investigate the bands available for the USDA NASS Cropland Data Layers (CDL). What does the band information for the CDL represent? Which band(s) would you select if you were interested in evaluating the extent of pasture areas in the US? **
+> **Question 3.1**: What is the spectral resolution of the MODIS instrument? How did you determine it?
+
+> **Question 3.2**: Investigate the bands available for the USDA NASS Cropland Data Layers (CDL). What do the individual bands within the CDL represent? Which band(s) would you select if you were interested in evaluating the extent of pasture areas in the US?
 
 ---
 
 ## Temporal Resolution
 Temporal resolution refers to the *revisit time*, or temporal *cadence* of a particular sensor’s image stream. Think of this as the frequency of pixels in a time series at a given location.
 
-### MODIS 
+#### MODIS 
+
 MODIS (either Terra or Aqua) produces imagery at approximately a daily cadence. To see the time series of images at a location, you can `print()` the `ImageCollection`, filtered to your area and date range of interest. For example, to see the MODIS images in 2011:
 
 ```javascript
@@ -327,7 +311,8 @@ print('MODIS series:', modisSeries);
 
 Expand the `features` property of the printed `ImageCollection` to see a `List` of all the images in the collection. Observe that the date of each image is part of the filename. Note the daily cadence. Observe that each MODIS image is a global mosaic, so there's no need to filter by location.
 
-### Landsat
+#### Landsat
+
 Landsats (5 and later) produce imagery at 16-day cadence. TM and MSS are on the same satellite (Landsat 5), so it suffices to print the TM series to see the temporal resolution. Unlike MODIS, data from these sensors is produced on a scene basis, so to see a time series, it's necessary to filter by location in addition to time:
 
 ```javascript
@@ -377,7 +362,7 @@ print('TM series:', tmSeries);
 
 Radiometric resolution refers to the ability of an imaging system to record many levels of brightness: _coarse_ radiometric resolution would record a scene with only a few brightness levels, whereas _fine_ radiometric resolution would record the same scene using many levels of brightness. Some also consider radiometric resolution to refer to the _precision_ of the sensing, or the level of _quantization_.
 
-![im_01_05](im/im_01_09.jpeg)
+![im_01_05](im/im_01_12.jpeg)
 
 Radiometric resolution is determined from the minimum radiance to which the detector is sensitive (L<sub>min</sub>), the maximum radiance at which the sensor saturates (L<sub>max</sub>), and the number of bits used to store the DNs (Q): 
 
