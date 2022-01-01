@@ -295,72 +295,64 @@ While the code gives us a list of each band, the documentation explains the wave
 ---
 
 ## Temporal Resolution
-Temporal resolution refers to the *revisit time*, or temporal *cadence* of a particular sensor’s image stream. Think of this as the frequency of pixels in a time series at a given location.
+Temporal resolution refers to the *revisit time*, or how often the same satellite platform covers the same place on earth. Historically, satellites have been large, solitary objects that had to make tradeoffs between spatial and temporal resolution - MODIS measures wide swathes of land with each sweep, and has relatively high temporal resolution. Landsat has improved spatial resolution but a revisit rate of 16 days, and NAIP is aggregated either annually or bi-annually. Over the past decade, satellite technology has improved and there is more diversity in mission sets. Cube satellites are small, shoe-box sized satellites that can provide both high-resolution imagery and, when mosaiced together, provide high temporal resolution as well. The tradeoff is that these satellites do not have the same array of sophisticated sensors that larger satellites are equipped with. Other satellites, such as those run by the intelligence community and private satellite companies, are designed for rapid revisit times of certain cities or political areas while not scanning the rest of the world. 
+
+Temporal resolution is important to understand and consider for your use case - there are tradeoffs to be made either way.
 
 #### MODIS 
 
-MODIS (either Terra or Aqua) produces imagery at approximately a daily cadence. To see the time series of images at a location, you can `print()` the `ImageCollection`, filtered to your area and date range of interest. For example, to see the MODIS images in 2011:
+MODIS (either Terra or Aqua) produces imagery at approximately a daily cadence, but individual products vary greatly. To see the time series of images at a location, you can `print()` the `ImageCollection`filtered to a manageable date range. Expand the `features` property of the printed image collection to see a list of all the images in the collection - the date of each image is part of the filename. You can see that each image from the 'Terra Surface Reflectance Global 500m' product is collected every 8 days. Experiment with some of the other MODIS image collections in the Data Catalog and explore the relationship between the listed spatial resolution and temporal resolution.
 
 ```javascript
+var dataset = ee.ImageCollection('MODIS/006/MOD09A1')
 // Filter the MODIS mosaics to one year.   
-var modisSeries = myd09.filterDate('2011-01-01', '2011-12-31');      
-
+var modisSeries = dataset.filterDate('2011-01-01', '2011-12-31');      
 // Print the filtered  MODIS ImageCollection.   
 print('MODIS series:', modisSeries);  
 ```
 
-Expand the `features` property of the printed `ImageCollection` to see a `List` of all the images in the collection. Observe that the date of each image is part of the filename. Note the daily cadence. Observe that each MODIS image is a global mosaic, so there's no need to filter by location.
-
 #### Landsat
 
-Landsats (5 and later) produce imagery at 16-day cadence. TM and MSS are on the same satellite (Landsat 5), so it suffices to print the TM series to see the temporal resolution. Unlike MODIS, data from these sensors is produced on a scene basis, so to see a time series, it's necessary to filter by location in addition to time:
+Landsats (5 and later) produce imagery at 16-day cadence. TM and MSS are on the same satellite (Landsat 5), so it you can print the TM series to see the temporal resolution. Unlike MODIS, data from these sensors is produced on a scene basis, so to see a time series, it's necessary to filter by location in addition to time. You can see that some images have been skipped (e.g., between January 7th and February 8th) possibly due to quality control. 
 
 ```javascript
-
+var tm = ee.ImageCollection("LANDSAT/LT05/C01/T1_TOA");
 // Filter to get a year's worth of TM scenes.
 var tmSeries = tm
   .filterBounds(Map.getCenter())
   .filterDate('2011-01-01', '2011-12-31');
 // Print the filtered TM ImageCollection. 
 print('TM series:', tmSeries);
-  
 ```
 
-1. Again expand the `features` property of the printed `ImageCollection`. Note that a [careful parsing of the TM image IDs](http://landsat.usgs.gov/naming_conventions_scene_identifiers.php) indicates the day of year (DOY) on which the image was collected. A slightly more cumbersome method involves expanding each Image in the list, expanding its properties and looking for the 'DATE_ACQUIRED' property. 
-
-2. To make this into a nicer list of dates, [map()](https://en.wikipedia.org/wiki/Map_(higher-order_function)) a function over the ImageCollection. First define a function to get a Date from the metadata of each image, using the system properties:
-
-    ```javascript
-    var getDate = function(image) {
-    // Note that you need to cast the argument
-    var time = ee.Image(image).get('system:time_start');
-    // Return the time (in milliseconds since Jan 1, 1970) as a Date
-    return ee.Date(time);
-    };
-    ```
-
-3. Turn the `ImageCollection` into a `List` and[ map() the function](https://developers.google.com/earth-engine/getstarted#mapping-what-to-do-instead-of-a-for-loop) over it:
-
-    ```javascript
-    var dates = tmSeries.toList(100).map(getDate);
-    ```
-  
-4. Print the result:
-
-    ```javascript
-    print(dates);
-    ```
+![im_01_11](im/im_01_11.png)
 
 
----
 
-![im_q](./im/im_q.png)**Question 4: What is the temporal resolution of the Sentinel-2 satellites? How can you determine this from within GEE? **
+While you look at the date ranges in the filename or expand each Image in the list to look at the `Date_Acquired` property, there is a better way to extract this information programmatically.  In this case, we are building a function within JavaScript and extracting the date and time from each image
 
----------------------
+```javascript
+var tm = ee.ImageCollection("LANDSAT/LT05/C01/T1_TOA");
+// Filter to get a year's worth of TM scenes.
+var tmSeries = tm
+  .filterBounds(Map.getCenter())
+  .filterDate('2011-01-01', '2011-12-31');
+// Build a function called getDate
+var getDate = function(image) {
+// Note that you need to cast the argument
+  var time = ee.Image(image).get('system:time_start');
+// Return the time (in milliseconds since Jan 1, 1970) as a Date
+  return ee.Date(time);
+};
+var dates = tmSeries.toList(100).map(getDate);
+print(dates)
+```
+
+> **Question 4**: What is the temporal resolution of the Sentinel-2 satellites? How can you determine this?
 
 ## Radiometric Resolution
 
-Radiometric resolution refers to the ability of an imaging system to record many levels of brightness: _coarse_ radiometric resolution would record a scene with only a few brightness levels, whereas _fine_ radiometric resolution would record the same scene using many levels of brightness. Some also consider radiometric resolution to refer to the _precision_ of the sensing, or the level of _quantization_.
+Radiometric resolution refers to the value, or 'digital number' that the sensor records: _coarse_ radiometric resolution would record a scene with only a narrow range of values, whereas _fine_ radiometric resolution would record the same scene using a wide range of values. The _precision_ of the sensing, or the level of _quantization_ is another way to refer to radiometric resolution. 8 bit values (0-255) is the standard in many image processing tools. 
 
 ![im_01_05](im/im_01_12.jpeg)
 
@@ -369,11 +361,11 @@ Radiometric resolution is determined from the minimum radiance to which the dete
 
 $$  \text{Radiometric resolution} = \frac{(L_{max} - L_{min})}{2^Q} $$
 
-It might be possible to dig around in the metadata to find values for L<sub>min</sub> and L<sub>max</sub>, but computing radiometric resolution is generally not necessary unless you're studying phenomena that are distinguished by very subtle changes in radiance.
+It might be possible to dig around in the metadata to find values for L<sub>min</sub> and L<sub>max</sub>, but computing radiometric resolution is generally not necessary unless you're studying phenomena that are distinguished by very subtle changes in radiance. One thing to keep in mind is that while sensors have developed and become more sensitive / accurate, capable of recording collecting data in upwards of 16 bits, that may not necessarily be beneficial for your work. Computation and storage costs grow, and normalizing the data to 8-bit values to work with tools such as OpenCV defeats the purpose of this sensitive colllection rate. There are use cases where high bit rate collection makes sense (e.g., looking for a very narrow range in a custom spectral range to identify mineral deposits), but ensure that you understand where and why higher radiometric resolution is necessary. 
 
 ### Digital Image Visualization and Stretching
 
-You've learned about how an image stores pixel data in each band as digital numbers (DNs) and how the pixels are organized spatially. When you add an image to the map, Earth Engine handles the spatial display for you by recognizing the projection and putting all the pixels in the right place. However, you must specify how to stretch the DNs to make an 8-bit display image (e.g., the `min` and `max` visualization parameters). Specifying `min` and `max` applies (where DN' is the displayed value):
+You've learned about how an image stores pixel data in each band as digital numbers (DNs) and how the pixels are organized spatially. When you add an image to the map, Earth Engine handles the spatial display for you by recognizing the projection and putting all the pixels in the right place. However, you must specify how to stretch the DNs to fit the standard 8-bit display image  that GEE uses ( `min` and `max` parameters). Specifying `min` and `max` applies (where DN' is the displayed value):
 
    $$ DN' =   \frac{ 255 (DN - min)}{(max - min)} $$
 
@@ -392,7 +384,7 @@ Map.setCenter(-80.42, 37.22, 15);
 Map.addLayer(trueColor, trueColorVis, 'True Color');
 ```
 
-By contrast, the Planet MultiSpectral SkySat imagery has 
+By contrast, the Planet MultiSpectral SkySat imagery uses 16 bit collection, so you have to adjust the min and max values.  If your image is not displaying correctly (such as a black screen) check the documentation for your data and adjust your min and max values. 
 
 ```js
 var dataset = ee.ImageCollection('SKYSAT/GEN-A/PUBLIC/ORTHO/MULTISPECTRAL');
@@ -407,62 +399,30 @@ Map.addLayer(falseColor, falseColorVis, 'False Color');
 
 ## Resampling and ReProjection
 
-Earth Engine makes every effort to handle projection and scale so that you don't have to. However, there are occasions where an understanding of projections is important to get the output you need. As an example, it's time to demystify the [reproject()](https://developers.google.com/earth-engine/apidocs/ee-image-reproject) calls in the previous examples. Earth Engine requests inputs to your computations in the projection and scale of the output. The map attached to the playground has a [Maps Mercator projection](http://epsg.io/3857). 
+Earth Engine makes every effort to handle projection and scale so that you don't have to. However, there are occasions where an understanding of projections is important to get the output you need. Earth Engine requests inputs to your computations in the projection and scale of the output. The map in the console uses a [Mercator projection](http://epsg.io/3857). 
 
-The scale is determined from the map's zoom level. When you add something to this map, Earth Engine secretly reprojects the input data to Mercator, resampling (with nearest neighbor) to screen resolution pixels based on the map's zoom level, then does all the computations with the reprojected, resampled imagery. In the previous examples, the reproject() calls force the computations to be done at the resolution of the input pixels: 1 meter.
+The scale is determined from the map's zoom level. When you add something to this map, Earth Engine secretly reprojects the input data to Mercator, resampling (with nearest neighbor) to the screen resolution pixels based on the map's zoom level, then does all the computations with the reprojected, resampled imagery. In the previous examples, the reproject() calls force the computations to be done at the resolution of the input pixels.
 
-1. Re-run the edge detection code with and without the reprojection (Comment out all previous `Map.addLayer()` calls except for the original one)
+If you are familiar working with remote sensing data in another programming language, such as R or Python, you have to deal with projections and resampling on your own. Google Earth Engine takes care of this behind the scenes, which simplifies your work. We mention it here because this is a change when starting to use GEE. A more thorough discussion about projections is in the [documentation](https://developers.google.com/earth-engine/guides/projections). 
 
-    ```javascript
-    // Zoom all the way in.
-    Map.centerObject(point, 21);
-    // Display edges computed on a reprojected image.
-    Map.addLayer(image.convolve(laplacianKernel), {min: 0, max: 255}, 
-           'Edges with little screen pixels');
-    // Display edges computed on the image at native resolution.
-    Map.addLayer(edges, {min: 0, max: 255}, 
-           'Edges with 1 meter pixels'); 
-    ```
-
-    What's happening here is that the projection specified in `reproject()` propagates backwards to the input, forcing all the computations to be performed in that projection. If you don't specify, the computations are performed in the projection and scale of the map (Mercator) at screen resolution.
-
-2. You can control how Earth Engine resamples the input with [`resample()`](https://developers.google.com/earth-engine/guides/resample). By default, all resampling is done with the nearest neighbor. To change that, call `resample()` on the *inputs*. Compare the input image, resampled to screen resolution with a bilinear and bicubic resampling:
-
-    ```javascript
-    // Resample the image with bilinear instead of the nearest neighbor.
-    var bilinearResampled = image.resample('bilinear');
-    Map.addLayer(bilinearResampled, {}, 'input image, bilinear resampling');
-    
-    // Resample the image with bicubic instead of the nearest neighbor.
-    var bicubicResampled = image.resample('bicubic');
-    Map.addLayer(bicubicResampled, {}, 'input image, bicubic resampling');
-    ```
-
-3. Try zooming in and out, comparing to the input image resampled with the nearest with nearest neighbor (i.e. without `resample()` called on it).
-
-    **You should rarely, if ever, have to use `reproject()` and `resample()`.** Do not use `reproject()` or `resample()` unless necessary. They are only used here for demonstration purposes.
+Bottom line: **You should rarely, if ever, have to use `reproject()` and `resample()`.** 
 
 
 ## Additional Exercises
 
+Now that we have some familiarity with higher quality images, lets look at the (broken) Landsat 7 satellite. Using what we've learned in this lab, select an image from Landsat 7 that contains the Blacksburg area with minimal cloud cover (for now, using the Collection 1 Tier 1 calibrated top-of-atmosphere (TOA) reflectance data product). Look at the image. 
 
-Now that we have some familiarity with higher quality images, lets look at a few from the (broken) Landsat 7 satellite. Using your downloading skills, select an image that contains the Blacksburg area with minimal cloud cover from Landsat 7 (for now, using the Collection 1 Tier 1 calibrated top-of-atmosphere (TOA) reflectance data product).  Look at the image. 
+> **Question 5**: What is the obvious (hint: post-2003) problem with the Landsat 7 image? What is the nature of that problem and what have some researchers done to try to correct it? Please research online in addition to using what you have learned in class/from the book.
 
-![im_q](./im/im_q.png)**Question 5: What is the obvious (hint: post-2003) problem with the Landsat 7 image? What is the nature of that problem and what have some researchers done to try to correct it? Please research online in addition to using what you have learned in class/from the book.** 
-
-**![im_q](./im/im_q.png)Question 6: Name three major changes you can view in the Blacksburg Area in the last decade using any of the above imagery (and state the source).**
-
----
+> **Question 6**: Name three major changes you can view in the Blacksburg Area in the last decade using any of the above imagery (and state the source).
 
 Conduct a search to compare the technical characteristics of the following sensors: 
 
-(i) MODIS (NASA) versus Sentinel (ESA), and 
-(ii) AVHRR (NASA) versus IRS-P6 (or choose another Indian Remote Sensing satellite)  
+1. MODIS (NASA) versus Sentinel (ESA)
+2. AVHRR (NASA) versus IRS-P6 (or choose another Indian Remote Sensing satellite)  
 
-
-![im_q](./im/im_q.png)**Question 7: Based on the characteristics you describe, for which applications is one sensor likely to be more suitable than the other ones? **
-
-Note: when using the internet to answer this question, be sure to cite your sources and ensure that you are obtaining information from an official, reputable source!
+* Note: when using the internet to answer this question, be sure to cite your sources and ensure that you are obtaining information from an official, reputable source!
 
 ---
 
+> **Question 7**: Based on the characteristics you describe, for which applications is one sensor likely to be more suitable than the other ones?
