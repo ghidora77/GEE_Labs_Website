@@ -29,7 +29,7 @@ In the context of geospatial imagery, we will refer to these pixel-based data st
 
 Let's start with a grayscale image of some peppers. This image is rectangle that contains 384 rows and 512 columns of pixels - because it is greyscale, there is only one brightness magnitude value (between 0 and 255) for each position. While humans see shapes, hues and definition, a computer is only recording a brightness value for each pixel. 
 
-![im_01_01](im/im_01_01.png)
+![Grayscale Image](im/im_01_01.png)
 
 Below is a small segment of the matrix of values of the greyscale image between rows 50 and 60 and columns 50 and 60. Note that when working with imagery, the row/column position starts on the top left. Using our row/column designation:
 
@@ -37,13 +37,13 @@ Below is a small segment of the matrix of values of the greyscale image between 
 * `greyscale(50, 54)` has a value of 49
 * `greyscale(60, 60)` has a value of 47
 
-![im_01_02](im/im_01_02.png)
+![Matrix of Grayscale Image](im/im_01_02.png)
 
 #### Three Layer Color Image
 
 The image is still the same, although this now has color. The number of rows, columns and the size of each pixel remain the same, but unlike the greyscale image, we now have three layers, or bands. Each band represents the value in each of the three primary colors: red, green, blue. If we look at the size of our matrix, it is now 384x512x3. For each row and column position, we now have 3 separate values between 0 and 255, which blend together into a color that we, as humans, can process. 
 
-![im_01_03](im/im_01_03.png)
+![Color Image](im/im_01_03.png)
 
 
 
@@ -51,11 +51,11 @@ The image is still the same, although this now has color. The number of rows, co
 
 Geospatial imagery poses two additional complications on top of a traditional color photograph. For analysis, we need to be able to tie our imagery to the real world. In the image of peppers, each pixel was built on an arbitrary axis of rows and columns that start at zero. However, this gives us no meaningful information about where in the world the red bell pepper is located. With geospatial imagery, we need to associate pixels with location. We need to know the exact size of the pixel, and position on earth. The high-resolution imagery below is produced by the 'National Agriculture Imagery Program'. This imagery has a red, green and blue value and a latitude and longitude (-74.01, 40.72), in addition to a size (each pixel represents 1 meter by 1 meter). With this information, we can associate our pixel values with location on earth (New York), and aggregate the information we need. 
 
-![im_01_04](im/im_01_04.png)
+![Pixel Location](im/im_01_04.png)
 
 The other complexity we are faced with is that satellite imagery often has many layers. While our image of peppers had only a red, green and blue value, many satellite platforms are equipped to provide much more information. Most platforms have a value in the near infra-red range - while others have numerous bands, with different scales and resolutions. For instance, the Landsat 8 sensor has eleven bands capturing information from eleven different portions of the electromagentic spectrum, including near infrared (NIR) and thermal bands that are invisible to the human eye. Many Machine Learning projects, which we will explore in later labs, involve normalizing or transforming the information contained within each of these layers. Note that while each pixel size must be the same within each individual layer, the layers can be different. For instance, a satellite platform may have 5 meter spatial resolution in the red/green/blue range, but 60m resolution in the near infra-red range. While visualizing satellite imagery as a traditional photograph is a good starting point, there's much more information that we can incorporate into our analysis. We often build false or pseudocolor images by utilizing different combintions of bands, or we can focus in on certain infrared signatures to detect asphalt roads and roofs. The possibilities of analysis within remote sensing are endless, but this also leads to complications. 
 
-![im_01_05](im/im_01_05.png)
+![Spectral Band Documentation](im/im_01_05.png)
 
 As said before, digital images are often referred to as 'raster' data. ESRI, makers of ArcGIS has an excellent overview of using raster imagery in geospatial analysis featured [here](https://desktop.arcgis.com/en/arcmap/10.3/manage-data/raster-and-images/what-is-raster-data.htm).
 
@@ -80,11 +80,11 @@ Let’s view a digital image in GEE to better understand this concept.
 
 Remeber, there are three major ways to import imagery within GEE. 
 
-1. You can navigate to the GEE [datasets](https://developers.google.com/earth-engine/datasets/) page, choose the image collection you would like to work with and import the code example, which is normally located at the bottom of each dataset page. This code example is a standalone code chunk that will correctly visualize the data. This is an excellent way to get an understanding for the different satellite platforms - feel free to change variables and inputs to see what happens. ![im_01_06](im/im_01_06.png)
+1. You can navigate to the GEE [datasets](https://developers.google.com/earth-engine/datasets/) page, choose the image collection you would like to work with and import the code example, which is normally located at the bottom of each dataset page. This code example is a standalone code chunk that will correctly visualize the data. This is an excellent way to get an understanding for the different satellite platforms - feel free to change variables and inputs to see what happens. ![Dataset Code Example](im/im_01_06.png)
 
 2. In the search bar of the code editor, you can search for the specific imagery you are looking for. When you click on it, a pop-up window will come up that allows you to either import the image directly (bottom right) or copy the path to the image collection (left-hand side). They both work the same way, using the import button will incorporate it into the variable list directly (separated top section of the editor), where you have to specifically define the variable if you copy the path to the image collection. 
 
-   ![im_01_07](im/im_01_07.png)
+   ![Image Collection Snippet](im/im_01_07.png)
 
 In the map window of GEE, click on the `point` geometry tool using the [geometry drawing tools](https://developers.google.com/earth-engine/playground#geometry-tools) to define your area of interest. For the purpose of consistency in this exercise, place a point on the Virginia Tech Drillfield, which will bring you roughly to (-80.42, 37.23). As a reminder, you can find more information on geometry drawing tools in GEE’s Guides. Name the import `point`.
 
@@ -169,7 +169,7 @@ Map.setCenter(-80.42, 37.22, zoom);
 Map.addLayer(dataset, modisVis, 'MODIS');
 ```
 
-![im_01_08](im/im_01_08.png)Compare the  size of MODIS pixels to objects on the ground. It may help to turn on the satellite basemap and lower the opacity of the layer (top right of map section of code editor) to see high-resolution data for comparison.
+![False Color MODIS](im/im_01_08.png)Compare the  size of MODIS pixels to objects on the ground. It may help to turn on the satellite basemap and lower the opacity of the layer (top right of map section of code editor) to see high-resolution data for comparison.
 
 Print the size of the pixels (in meters) to the console. You can read more about how Google Earth Engine works with scale in their [documentation](https://developers.google.com/earth-engine/guides/scale). While the listed pixel resolution for this satellite platform is 500m, the printout is likely different - this is due to the way that GEE aggregates pixels to fit into a 256x256 tile. The details of this process are outside the scope of this course, but understand that GEE is conducting projections and resampling behind the scenes.  
 
@@ -244,7 +244,7 @@ Map.addLayer(naipImage, {bands: ['R', 'G', 'B']}, 'NAIP');
 
 Look at the difference in the resolution - with Landsat and MODIS, each pixel could broadly identify the land type, but NAIP imagery has very high resolution - you can see individual parked cars, the outline of small trees, building envelopes, etc. Start asking yourself how the spatial resolutions of different platforms could help you answer unique questions. 
 
-![im_01_09](im/im_01_09.png)
+![NAIP Imagery](im/im_01_09.png)
 
 Check the scale of NAIP by getting the first image from the mosaic (images within the mosaic might have different projections) and getting its scale (meters):
 
@@ -264,7 +264,7 @@ Spectral resolution refers to the number and width of spectral bands in which th
 
 A figure representing common optical sensors and their spectral resolution is below. 
 
-![im_02_03](./im/im_02_03.png)
+![Spectral Range Collection](./im/im_02_03.png)
 
 You can use the code below to check the number of bands in Earth Engine, but you will have to read through the documentation for each image collection to understand the spectral response of the bands. 
 
@@ -284,7 +284,7 @@ print('Length of the bands list:', modisBands.length());
 
 While the code gives us a list of each band, the documentation explains the wavelength and min/max value of each band. For band `sur_refl_b01` we see that it is collecting the brightness value between the wavelength of 620-670nm, while `sur_refl_b05` is between 1628 and 1652 nm.    
 
-![im_01_10](im/im_01_10.png)
+![Specctral Ranges per Band](im/im_01_10.png)
 
 **Important note**: not all bands contain radiometric data. Some are quality control data, while others include information about the zenith or cloud coverage. You can use these other bands to either mask out low-quality pixels or conduct additional calculations. It is a good idea to read through the documentation of each dataset you will be working with to get a good understanding of the band structure. 
 
@@ -325,7 +325,7 @@ var tmSeries = tm
 print('TM series:', tmSeries);
 ```
 
-![im_01_11](im/im_01_11.png)
+![Temporal Resolution from Filename](im/im_01_11.png)
 
 
 
@@ -354,7 +354,7 @@ print(dates)
 
 Radiometric resolution refers to the value, or 'digital number' that the sensor records: _coarse_ radiometric resolution would record a scene with only a narrow range of values, whereas _fine_ radiometric resolution would record the same scene using a wide range of values. The _precision_ of the sensing, or the level of _quantization_ is another way to refer to radiometric resolution. 8 bit values (0-255) is the standard in many image processing tools. 
 
-![im_01_05](im/im_01_12.jpeg)
+![Radiometric Resolution](im/im_01_12.jpeg)
 
 Radiometric resolution is determined from the minimum radiance to which the detector is sensitive (L<sub>min</sub>), the maximum radiance at which the sensor saturates (L<sub>max</sub>), and the number of bits used to store the DNs (Q): 
 
