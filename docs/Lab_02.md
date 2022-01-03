@@ -132,8 +132,9 @@ Read through the Landsat data documentation and try playing with different band 
 
 The image data you have used so far is stored as a digital number that measures the intensity within the bit range - if data is collected in an 8-bit system, 255 would be very high intensity and 0 will be no intensity. To convert each digital number into a physical unit (at-sensor [radiance](https://en.wikipedia.org/wiki/Radiance) in Watts/m2/sr/𝝁m), we can use a linear equation:
 
-$$ L_𝝀 = a_{\lambda} * DN_{\lambda} + b_{\lambda}  \qquad $$
-
+$$
+L_𝝀 = a_{\lambda} * DN_{\lambda} + b_{\lambda}  \qquad
+$$
 Note that every term is indexed by lamda ($\lambda$, the symbol for wavelength) because the coefficients are different in each band. See [Chander et al. (2009)](http://www.sciencedirect.com/science/article/pii/S0034425709000169) for details on this linear transformation between DN and radiance. In this exercise, you will generate a radiance image and examine the differences in radiance from different targets.
 
 Earth Engine provides built-in functions for converting Landsat imagery to radiance in Watts/m2/sr/𝝁m. It will automatically reference the metadata values for each band and apply the equation for you, saving you the trouble of conducing numerous calculations.
