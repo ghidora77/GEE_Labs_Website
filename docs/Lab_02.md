@@ -20,7 +20,7 @@ To inspect a Landsat 8 image (also called a *scene*) in our region of interest (
 
 You can either scroll to the area on the map you're interested in and choose a point or use the search bar to find your location. Use the geometry tool to make a point in Blacksburg, VA (for these exercises we will include the point location in the script). 
 
-![im_03_01](im/im_03_01.png)
+![Using Search Bar](im/im_02_01a.png)
 
 We will specifically be using USGS Landsat 8 Collection 1 Tier 1 Raw Scenes - if you read the documentation, the values refer to scaled, calibrated at-sensor radiance. Tier 1 means it is ready for analysis and is the highest quality imagery. There's quite a bit to learn about how the Landsat data is processed - if you will be working with Landsat extensively, take the time to read the Data Users [Handbook](https://www.usgs.gov/landsat-missions/landsat-8-data-users-handbook) for more information.
 
@@ -47,7 +47,7 @@ The variable `image` now stores a reference to an object of type `ee.Image`. In 
 
 Before we visualize the data, go to the console and click on the dropdown. 
 
-![im_02_01](im/im_02_01.png)
+![Image Properties](im/im_02_01b.png)
 
 
 
@@ -118,13 +118,13 @@ var falseColor = {
 Map.addLayer(image, falseColor, 'false-color composite'); 
 ```
 
-![im_02_02](im/im_02_02.png)
+![False Color Imagery](im/im_02_02.png)
 
 Read through the Landsat data documentation and try playing with different band combinations, min and max values to build different visualizations. 
 
 **Unique Feature**: You can include multiple visualization parameters in your script and toggle the layers on and off with the layer manager for easy comparison. 
 
-![im_02_03](im/im_02_03.png)
+![Layer Manager](im/im_02_03.png)
 
 
 
@@ -169,9 +169,9 @@ var radParams = {bands: ['B4', 'B3', 'B2'], min: 0, max: 100};
 Map.addLayer(radiance, radParams, 'radiance');  
 ```
 
-Examine the radiance image by using **Inspector** and clicking different land cover types on the map near Blacksburg, VA. Click the chart icon (![img](./im/im_03_03.png)) in the console to get a bar chart of the different radiance values for each pixel. If the shape of the chart resembles Figure 1, that's because the radiance (in bands 1-7) is mostly reflected solar irradiance. The radiance detected in bands 10-11 is thermal, and is *emitted* (not reflected) from the surface.
+Examine the radiance image by using **Inspector** and clicking different land cover types on the map near Blacksburg, VA. Click the chart icon (![Chart](./im/im_02_04.png)) in the console to get a bar chart of the different radiance values for each pixel. If the shape of the chart resembles Figure 1, that's because the radiance (in bands 1-7) is mostly reflected solar irradiance. The radiance detected in bands 10-11 is thermal, and is *emitted* (not reflected) from the surface.
 
-![im_03_02](im/im_03_02.png)
+![Electromagnetic Spectrum](im/im_02_05.png)
 
 ## Top-of-Atmosphere (TOA) Reflectance 
 

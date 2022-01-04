@@ -1,7 +1,6 @@
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
-
 const math = require('remark-math');
 const katex = require('rehype-katex');
 
