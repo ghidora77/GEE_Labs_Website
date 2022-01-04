@@ -154,7 +154,7 @@ You can combine the code blocks to compare the actual values at different pixel 
 
 The Normalized Difference Bare Index (NDBI) was developed by [Zha, 2003)](http://www.tandfonline.com/doi/abs/10.1080/01431160304987) to aid in the differentiation of urban areas by using a combination of the shortwave and near infrared. 
 
-$$ \text{NDBI} = (\text{SWIR} - \text{NIR}) / (\text{SWIR} + \text{NIR}) $$
+$$\text{NDBI} = (\text{SWIR} - \text{NIR}) / (\text{SWIR} + \text{NIR})$$
 
 Note that NDBI is the negative of NDWI. Compute NDBI and display with a suitable palette. (Check [this reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) to demystify the palette reversal)
 
@@ -289,19 +289,15 @@ Linear transforms are linear combinations of input pixel values. These can resul
 
 Based on observations of agricultural land covers in the NIR-red spectral space, [Kauth and Thomas (1976)](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.461.6381&rep=rep1&type=pdf) devised a [rotational transform](https://en.wikipedia.org/wiki/Change_of_basis) of the form 
 
-$$p_1 = R^T p_0$$
-
-
+$$
+{p_1 = R^T p_0}
+$$
 
 where $$p_0$$ is the original pixel vector (a stack of the *p* band values as an [Array](https://developers.google.com/earth-engine/arrays_intro)), **$$p_1$$** is the rotated pixel and **R** is an [orthonormal basis](https://en.wikipedia.org/wiki/Orthonormal_basis) of the new space (therefore is $$R^T$$ its inverse). Kauth and Thomas found **R** by defining the first axis of their transformed space to be parallel to the soil line in the following chart, then used the [Gram-Schmidt process](https://en.wikipedia.org/wiki/Gram–Schmidt_process) to find the other basis vectors.
-
-
 
 ![Tassled Cap](im/im_03_07.png)
 
 Assuming that **R** is available, one way to implement this rotation in Earth Engine is with arrays. Specifically, make an array of TC coefficients. Since these coefficients are for the TM sensor, get a less cloudy Landsat 5 scene. To do the matrix multiplication, first convert the input image from a multi-band image to an array image in which each pixel position stores an array. Do the matrix multiplication, then convert back to a multi-band image.
-
-
 
 ```javascript
 var point = ee.Geometry.Point([-106.81, 39.19]);
