@@ -289,9 +289,7 @@ Linear transforms are linear combinations of input pixel values. These can resul
 
 Based on observations of agricultural land covers in the NIR-red spectral space, [Kauth and Thomas (1976)](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.461.6381&rep=rep1&type=pdf) devised a [rotational transform](https://en.wikipedia.org/wiki/Change_of_basis) of the form 
 
-$$
-p_1 = R^T p_0
-$$
+$$p_1 = R^T p_0$$
 
 
 
