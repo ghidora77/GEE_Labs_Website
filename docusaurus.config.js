@@ -15,8 +15,6 @@ module.exports = {
   favicon: 'img/favicon.ico',
   organizationName: 'LozAnalytics', // Usually your GitHub org/user name.
   projectName: 'remote-sensing', // Usually your repo name.
-
-
   themeConfig: {
     navbar: {
       title: 'Remote Sensing',
@@ -75,9 +73,7 @@ module.exports = {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           editUrl:
-            'https://github.com/facebook/docusaurus/edit/master/website/',
-          remarkPlugins: [math],
-          rehypePlugins: [katex]
+            'https://github.com/facebook/docusaurus/edit/master/website/'
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
