@@ -15,7 +15,7 @@ Land covers are separable at different wavelengths. Vegetation curves (green) ha
 #### Normalized Difference Vegetation Index (NDVI)
 The Normalized Difference Vegetation Index (NDVI) has a [long history](https://en.wikipedia.org/wiki/Normalized_Difference_Vegetation_Index) in remote sensing, and is one of the most widely used measures. The typical formulation is:
 
-$$ \text{NDVI} = (\text{NIR} - \text{red}) / (\text{NIR} + \text{red}) $$
+$$\text{NDVI} = (\text{NIR} - \text{red}) / (\text{NIR} + \text{red})$$
 
 Where *NIR* refers to the near infrared band and *red* refers to the red peak in the visible spectrum.
 
@@ -69,7 +69,7 @@ Use the **Inspector** to check pixel values in areas of vegetation and non-veget
 
 The Enhanced Vegetation Index (EVI) is designed to minimize saturation and background effects in NDVI ([Huete, 2002](http://www.sciencedirect.com/science/article/pii/S0034425702000962)). 
 
-$$ \text{EVI} = 2.5 * (\text{NIR} - \text{red}) / (\text{NIR} + 6 * \text{red} - 7.5 * \text{blue} + 1) $$
+$$\text{EVI} = 2.5 * (\text{NIR} - \text{red}) / (\text{NIR} + 6 * \text{red} - 7.5 * \text{blue} + 1)$$
 
 Since it is not a normalized difference index, we have to build a unique [expression](https://developers.google.com/earth-engine/image_math#expressions) and then identify all of the different segments. Programmatically, bands are specifically referenced with the help of [an object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Grammar_and_Types#Object_literals) that is passed as the second argument to `image.expression()` (everything within the curly brackets). 
 
@@ -154,7 +154,7 @@ You can combine the code blocks to compare the actual values at different pixel 
 
 The Normalized Difference Bare Index (NDBI) was developed by [Zha, 2003)](http://www.tandfonline.com/doi/abs/10.1080/01431160304987) to aid in the differentiation of urban areas by using a combination of the shortwave and near infrared. 
 
-$$ \text{NDBI} = (\text{SWIR} - \text{NIR}) / (\text{SWIR} + \text{NIR}) $$
+$$\text{NDBI} = (\text{SWIR} - \text{NIR}) / (\text{SWIR} + \text{NIR})$$
 
 Note that NDBI is the negative of NDWI. Compute NDBI and display with a suitable palette. (Check [this reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) to demystify the palette reversal)
 
@@ -289,7 +289,7 @@ Linear transforms are linear combinations of input pixel values. These can resul
 
 Based on observations of agricultural land covers in the NIR-red spectral space, [Kauth and Thomas (1976)](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.461.6381&rep=rep1&type=pdf) devised a [rotational transform](https://en.wikipedia.org/wiki/Change_of_basis) of the form 
 
-$$ p_1 = R^T p_0 $$
+$$p_1 = R^T p_0$$
 
 
 where $$p_0$$ is the original pixel vector (a stack of the *p* band values as an [Array](https://developers.google.com/earth-engine/arrays_intro)), **$$p_1$$** is the rotated pixel and **R** is an [orthonormal basis](https://en.wikipedia.org/wiki/Orthonormal_basis) of the new space (therefore is $$R^T$$ its inverse). Kauth and Thomas found **R** by defining the first axis of their transformed space to be parallel to the soil line in the following chart, then used the [Gram-Schmidt process](https://en.wikipedia.org/wiki/Gram–Schmidt_process) to find the other basis vectors.
@@ -340,7 +340,7 @@ Map.addLayer(componentsImage, vizParams, 'TC components');
 
 ![Tasseled Cap Image](im/im_03_08.png)
 
-> Question 3: Upload the a tasseled cap image from a point near Blacksburg, VA and interpret the output. what are some of the values that you can extract when using **Inspector**? Are the results meaningful? 
+> **Question 3:** Upload the a tasseled cap image from a point near Blacksburg, VA and interpret the output. what are some of the values that you can extract when using **Inspector**? Are the results meaningful? 
 
 #### Principal Component Analysis (PCA)
 
@@ -396,7 +396,7 @@ Map.addLayer(pcImage.select('pc1'), imageVisParam, 'PC');
 
 The [linear spectral mixing model](http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=974727&tag=1) is based on the assumption that each pixel is a mixture of "pure" spectra. The pure spectra, called *endmembers*, are from land cover classes such as water, bare land, vegetation. The goal is to solve the following equation for **f**, the *P*x1 vector of endmember fractions in the pixel:  
 
-$$ Sf = p $$
+$$Sf = p$$
 
 where **S** is a *B*x*P* matrix in which the columns are *P* pure endmember spectra (known) and **p** is the *B*x1 pixel vector when there are *B* bands (known). In this example, $B= 6$: 
 
