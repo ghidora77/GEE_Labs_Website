@@ -127,6 +127,7 @@ Read through the Landsat data documentation and try playing with different band 
 ![Layer Manager](im/im_02_03.png)
 
 
+
 ## At-Sensor Radiance
 
 The image data you have used so far is stored as a digital number that measures the intensity within the bit range - if data is collected in an 8-bit system, 255 would be very high intensity and 0 will be no intensity. To convert each digital number into a physical unit (at-sensor [radiance](https://en.wikipedia.org/wiki/Radiance) in Watts/m2/sr/𝝁m), we can use a linear equation:

@@ -246,13 +246,7 @@ print(ui.Chart.image.series(fittedHarmonic.select(['fitted','NDVI']), roi,
 
 The harmonic model (red data points) does an adequate job of predicting the data - There is a datapoint in Feb 2021 that is significantly lower, but this appears to be an outlier. Additionally, the model misses a significant dip in July 2015, although this might be due to irregular climate conditions - other years did not have the same dip.  
 
-![im_06_10](./im/im_06_05.png)
-
----
-
- ![im_q](./im/im_q.png)**Upload the resulting graphic and interpret it. ** 
-
----
+> **Question 1**: Upload the resulting graphic and interpret it.
 
 Although any coefficients can be mapped directly, it is often useful and interesting to map the phase and amplitude of the estimated harmonic model. First, compute phase and amplitude from the coefficients, then incorporate this information into each pixel. Use inspector to look at the pixels and note their phase and amplitude.
 
@@ -278,9 +272,7 @@ var rgb = ee.Image.cat([
 Map.addLayer(rgb, {}, 'phase (hue), amplitude (sat), ndvi (val)');
 ```
 
----
-
-![im_q](./im/im_q.png)**Upload the resulting map layer and describe its salient features.** 
+> **Question 2**: Upload the resulting map layer and describe its salient features.
 
 ---
 
@@ -289,8 +281,6 @@ Map.addLayer(rgb, {}, 'phase (hue), amplitude (sat), ndvi (val)');
 A time series can be decomposed as the sum of sinusoids at different frequencies. The harmonic model presented here can be extended by adding bands that represent higher frequencies and the corresponding `sin()` band for a harmonic component to account for two cycles per year.  
 
 You can look at this GEE [example](https://code.earthengine.google.com/2669122497313113fc4bb81bc8352828) of using multiple sinusoids to build a more complex harmonic model. Note that each year there is a high peak in June and a secondary peak in January - this harmonic model consisting of two sinusoids with separate frequencies and amplitudes is able to account for that. However, the error values in this model are high and the fit is quite inexact. We can see extreme drops in the NDVI value that the model misses, and several peaks each year that do not fit.
-
-
 
 ![im_06_11](./im/im_06_06.png)
 
@@ -374,7 +364,6 @@ There are some interesting ways you can expand this general idea - for instance,
 
 ## Additional Exercises
 
-![im_qu_large](./im/im_q.png)**Test three different points using Landsat 7, Landsat 8 and MODIS to identify urban development in an area of interest. Do the charts and data provide enough data to determine that urban change occurred?**
+> **Question 3**: Test three different points using Landsat 7, Landsat 8 and MODIS to identify urban development in an area of interest. Do the charts and data provide enough data to determine that urban change occurred?
 
-
-![im_qu_large](./im/im_q.png)**Look in google scholar to identify 2-3 publications that have used a harmonic regression in a time series analysis of remotely sensed data in particular. Provide citations for the articles, and then describe for what purposes was the technique used and what was the justification provided for its use.**
+> **Question 4**: Look in google scholar to identify 2-3 publications that have used a harmonic regression in a time series analysis of remotely sensed data in particular. Provide citations for the articles, and then describe for what purposes was the technique used and what was the justification provided for its use.
