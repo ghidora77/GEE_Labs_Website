@@ -403,7 +403,7 @@ Map.addLayer(predictedTreeCover,
 
 Carefully inspect this result by using the inspector on the prediction layer and comparing it to the satellite imagery basemap. Is it satisfactory?
 
-![Linear Regression](im/Im_04_06.png)
+![Linear Regression](im/im_04_06.png)
 
 If not, it might be worth testing some other regression functions, adding more predictor variables, collecting more training data, or all of the above. In remote sensing research, this is not a one-step process - to find value in these models, you will need to continuously improve, iterate and retest your assumptions. 
 
@@ -431,7 +431,7 @@ Map.addLayer(cartRegressionImage, {min: 0, max: 100}, 'CART regression');
 
 Use the 'inspector' to compare the linear regression to the CART regression. Although CART can work in both classification and regression mode, not all classifiers are as easily adaptable. 
 
-![NonLinear Regression](im/Im_04_07.png)
+![NonLinear Regression](im/im_04_07.png)
 
 > **Question 3**: What do you observe when comparing the linear regression to the CART regression? Are the prediction values similar? If the output for both are similar, does the value seem to match the background imagery?
 
