@@ -2,7 +2,7 @@
 
 ## Overview
 
-This lab will cover the process of using machine learning (ML) to create both unsupervised and supervised classification models for land use categorization. We will discuss the methodology involved and potential use cases, explore parameter tuning and go through the process of building a relatively simple classification model using Random Forest and CART, which you can use as a starting point for future research.   
+This lab will cover the process of using machine learning (ML) to create both unsupervised and supervised classification models for land use categorization. We will discuss the methodology involved and potential use cases, explore parameter tuning and go through the process of building a relatively simple classification model using Random Forest and CART, which you can use as a starting point for future research.
 
 ## Introduction to Classification
 
@@ -433,7 +433,7 @@ Use the 'inspector' to compare the linear regression to the CART regression. Alt
 
 ![NonLinear Regression](im/Im_04_06.png)
 
-> **Question 3**: What do you observe when comparing the linear regression to the CART regression? Are the prediction values similar? If the output for both are similar, does the value seem to match the background imagery?
+> **Question 3**: What do you observe when comparing the linear regression to the CART regression? Are the prediction values similar? Does the value seem to match the background imagery?
 
 ---
 
