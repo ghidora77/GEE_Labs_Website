@@ -401,7 +401,7 @@ Map.addLayer(predictedTreeCover,
              'prediction');
 ```
 
-Carefully inspect this result by using the inspector on the prediction layer and comparing it to the satellite imagery basemap. Is it satisfactory?
+Carefully inspect this result by using the inspector on the prediction layer and comparing it to the imagery basemap. Is it satisfactory?
 
 ![Linear Regression](im/im_04_06.png)
 
