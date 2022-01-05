@@ -340,7 +340,7 @@ Specify the bands of the Landsat composite to be used as predictors (i.e. the el
 
 Now that all the input data is ready, we can build the shell of our linear regression equation. It's customary to include a constant term in linear regression to make it the [best linear unbiased estimator](https://en.wikipedia.org/wiki/Gauss–Markov_theorem). Stack a constant, the predictor variables and the 'Percent Tree Cover' Image as the variable `trainingImage`, representing known *g*: If you print `trainingImage` to the console, you will see that the format of the data that we have follows the typical equation for linear regression. 
 
-$$ y = \beta_0 + \beta_1X_1 + ... + \beta_nX_n + \epsilon $$
+$$y = \beta_0 + \beta_1X_1 + ... + \beta_nX_n + \epsilon$$
 
 Sample 1000 pixels out of `trainingImage`, to get a table of Feature Collections, each containing a value for each band (1-7), a value for the 'Percent Tree Cover', and a constant (value of 1).
 
@@ -407,7 +407,7 @@ Carefully inspect this result by using the inspector on the prediction layer and
 
 If not, it might be worth testing some other regression functions, adding more predictor variables, collecting more training data, or all of the above. In remote sensing research, this is not a one-step process - to find value in these models, you will need to continuously improve, iterate and retest your assumptions. 
 
-> Question 2: Upload your predicted layer and your satellite imagery basemap. Discuss the salient features of the predicted output and which steps you may want to take in order to improve the results.
+> **Question 2**: Upload your predicted layer and your satellite imagery basemap. Discuss the salient features of the predicted output and which steps you may want to take in order to improve the results.
 
 ## Nonlinear Regression
 

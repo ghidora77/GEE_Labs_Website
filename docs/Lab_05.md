@@ -122,7 +122,7 @@ You can click on the 'export' button next to the chart to view an iteractive cha
 ### Linear Modeling of Time
 Lots of interesting analyses can be done to time series by harnessing the `linearRegression()` [reducer](https://developers.google.com/earth-engine/api_docs#eereducerlinearregression). To estimate linear trends over time, consider the following linear model, where $\epsilon_t$ is a random error:
 
-$$ y = \beta_0 + \beta_1X_1 + ... + \beta_nX_n + \epsilon_t $$
+$$y = \beta_0 + \beta_1X_1 + ... + \beta_nX_n + \epsilon_t$$
 
 This is the model behind the trendline added to the chart you just created. We can use this model to detrend our data (explain the upward or downward movement of the data by subtracting observed values from the fitted model values). For now, the goal is to discover the values of the beta coefficients.
 
