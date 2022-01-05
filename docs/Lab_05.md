@@ -15,7 +15,7 @@ To explain the concepts of time series modeling, let's begin with a dataset that
 2. Within each yearly cycle, we see that there is a sharp peak in June and July, and a trough in October and December. An annual, 12-month cycle is specifically referred to as 'seasonality', although there can be other cyclical time periods (ex., a housing market in a specific area may see a recurring pattern in house prices that occurs roughtly every 7 years)
 3. Finally, the magnitude of the difference between each yearly peak and trough increases over time as well. 
 
-![im_06_07](./im/im_06_01.png)
+![Time Series Example](./im/im_05_01.png)
 
 With these observations, we can address each of the components individually and perhaps build an explanatory model. The time series decomposition below (generated in R) breaks up the data into separate components. 
 
@@ -24,9 +24,7 @@ With these observations, we can address each of the components individually and 
 3. The seasonal chart seeks to identify cyclical patterns in the data - in this case, patterns that repeat every 12 months. It subtracts the trend from the observed points and averages the data for each time period (month).  
 4. Finally, the 'random' line chart is the residual amount remaining when you remove the trend and seasonality from the data. 
 
-
-
-![im_06_06](./im/im_06_02.png)
+![Time Series Decomposition](./im/im_05_02.png)
 
 ### Limitations in Remote Sensing Time Series
 
@@ -118,7 +116,7 @@ print(l8Chart);
 
 You can click on the 'export' button next to the chart to view an iteractive chart. Scroll over some of the data points and look at the relationships between the data. A line connecting two dots means that they are sequential data points, and note that there are relatively few of them. We can see that there are relatively large jumps in the data, with an upward climb somewhere between March and late April, and a descent in late August. Each year is slightly different, but we can surmise that this is due to seasonal rains in the spring and leaves dying off in the fall. Finally, the general trend is downward, although the February 2021 datapoint might have significant leverage on the trend. 
 
-![im_06_03](./im/im_06_03.png)
+![Linear Trend](./im/im_05_03.png)
 
 
 ### Linear Modeling of Time
@@ -172,7 +170,7 @@ print(detrendedChart);
 
 Compared to our earlier graph, the data looks similar - but now, the slight downward slope is accounted for with our linear model. Each fitted data point (data point on the linear model) is subtracted from each of the observed data points. Additionally, the Y-axis is now centered at 0, and the scale ranges from 0 to +/- 0.45 This allows us to focus on cyclical patterns in the data with long-term trends in the data removed.
 
-![im_06_09](./im/im_06_04.png)
+![Detrended Data](./im/im_05_04.png)
 
 ## Estimate Seasonality with a Harmonic Model
 
@@ -282,7 +280,7 @@ A time series can be decomposed as the sum of sinusoids at different frequencies
 
 You can look at this GEE [example](https://code.earthengine.google.com/2669122497313113fc4bb81bc8352828) of using multiple sinusoids to build a more complex harmonic model. Note that each year there is a high peak in June and a secondary peak in January - this harmonic model consisting of two sinusoids with separate frequencies and amplitudes is able to account for that. However, the error values in this model are high and the fit is quite inexact. We can see extreme drops in the NDVI value that the model misses, and several peaks each year that do not fit.
 
-![im_06_11](./im/im_06_06.png)
+![Complex Harmonic Model](./im/im_05_05.png)
 
  More complex harmonic models might not be appropriate due to overfitting - in other words, this model might  provide a false sense of comfort in it's explanatory ability. Time Series modelling of remote sensing data is more difficult than many business or scientific contexts due to masked data, missing data, irregular atmospheric conditions and natural variability.
 
@@ -290,7 +288,7 @@ You can look at this GEE [example](https://code.earthengine.google.com/266912249
 
 Many of you might be more familiar with building statistical models in other languages or tools, such as Python, R or JMP. After all, JavaScript was not built as a natural statistics tool, and being able to work with the data In that case, you'll likely want to export the data for your own analysis. There are several ways to do it, but the simplest method is to click the 'expand into new tab' button next to the chart that contains the data you want to work with (likely the raw NDVI data) - in the new tab, you can click 'Download .csv', which is a datatable that you can use with whichever software you prefer.
 
-![im_06_07](./im/im_06_07.png)
+![Exporting Data](./im/im_05_06.png)
 
 ## Time Series Thresholding
 
@@ -358,7 +356,7 @@ print(l8Chart);
 
 Below is the resulting chart, exactly as expected. NDVI has a max of 0.9 in the summer and a min of 0.4 in the winter, but between March 2018 to April 2018 the NDVI drops from 0.313 to 0.18, and largely stays below this value. In addition, the cyclicality is gone after 2018, and while there are some elevated values in late 2020, that is likely due to atmospheric conditions or sensor calibration. The linear trend is an indication of construction, and perhaps a window function to average out the variability can help identify large drops in the overall average NDVI for this test point. 
 
-![im_06_08](./im/im_06_08.png)
+![Change Detection](./im/im_05_07.png)
 
 There are some interesting ways you can expand this general idea - for instance, you might be able to build a system that automatically identifies urban development that occurs when it occurs in your test zone. Global Forest watch is using a similar tactic to automatically detect when there is a large drop in NDVI, and by using MODIS data, they can obtain very high temporal resolution to identify exactly when and where this activity is occuring. Note that different image collections have different time-lines (for instance, Landsat 8 would not be able to detect urban change before 2013), and you may have to set up this system differently. 
 
