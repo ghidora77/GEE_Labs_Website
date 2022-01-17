@@ -6,13 +6,13 @@ The purpose of this lab is to establish a foundation for time series analysis on
 
 ## Background
 
-One of the paradigm-changing features of Earth Engine is the ability to access decades of imagery without the previous limitation of needing to download, organize, store and process this information. For instance, within the Landsat image collection we can access imagery back to 1972, allowing us to look at an area to visualize and quantify how much it's changed over time. With Earth Engine, Google maintains the data and offers it's compute power for processing - users can access tens or hundreds of time-sequenced images and quantify change across decades. 
+One of the paradigm-changing features of Earth Engine is the ability to access decades of imagery without the previous limitation of needing to download, organize, store and process this information. For instance, within the Landsat image collection we can access imagery back to 1972, allowing us to look at an area to visualize and quantify how much it's changed over time. With Earth Engine, Google maintains the data and offers it's computing power for processing - users can access tens or hundreds of time-sequenced images and quantify change across decades. 
 
 To explain the concepts of time series modeling, let's begin with a dataset that illustrates what we are trying to do. The line chart below references electricity production over thirty years, with one distinct data point per month. What can we observe?
 
 1. Production tends to increase each year - In this case, it appears to level out after 2010, but there is a general trend upwards. 
 
-2. Within each yearly cycle, we see that there is a sharp peak in June and July, and a trough in October and December. An annual, 12-month cycle is specifically referred to as 'seasonality', although there can be other cyclical time periods (ex., a housing market in a specific area may see a recurring pattern in house prices that occurs roughtly every 7 years)
+2. Within each yearly cycle, we see that there is a sharp peak in June and July, and a trough in October and December. An annual, 12-month cycle is specifically referred to as 'seasonality', although there can be other cyclical time periods (ex., a housing market in a specific area may see a recurring pattern in house prices that occurs roughly every 7 years)
 3. Finally, the magnitude of the difference between each yearly peak and trough increases over time as well. 
 
 ![Time Series Example](./im/im_05_01.png)
@@ -28,19 +28,19 @@ With these observations, we can address each of the components individually and 
 
 ### Limitations in Remote Sensing Time Series
 
-Time Series modeling aims to build an an explanatory model of the data without overfitting the problem set - to use as simple a model as possible while accounting for as much of the data as possible. The previous example was used to illustrate the concepts of breaking down time series data into component parts, but remote sensing data has additional limitations that make this more challenging. Note that in the previous example used there was a well-formed data point for every single month - nothing was missing or obviously erroneous. It is almost inevitable that you will not get this same level of precision from remote sensing data. For instance, Landsat has 16-day temporal resolution - but depending on the area, removing cloudy pixels will remove a significant portion. For instance, in a test area in the Galapagos Islands, over 85% of the data was removed due to cloud masking or atmospheric conditions. Issues such as the Landsat 7 Scan Line Corrector malfunction might prevent a cohesive time series dataset depending on your time period of research. Also, while the time series example we used involved measured values on the same scale throughout the time series (ie, a gigawatt is the same unit of measurement throughout the entire time series), with remote sensing we often run into situations where the magnitude of measurement changes. If we are researching winter crop yield and an image is collected right after a heavy snowfall, how do we compare this value? Do we keep this data or remove it? Additionally, atmospheric conditions can skew the visual results, where the hue of the vegetation changes drastically from image to image due to atmospheric conditions (fog, ground moisture, cloud cover).
+Time Series modeling aims to build an an explanatory model of the data without overfitting the problem set - to use as simple a model as possible while accounting for as much of the data as possible. The previous example was used to illustrate the concepts of breaking down time series data into component parts, but remote sensing data has additional limitations that make this more challenging. Note that in the previous example used there was a well-formed data point for every single month - nothing was missing or obviously erroneous. It is almost inevitable that you will not get this same level of precision from remote sensing data. Landsat has 16-day temporal resolution - but depending on the area, removing cloudy pixels will remove a significant portion. In a test area in the Galapagos Islands, over 85% of the data was removed due to cloud masking or atmospheric conditions. Issues such as the Landsat 7 Scan Line Corrector malfunction might prevent a cohesive time series dataset depending on your time period of research. Also, while the time series example we used involved measured values on the same scale throughout the time series (e.g., a gigawatt is the same unit of measurement throughout the entire time series), with remote sensing we often run into situations where the magnitude of measurement changes. If we are researching winter crop yield and an image is collected right after a heavy snowfall, how do we compare this value? Do we keep this data or remove it? Additionally, atmospheric conditions can skew the visual results, where the hue of the vegetation changes drastically from image to image due to atmospheric conditions (fog, ground moisture, cloud cover).
 
-For your project, you have to understand the characteristics of both your data and what you are trying to measure. Building a time series model to understand cyclical changes in vegetation can provide useful information in understanding crop yield - but if you do not account for issues in the data, you can end up building a faulty time series model that leads to erroneous results. Many time series modeling tools, such as ARIMA modeling, are not directly applicable in certain settings due to missing data, non-standard collection periods and varying intensity of due to atmospheric conditions. In this lab, we will focus on understanding on linear trends and harmonic modeling.  
+For your project, it is important to understand the characteristics of both your data and what you are trying to measure. Building a time series model to understand cyclical changes in vegetation can provide useful information in understanding crop yield - but if you do not account for issues in the data, you can end up building a time series model  with erroneous results. Many time series modeling tools, such as ARIMA modeling, are not directly applicable in certain settings due to missing data, non-standard collection periods and varying intensity due to atmospheric conditions. In this lab, we will focus on understanding on linear trends and harmonic modeling.  
 
 ### Multi-Temporal Data in Earth Engine
 
-Time series data in Earth Engine are represented as a series of images called 'Image Collections'. As a result of the complicating factors in remote sensing discussed earlier, analyzing time series in Earth Engine is unlike time series modeling in traditional methods. From a programming sense, we will join data together to define temporal relationships between collection items and build functions to reduce this tim. 
+Time series data in Earth Engine are represented as a series of images called 'Image Collections'. As a result of the complicating factors in remote sensing discussed earlier, analyzing time series in Earth Engine is unlike time series modeling in traditional methods. From a programming sense, we will join data together to define temporal relationships between collection items and build functions to reduce this time. 
 
 First, some very basic mathematical notation for time series. A time series is an array of the value being measured, sorted chronologically: { $\textbf{p}_{t}  = t_{0} + t_{1}... t_{N}$ }, where each *t* is the given value in the series.
 
 
 ### Data Preparation and Preprocessing
-The first step in analysis of time series data is to import data of interest and plot the data at an interesting location. In this case, the region of interest is in a deciduous forest near Blacksburg, VA.
+The first step in analysis of time series data is to import data of interest and plot the data around our region of interest, a deciduous forest near Blacksburg, VA.
 
 We begin by loading in the Landsat 8 Collection and provide a point at the region of interest. Additionally, we will create a time field. 
 
@@ -114,7 +114,7 @@ var l8Chart = ui.Chart.image.series(filteredLandsat.select('NDVI'), roi)
 print(l8Chart);
 ```
 
-You can click on the 'export' button next to the chart to view an iteractive chart. Scroll over some of the data points and look at the relationships between the data. A line connecting two dots means that they are sequential data points, and note that there are relatively few of them. We can see that there are relatively large jumps in the data, with an upward climb somewhere between March and late April, and a descent in late August. Each year is slightly different, but we can surmise that this is due to seasonal rains in the spring and leaves dying off in the fall. Finally, the general trend is downward, although the February 2021 datapoint might have significant leverage on the trend. 
+You can click on the 'export' button next to the chart to view an interactive chart. Scroll over some of the data points and look at the relationships between the data. A line connecting two dots means that they are sequential data points (notice that there are relatively few sequential points). We can also see that there are relatively large jumps in the data, with an upward climb somewhere between March and late April, and a descent in late August. Each year is slightly different, but we can surmise that this is due to seasonal rains in the spring and leaves dying off in the fall. Finally, the general trend is downward, although the February 2021 datapoint might have significant leverage on the trend. 
 
 ![Linear Trend](./im/im_05_03.png)
 
@@ -148,7 +148,7 @@ The image added to the map is a two band image in which each pixel contains valu
 Use the model to "detrend" the original NDVI time series. By detrend, we mean account for the slope of the chart and remove it from the original data. 
 
 ```javascript
-// Compute a de-trended series.
+// Compute a detrended series.
 var detrended = filteredLandsat.map(function(image) {
 return image.select(dependent).subtract(
        image.select(independents).multiply(coefficients).reduce('sum'))
@@ -188,7 +188,7 @@ $$
 
 Note that $\beta_2 = Acos(\phi)$ and $\beta_3 = Asin(\phi)$, implying $A = (\beta_2^2 + \beta_3^2)^½$ and $\phi = atan(\frac{\beta_3}{\beta_2})$). 
 
-If the math here does not make sense, basically we are breaking up more complex curves into a set of simplified cosine waves and an additive term. Mark Jakubauskas has an informative paper that breaks down the process in this [paper](https://www.isprs.org/proceedings/xxxiii/congress/part4/384_xxxiii-part4.pdf), and there are many papers which elaborate more on the math behind harmonic models. Building a harmonic model is used in remote sensing applications because of its flexibility in accounting for cyclicality with simple, reproducible shapes. If there is a seasonal trend in the data, the ordered nature of a cosine curve can likely approximate it.  
+In simpler terms, we are breaking up more complex curves into a set of simplified cosine waves with an additive term. Mark Jakubauskas has an informative [paper](https://www.isprs.org/proceedings/xxxiii/congress/part4/384_xxxiii-part4.pdf) that breaks down the process, and there are many resources that elaborate more on the math behind harmonic models. Building a harmonic model is used in remote sensing applications because of its flexibility in accounting for cyclicality with simple, reproducible shapes. If there is a seasonal trend in the data, the ordered nature of a cosine curve can likely approximate it.  
 
  To fit this model to the time series, set $\omega$=1 (one cycle per unit time) and use ordinary least squares regression as the metric of error reduction. 
 
@@ -217,7 +217,7 @@ var harmonicTrend = harmonicLandsat
   }));
 ```
 
-Plug the coefficients in to equation 2 in order to get a time series of fitted values:
+Plug the coefficients into equation 2 in order to get a time series of fitted values:
 
 ```javascript
 // Turn the array image into a multi-band image of coefficients.
@@ -282,11 +282,11 @@ You can look at this GEE [example](https://code.earthengine.google.com/266912249
 
 ![Complex Harmonic Model](./im/im_05_05.png)
 
- More complex harmonic models might not be appropriate due to overfitting - in other words, this model might  provide a false sense of comfort in it's explanatory ability. Time Series modelling of remote sensing data is more difficult than many business or scientific contexts due to masked data, missing data, irregular atmospheric conditions and natural variability.
+More complex harmonic models might not be appropriate due to overfitting - in other words, this model might  provide a false sense of comfort in its explanatory ability. Time Series modelling of remote sensing data is more difficult than many business or scientific contexts due to masked data, missing data, irregular atmospheric conditions and natural variability.
 
 ### Exporting Data
 
-Many of you might be more familiar with building statistical models in other languages or tools, such as Python, R or JMP. After all, JavaScript was not built as a natural statistics tool, and being able to work with the data In that case, you'll likely want to export the data for your own analysis. There are several ways to do it, but the simplest method is to click the 'expand into new tab' button next to the chart that contains the data you want to work with (likely the raw NDVI data) - in the new tab, you can click 'Download .csv', which is a datatable that you can use with whichever software you prefer.
+Many of you might be more familiar with building statistical models in other languages or tools, such as Python, R or JMP. After all, JavaScript was not built as a natural statistics tool, and being able to work with the data In that case, you'll likely want to export the data for your own analysis. There are several ways to do it, but the simplest method is to click the 'expand into new tab' button next to the chart that contains the data you want to work with (likely the raw NDVI data) - in the new tab, you can click 'Download .csv', which is a data table that you can use with whichever software you prefer.
 
 ![Exporting Data](./im/im_05_06.png)
 
@@ -294,7 +294,7 @@ Many of you might be more familiar with building statistical models in other lan
 
 Urban change detection is a burgeoning field in remote sensing that identifies historical urban development and works to predict where future urban development will occur. Remote sensing is a vital partner in this field, as it can provide an unbiased, quantitative assessment of change over time. For instance, [Greece](https://www.spiegel.de/international/europe/finding-swimming-pools-with-google-earth-greek-government-hauls-in-billions-in-back-taxes-a-709703.html) is using Google Earth Pro to scour the countryside for signs of tax evaders (ex., a luxury pool built without a permit may indicate sheltered money). Other countries are using classification models in Google Earth Engine to characterize urban development. 
 
-In this example, we will go over a simple, but very effective method of identifying urban development, based on real-world experience. In nearby Roanoke (located about 45 minutes east of Virginia Tech), like any other city, there has been significant construction in the past few years. About three years ago, a patch of land was converted from trees and pasture and construction began an assisted living facility. Let's test to see if we can identify this construction. We will use the Landsat 8 image collection (as we used earlier), and import our test point as `var roi`. The process of building the chart is the same as earlier, and we will use NDVI as our change metric, as we can hypothesize that new construction will greatly reduce NDVI. 
+In this example, we will go over a simple, but very effective method of identifying urban development, based on real-world experience. In nearby Roanoke (located about 45 minutes east of Virginia Tech), like any other city, there has been significant construction in the past few years. About three years ago, construction of an assisted living facility began on a patch of trees and pasture. Let's test to see if we can identify this construction. We will use the Landsat 8 image collection, and import our test point as `var roi`. The process of building the chart is the same as earlier, and we will use NDVI as our change metric, as we can hypothesize that new construction will greatly reduce NDVI. 
 
 ```javascript
 // Test area - lat/long acquired from Google Maps
@@ -358,7 +358,7 @@ Below is the resulting chart, exactly as expected. NDVI has a max of 0.9 in the 
 
 ![Change Detection](./im/im_05_07.png)
 
-There are some interesting ways you can expand this general idea - for instance, you might be able to build a system that automatically identifies urban development that occurs when it occurs in your test zone. Global Forest watch is using a similar tactic to automatically detect when there is a large drop in NDVI, and by using MODIS data, they can obtain very high temporal resolution to identify exactly when and where this activity is occuring. Note that different image collections have different time-lines (for instance, Landsat 8 would not be able to detect urban change before 2013), and you may have to set up this system differently. 
+There are some interesting ways you can expand this general idea - for instance, you might be able to build a system that automatically identifies urban development that occurs when it occurs in your test zone. Global Forest Watch is using a similar tactic to automatically detect when there is a large drop in NDVI, and by using MODIS data, they can obtain very high temporal resolution to identify exactly when and where this activity is occurring. Note that different image collections have different timelines (for instance, Landsat 8 would not be able to detect urban change before 2013), and you may have to set up this system differently for different satellite platforms. 
 
 ## Additional Exercises
 

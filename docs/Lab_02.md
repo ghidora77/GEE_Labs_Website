@@ -12,9 +12,9 @@ In this lab, we will search for and visualize imagery in Google Earth Engine. We
 
 ## Searching for Imagery
 
-The Landsat program is a joint program between NASA and the United States Geological Survey (USGS) that has launched a sequence of Earth observation satellites (Landsat 1,2,...9). The Landsat program provides the [longest continuous observation of the Earth's surface](https://www.youtube.com/embed/ZZx1xmNGcXI?list=PLD240BBC85537B9BE), originating in 1984. Take the time to monitor some of the fascinating [timelapses](https://earthengine.google.com/timelapse/) that GEE provides, which uses Landsat to showcase things like urban development, glacial retreat and deforestation.  
+The Landsat program is a joint program between NASA and the United States Geological Survey (USGS) that has launched a sequence of Earth observation satellites (Landsat 1-9).  Originating in 1984, the Landsat program provides the [longest continuous observation of the Earth's surface](https://www.youtube.com/embed/ZZx1xmNGcXI?list=PLD240BBC85537B9BE). Take the time to monitor some of the fascinating [timelapses](https://earthengine.google.com/timelapse/) using Landsat to showcase things like urban development, glacial retreat and deforestation.  
 
-Let's load a Landsat scene over our region of interest, inspect the units and plot the radiance. Specifically, use imagery from the Landsat 8, the most recent of the [sequence of Landsat satellites](https://www.usgs.gov/core-science-systems/nli/landsat/landsat-8) (at the time of writing, Landsat 9 just launched, but data is not yet available). 
+Let's load a Landsat scene over our region of interest, inspect the units and plot the radiance. Specifically, use imagery from the Landsat 8, the most recent of the [sequence of Landsat satellites](https://www.usgs.gov/core-science-systems/nli/landsat/landsat-8) (at the time of writing, Landsat 9 just launched and data is not yet available). 
 
 To inspect a Landsat 8 image (also called a *scene*) in our region of interest (ROI), we can choose a point to center our map, filter the image collection to get a scene with few clouds, and display information about the image in the console.
 

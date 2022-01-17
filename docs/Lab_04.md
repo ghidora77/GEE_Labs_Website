@@ -20,11 +20,11 @@ When `g` is nominal, or a fixed category (ex., {'water', 'vegetation', 'bare'}),
 
 When `g` is numeric (ex., {0, 1, 2, 3}), we call this regression. 
 
-This is a simplistic description of a problem addressed in a broad range of fields including mathematics, statistics, data mining, machine learning. For our purposes, we will go through some examples using these concepts in Google Earth Engine and then provide more resources for further reading at the end. 
+This is a simplistic description of a problem addressed in a broad range of fields including mathematics, statistics, data mining and machine learning. For our purposes, we will go through some examples using these concepts in Google Earth Engine and then provide more resources for further reading at the end. 
 
 ## Unsupervised Classification
 
-Unsupervised classification finds unique groupings in the dataset without manually developed training data (no guidance). The computer will cycle through the pixels, look at the characteristics of the different bands, and pixel-by-pixel begin to group information together. Perhaps pixels with a blue hue and a low NIR value are grouped together, while green-dominant pixels are also grouped together. The outcome of unsupervised classification is that each pixel is categorized within the context of the image and the number of categories specified. One important point is that the number of clusters is set by the user, and this plays a major role in how the algorithm operates. Too many clusters creates unnecessary noise, while too few clusters does not have enough granularity.
+Unsupervised classification finds unique groupings in the dataset without manually developed training data (no guidance). The computer will cycle through the pixels, look at the characteristics of the different bands, and pixel-by-pixel begin to group information together. Perhaps pixels with a blue hue and a low NIR value are grouped together, while green-dominant pixels are also grouped together. The outcome of unsupervised classification is that each pixel is categorized within the context of the image and the number of categories specified. Take note that the number of clusters is set by the user, and this plays a major role in how the algorithm operates. Too many clusters create unnecessary noise, while too few clusters does not have yield enough granularity.
 
 Google Earth Engine provides [documentation](https://developers.google.com/earth-engine/guides/clustering) on working with unsupervised classification within their ecosystem, and we will be focusing on the `ee.Clusterer` package, which provides a flexible unsupervised classification (or clustering) in an easy-to-use way.
 
@@ -79,7 +79,7 @@ Map.addLayer(landsat, visParams, "Landsat 8 (2016)");
 
 In this case, we will randomly select a sample of 5000 pixels in the region to build a clustering model - we will use this sample data to find clustering groups and then apply it to the rest of the data. 
 
-  We will also set the variable `clusterNum` to idenfity how many categories to use. Start with 15, and modify based on the output and needs of your experiment. Note that we are using `ee.Clusterer.wekaKMeans`, 
+We will also set the variable `clusterNum` to idenfity how many categories to use. Start with 15 and continue to modify based on the output and needs of your experiment. Note that we are using `ee.Clusterer.wekaKMeans`, 
 
 ```javascript
 // Create a training dataset.
@@ -104,7 +104,7 @@ As you can see from the output, the result is quite vivid. On the 'layers' toggl
 
 Change the variable in `clusterNum` and run through some different options to find better results. Note that the output of an unsupervised clustering model is not specifying that each pixel should be a certain type of label (ex, the pixel is 'water'), but rather that these pixels have similar characteristics. 
 
-Unsupervised is a great starting point of understanding your data. While it is not typically used as standalone results, it can be used as a layer in supervised classification to improve performance in the supervised classification.  
+Unsupervised classification is a great starting point for understanding your data. While in the context of Remote Sensing it is not typically used as standalone results, it can be used as a layer in supervised classification to improve performance in the supervised classification.  
 
 > **Question 1**: If you were going to use a clustering model to identify water in the image, is 15 an appropriate cluster number? What would you deem to be an optimal number of clusters?
 
@@ -219,11 +219,11 @@ The first step is to partition the set of known values into training and testing
 
 Print the confusion matrix and expand the object to inspect the matrix. The entries represent the number of pixels. Items on the diagonal represent correct classification and items off the diagonal are misclassifications, where the class in row *i* is classified as column *j* 
 
-So there are a total of 640 pixels of water in the test sample - of these 640 pixels, 1 pixel was miscalculated as bare land, and 0 pixels were miscalculated as vegetation. You can get basic descriptive statistics from the confusion matrix, along with consumers / producers accuracy, which are built-in functions that are calculated from a confusion matrix. The [documentation](https://developers.google.com/earth-engine/apidocs/ee-confusionmatrix) of working with confusion matrices contains some interesting information and extensions. 
+There are a total of 640 pixels of water in the test sample - of these 640 pixels, 1 pixel was miscalculated as bare land, and 0 pixels were miscalculated as vegetation. You can get basic descriptive statistics from the confusion matrix, along with consumers / producers accuracy, which are built-in functions that are calculated from a confusion matrix. The [documentation](https://developers.google.com/earth-engine/apidocs/ee-confusionmatrix) of working with confusion matrices contains some interesting information and extensions. 
 
 ![Confusion Matrix](im/im_04_03.png)
 
-You can test different classifiers by replacing CART with some other classifier of interest. Also note that as a result of the randomness in the partition, you may get different results from different runs. 
+You can test different classifiers by replacing CART with some other classifier of interest. Also note that because of the randomness in the partition, you may get different results from different runs. 
 
 ```javascript
 var trainingTesting = classifierTraining.randomColumn();
@@ -314,7 +314,7 @@ In the present context, regression means predicting a numeric variable instead o
 
 ### Ordinary Least Squares (OLS)
 
-[Ordinary regression](https://en.wikipedia.org/wiki/Ordinary_least_squares) is when *G* is a linear function of the form *G*(**p**) = **βp** where **β** is a vector of coefficients. Once *G* is trained by some training set **T**, we can estimate the the value for some unknown **p** by multiplying it with **β**. 
+[Ordinary regression](https://en.wikipedia.org/wiki/Ordinary_least_squares) is when *G* is a linear function of the form *G*(**p**) = **βp** where **β** is a vector of coefficients. Once *G* is trained by some training set **T**, we can estimate the value for some unknown **p** by multiplying it with **β**. 
 
 Suppose the goal is to estimate percent tree cover in each Landsat pixel.
 
@@ -338,7 +338,7 @@ For predictor variables (**p**)we will use 'USGS Landsat 5 TM Collection 1 Tier 
 
 Specify the bands of the Landsat composite to be used as predictors (i.e. the elements of **p**):
 
-Now that all the input data is ready, we can build the shell of our linear regression equation. It's customary to include a constant term in linear regression to make it the [best linear unbiased estimator](https://en.wikipedia.org/wiki/Gauss–Markov_theorem). Stack a constant, the predictor variables and the 'Percent Tree Cover' Image as the variable `trainingImage`, representing known *g*: If you print `trainingImage` to the console, you will see that the format of the data that we have follows the typical equation for linear regression. 
+Now that all the input data is ready, we can build the shell of our linear regression equation. It's customary to include a constant term in linear regression to make it the best linear unbiased estimator [(Gauss-Markov)](https://en.wikipedia.org/wiki/Gauss–Markov_theorem). Stack a constant, the predictor variables and the 'Percent Tree Cover' Image as the variable `trainingImage`, representing known *g*: If you print `trainingImage` to the console, you will see that the format of the data that we have follows the typical equation for linear regression. 
 
 $$y = \beta_0 + \beta_1X_1 + ... + \beta_nX_n + \epsilon$$
 
@@ -377,7 +377,7 @@ Inspect the first element of `training` to make sure it has all of the expected 
 
 > **Question 1**: What do you expect to see when you inspect the first element of training, and how does that compare with what you ultimately end up seeing?
 
-The next step is to train *G*. Make a list of the variable names, predictors followed by *g*:
+The next step is to train *G*. Make a list of the variable names (predictors) followed by *g*:
 
 In Earth Engine, [linear regression is implemented as a Reducer](https://developers.google.com/earth-engine/reducers_regression). This means that training *G* is a reduction of the **T** table, performed using the list of variables as an input. The argument tells the reducer how many of the input variables are predictors - note that we have 1 as a constant. 
 
@@ -405,9 +405,9 @@ Carefully inspect this result by using the inspector on the prediction layer and
 
 ![Linear Regression](im/im_04_06.png)
 
-If not, it might be worth testing some other regression functions, adding more predictor variables, collecting more training data, or all of the above. In remote sensing research, this is not a one-step process - to find value in these models, you will need to continuously improve, iterate and retest your assumptions. 
+If not, it might be worth testing some other regression functions, adding more predictor variables, collecting more training data, or all of the above. In remote sensing research, this is not a one-step process - to find value in these models, you will need to continuously improve, iterate and retest your assumptions. Keep track of your adjustments/iterations so that you can identify which changes yield the best results. 
 
-> **Question 2**: Upload your predicted layer and your satellite imagery basemap. Discuss the salient features of the predicted output and which steps you may want to take in order to improve the results.
+> **Question 2**: Upload your predicted layer and your satellite imagery basemap. Discuss the features of the predicted output and which steps you may want to take to improve the results.
 
 ## Nonlinear Regression
 

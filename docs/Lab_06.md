@@ -2,13 +2,13 @@
 
 ## Overview
 
-Capturing and visualizing low-light emittance from around the earth has been utilized in various applications since the mid-1960's. By consistently quantifying light emittance over long time periods, it is possible to use this as a proxy for economic development, especially in areas where there is not high-quality data and metrics to work with. Google Earth Engine has consolidated this data into an operational archive dating back to 1992, which is an excellent way to find meaningful insights using this data set.
+Capturing and visualizing low-light emittance from around the earth has been utilized in various applications since the mid-1960's. By consistently quantifying light emittance over long time periods, it is possible to use this as a proxy for economic development, especially in areas where there is not high-quality data and metrics to work with. Google Earth Engine has consolidated this data into an operational archive dating back to 1992, which provides unparallelled support for finding meaningful insights using this data set.
 
-This tutorial is a supplement to the excellent *Open Nighttime Lights* [tutorial](https://worldbank.github.io/OpenNightLights/welcome.html) that the World Bank developed. The World Bank tutorial consists of six modules, including a background on the history of the data, working with the tools, extracting imagery, data analysis and image classification. It also contains an archive in which you can archive the raw data directly from Amazon Web Services and an applications section that attempts to estimate electricity usage using the nighttime data set. Each segment is well-written, and there is extensive documentation throughout. 
+This tutorial is a supplement to the *Open Nighttime Lights* [tutorial](https://worldbank.github.io/OpenNightLights/welcome.html) that the World Bank developed. The World Bank tutorial consists of six modules, including a background on the history of the data, working with the tools, extracting imagery, data analysis and image classification. It also contains an archive in which you can archive the raw data directly from Amazon Web Services and an applications section that attempts to estimate electricity usage using the nighttime data set. Each segment is well-written, and there is extensive documentation throughout. 
 
-The caveat here is that up until this point in the course, we have worked with the Google Earth Engine JavaScript code editor - Because the World Bank tutorial covers topics such as working with data frames, statistics and classification, it utilizes the Google Earth Engine Python API in a Jupyter Notebook. Python is a more natural fit and contains more capabilities for data analysis and Machine Learning than JavaScript, and while the GEE code editor is excellent at working with objects and methods, many of you might prefer working with Python. Based on your background and what you want to get out of this course, here is our general suggestion on how to proceed. 
+The caveat here is that up until this point in the course, we have worked with the Google Earth Engine JavaScript code editor - Because the World Bank tutorial covers topics such as working with data frames, statistics and classification, it utilizes the Google Earth Engine Python API in a Jupyter Notebook. Python is a more natural fit and contains more capabilities for data analysis and Machine Learning than JavaScript, and while the GEE code editor is excellent for working with objects and methods, many of you might prefer working with Python. Based on your background and what you want to get out of this course, here is our general suggestion on how to proceed. 
 
-1. If you are comfortable working with Python, Jupyter Notebooks and setting up your own environment (pip, Conda, Brew), than follow along with the tutorial as it is. Module 2-2 in the World Bank tutorial explains how to get an environment up and running.
+1. If you are comfortable working with Python, Jupyter Notebooks and setting up your own environment (pip, Conda, Brew), then follow along with the tutorial as it is. Module 2-2 in the World Bank tutorial explains how to get an environment up and running.
    1. If this is the case, spend some time reading about the functionality in the [geemap](https://geemap.org) package - it consolidates much of the mapping features in Earth Engine in an intuitive way, as well as functionality to integrate your results with Folium and custom basemaps.
 
 2. If you want to learn to use Python but have never worked with virtual environments, then consider going through the tutorial in a Google Colab - it requires no setup of infrastructure, and you can get running immediately while learning Python. Once you are comfortable with this, you can always learn how to set up your own environment. Explanations on getting started can be located [here](https://worldbank.github.io/OpenNightLights/tutorials/mod2_3_introduction_to_Jupyter_notebooks.html). Note that there are several components of the tutorial, primarily in visualization using leaflet, that will not work. 
@@ -54,7 +54,7 @@ Map.addLayer(nighttimeLights, nighttimeLightsVis, 'Nighttime Lights');
 
 2. **Image Clipping**
 
-   This section follows along with some of our earlier work in clipping our image to a certain area. Whether you need to bring in your own shapefiles. The code below clips a single around a 200km buffer around Los Angeles. 
+   This section follows along with some of our earlier work in clipping our image to a certain area. Whether you need to bring in your own shapefiles. The code below [clips](https://developers.google.com/earth-engine/apidocs/ee-image-clip) the imagery within a 200km buffer on the center of Los Angeles. 
 
 ```javascript
 // Get December image - "avg_rad" band
@@ -183,7 +183,7 @@ print(histColumnFromArray);
 
 **Mask values**
 
-The histogram shows us that a massive number of values fall near zero - if we build a mask using GEE's built in conditionals to keep only pixels that have a value above 4, the output allows us to focus in on areas that have meaningful values. Additionally, this will improve compute time and analysis. 
+The histogram shows us that a a large majority of the values fall near zero - if we build a mask using GEE's built in conditionals to keep only pixels that have a value above 4, the output allows us to focus in on areas that have meaningful values. Additionally, this will improve compute time and analysis. 
 
 ```javascript
 // Output is a binary mask (0-1)

@@ -27,7 +27,7 @@ In the context of geospatial imagery, we will refer to these pixel-based data st
 
 #### One Layer Grayscale
 
-Let's start with a grayscale image of some peppers. This image is rectangle that contains 384 rows and 512 columns of pixels - because it is greyscale, there is only one brightness magnitude value (between 0 and 255) for each position. While humans see shapes, hues and definition, a computer is only recording a brightness value for each pixel. 
+Let's start with a grayscale image of some peppers. This image is a rectangle that contains 384 rows and 512 columns of pixels - because it is greyscale, there is only one brightness magnitude value (between 0 and 255) for each position. While humans see shapes, hues and definition, a computer is only recording a brightness value for each pixel. 
 
 ![Grayscale Image](im/im_01_01.png)
 
@@ -76,11 +76,9 @@ Understanding the bands available in your datasets, identifying which bands are 
 
 ### Visualize a Digital Image
 
-Let’s view a digital image in GEE to better understand this concept. 
+Let’s view a digital image in GEE to better understand this concept. There are three major ways to import imagery within GEE. 
 
-Remeber, there are three major ways to import imagery within GEE. 
-
-1. You can navigate to the GEE [datasets](https://developers.google.com/earth-engine/datasets/) page, choose the image collection you would like to work with and import the code example, which is normally located at the bottom of each dataset page. This code example is a standalone code chunk that will correctly visualize the data. This is an excellent way to get an understanding for the different satellite platforms - feel free to change variables and inputs to see what happens. ![Dataset Code Example](im/im_01_06.png)
+1. You can navigate to the GEE [datasets](https://developers.google.com/earth-engine/datasets/) page, choose the image collection you would like to work with and import the code example (click the button called `import`), which is normally located at the bottom of each dataset page. This code example is a standalone code chunk that will correctly visualize the data, and is an excellent way to get an understanding for the different satellite platforms - feel free to explore some datasets you are interested in, change variables and inputs to see what happens. ![Dataset Code Example](im/im_01_06.png)
 
 2. In the search bar of the code editor, you can search for the specific imagery you are looking for. When you click on it, a pop-up window will come up that allows you to either import the image directly (bottom right) or copy the path to the image collection (left-hand side). They both work the same way, using the import button will incorporate it into the variable list directly (separated top section of the editor), where you have to specifically define the variable if you copy the path to the image collection. 
 
@@ -113,7 +111,7 @@ Map.addLayer(image, {}, 'Original image');
 
 Expand the image object that is printed to the console by clicking on the dropdown triangles. Expand the property called `bands` and expand one of the bands (0, for example). Note that the CRS transform is stored in the `crs_transform` property underneath the band dropdown and the CRS is stored in the `crs` property, which references an EPSG code. 
 
-> **EPSG Codes** are 4-5 digit numbers that represent CRS definitions. The acronym EPSG, comes from the (now defunct) European Petroleum Survey Group. The CRS of this image is [EPSG:26917](https://spatialreference.org/ref/epsg/nad83-utm-zone-17n/). You can learn more about these codes from the [ESPG homepage](https://epsg.org/home.html). 
+> **EPSG Codes** are 4-5 digit numbers that represent CRS definitions. The acronym EPSG, comes from the (now defunct) European Petroleum Survey Group. The CRS of this image is [EPSG:26917](https://spatialreference.org/ref/epsg/nad83-utm-zone-17n/). You can learn more about these codes from the [EPSG homepage](https://epsg.org/home.html). 
 
 > The CRS transform is a list `[m00, m01, m02, m10, m11, m12]`in the notation of [this reference](http://docs.oracle.com/javase/7/docs/api/java/awt/geom/AffineTransform.html).  The CRS transform defines how to map pixel coordinates to their associated spherical coordinate through an affine transformation. While affine transformations are beyond the scope of this class, more information can be found at [Rasterio](https://rasterio.readthedocs.io/en/latest/topics/georeferencing.html), which provides detailed documentation for the popular Python library designed for working with geospatial data. 
 
@@ -410,7 +408,7 @@ Bottom line: **You should rarely, if ever, have to use `reproject()` and `resamp
 
 ## Additional Exercises
 
-Now that we have some familiarity with higher quality images, lets look at the (broken) Landsat 7 satellite. Using what we've learned in this lab, select an image from Landsat 7 that contains the Blacksburg area with minimal cloud cover (for now, using the Collection 1 Tier 1 calibrated top-of-atmosphere (TOA) reflectance data product). Look at the image. 
+Now that we have some familiarity with higher quality images, let's look at the (broken) Landsat 7 satellite. Using what we've learned in this lab, select an image from Landsat 7 that contains the Blacksburg area with minimal cloud cover (for now, using the Collection 1 Tier 1 calibrated top-of-atmosphere (TOA) reflectance data product). Look at the image. 
 
 > **Question 5**: What is the obvious (hint: post-2003) problem with the Landsat 7 image? What is the nature of that problem and what have some researchers done to try to correct it? Please research online in addition to using what you have learned in class/from the book.
 

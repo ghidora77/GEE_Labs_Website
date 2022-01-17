@@ -4,9 +4,9 @@
 In this lab, we will work with the spectral characteristics in our data to visualize and extract insights that go beyond basic visual interpretation. We will work with the different spectral bands offered by Landsat 8 to find unique patterns that can help us solve problems and conduct analysis. By the end of this lab, you should be able to understand how to build and visualize existing indices, as well as construct your own, identify how different indices can help your use case, and understand the mechanism behind how they work. 
 
 ## Spectral Indices
-Spectroscopy is the study of how radiation is absorbed, reflected and emitted by different materials. While this discipline has its origins in chemistry and physics, we can utilize the same techniques to identify different land cover types from satellite data.  In the chart below, land cover types have unique spectral characteristics. Snow has a major peak at lower wavelengths and is near zero after 1.5 micrometer, where as soil has very low reflectance at lower levels of wavelength but relatively strong and steady reflectance after ~0.75 micorometers. Spectral indices are built to leverage these unique characteristics and isolate specific types of land cover. 
+Spectroscopy is the study of how radiation is absorbed, reflected and emitted by different materials. While this discipline has its origins in chemistry and physics, we can utilize the same techniques to identify different land cover types from satellite data.  In the chart below, land cover types have unique spectral characteristics. Snow has a major peak at lower wavelengths and is near zero above 1.5 micrometer, whereas soil has very low reflectance at lower levels of wavelength but relatively strong and steady reflectance after ~0.75 micrometers. Spectral indices are built to leverage these unique characteristics and isolate specific types of land cover. 
 
-Land covers are separable at different wavelengths. Vegetation curves (green) have high reflectance in the NIR range, where radiant energy is scattered by cell walls ([Bowker, 1985](http://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/19850022138.pdf)) and low reflectance in the red range, where radiant energy is [absorbed by chlorophyll](https://en.wikipedia.org/wiki/Chlorophyll#/media/File:Chlorophyll_ab_spectra-en.svg). We can leverage this information to build indices that help us differentiate vegative from urban areas. In the next few sections, we will cover several of the most important indices in use. 
+Land covers are separable at different wavelengths. Vegetation curves (green) have high reflectance in the NIR range, where radiant energy is scattered by cell walls ([Bowker, 1985](http://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/19850022138.pdf)) and low reflectance in the red range, where radiant energy is [absorbed by chlorophyll](https://en.wikipedia.org/wiki/Chlorophyll#/media/File:Chlorophyll_ab_spectra-en.svg). We can leverage this information to build indices that help us differentiate vegetation from urban areas. In the next few sections, we will cover several of the most important indices in use. 
 
 ![Land Cover Reflectance](im/im_03_01.png)
 
@@ -37,7 +37,7 @@ Map.centerObject(point, 12);
 Map.addLayer(image, trueColor, 'image');  
 ```
 
-Now that we have the true color baseline image, we can build the NDVI index and visualize it. For visualization, we are creating a custom pallette, where low values trend towards white and high values trend towards green. 
+Now that we have the true color baseline image, we can build the NDVI index and visualize it. For visualization, we are creating a custom palette, where low values trend towards white and high values trend towards green. 
 
 ```javascript
 var point = ee.Geometry.Point([-80.42, 37.22]);
@@ -71,7 +71,7 @@ The Enhanced Vegetation Index (EVI) is designed to minimize saturation and backg
 
 $$\text{EVI} = 2.5 * (\text{NIR} - \text{red}) / (\text{NIR} + 6 * \text{red} - 7.5 * \text{blue} + 1)$$
 
-Since it is not a normalized difference index, we have to build a unique [expression](https://developers.google.com/earth-engine/image_math#expressions) and then identify all of the different segments. Programmatically, bands are specifically referenced with the help of [an object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Grammar_and_Types#Object_literals) that is passed as the second argument to `image.expression()` (everything within the curly brackets). 
+Since it is not a normalized difference index, we need to build a unique [expression](https://developers.google.com/earth-engine/image_math#expressions) and then identify all of the different segments. Programmatically, bands are specifically referenced with the help of [an object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Grammar_and_Types#Object_literals) that is passed as the second argument to `image.expression()` (everything within the curly brackets). 
 
 ```javascript
 var point = ee.Geometry.Point([-80.42, 37.22]);
@@ -121,7 +121,7 @@ Map.addLayer(ndwi,
 
 #### Normalized Difference Water *Body* Index (NDWBI)
 
-It's unfortunate that two *different* NDWI indices were independently invented in 1996. To distinguish, define the Normalized Difference Water *Body* Index (NDWBI) as the index described in [McFeeters (1996)](http://www.tandfonline.com/doi/abs/10.1080/01431169608948714#.VkThFHyrTlM):
+The fact that two different NDWI indices were independently invented in 1996 complicates things. While the NDWI looks at water content within vegetation, the NDWBI is built to identify bodies of water (rivers, lakes, oceans). To distinguish, define the Normalized Difference Water *Body* Index (NDWBI) as the index described in [McFeeters (1996)](http://www.tandfonline.com/doi/abs/10.1080/01431169608948714#.VkThFHyrTlM):
 
 $$\text{NDWBI} = (\text{green} - \text{NIR}) / (\text{green} + \text{NIR})$$
 
@@ -281,7 +281,7 @@ Map.addLayer(ndsi,
 
 ## Transformations
 
-We've went over indices to highlight unique characteristics in our imagery by utilizing the bands outside of the visible spectrum. 
+We've gone over indices to highlight unique characteristics in our imagery by utilizing the bands outside of the visible spectrum. 
 
 Linear transforms are linear combinations of input pixel values. These can result from a variety of different strategies, but a common theme is that pixels are treated as arrays of band values, and we can use these arrays to create weighted values for specific purposes.
 
@@ -344,11 +344,11 @@ Map.addLayer(componentsImage, vizParams, 'TC components');
 
 #### Principal Component Analysis (PCA)
 
-Like the Tasseled Cap transform, the [PCA transform](https://en.wikipedia.org/wiki/Principal_component_analysis) is a rotational transform in which the new basis is orthonormal, but the axes are determined from statistics of the input image, rather than empirical data. Specifically, the new basis is the [eigenvectors](https://en.wikipedia.org/wiki/Eigenvalues_and_eigenvectors) of the image's [variance-covariance matrix](https://en.wikipedia.org/wiki/Covariance_matrix). As a result, the principal components are uncorrelated. To demonstrate, use the Landsat 8 image converted to an array image. Use the `reduceRegion()` [method](https://developers.google.com/earth-engine/reducers_reduce_region) to compute statistics (band covariances) for the image.
+Like the Tasseled Cap transform, the [PCA transform](https://en.wikipedia.org/wiki/Principal_component_analysis) is a rotational transform in which the new basis is orthonormal, but the axes are determined from statistics of the input image, rather than empirical data. Specifically, the new basis is the [eigenvector](https://en.wikipedia.org/wiki/Eigenvalues_and_eigenvectors) of the image's [variance-covariance matrix](https://en.wikipedia.org/wiki/Covariance_matrix). As a result, the principal components are uncorrelated. To demonstrate, use the Landsat 8 image converted to an array image. Use the `reduceRegion()` [method](https://developers.google.com/earth-engine/reducers_reduce_region) to compute statistics (band covariances) for the image.
 
 A [*reducer*](https://developers.google.com/earth-engine/reducers_intro) is an object that tells Earth Engine what statistic to compute. Note that the result of the reduction is an object with one property, an array, that stores the covariance matrix. The next step is to compute the eigenvectors and eigenvalues of that covariance matrix. Since the eigenvalues are appended to the eigenvectors, slice the two apart and discard the eigenvectors. Perform the matrix multiplication, as with the TC components. Finally, convert back to a multi-band image and display the first PC.
 
-Use the [layer manager](https://developers.google.com/earth-engine/playground#layer-manager) to stretch the result appropriately. What do you observe? Try displaying some of the other principal components. The image parameters in the code chunk below are built specifically for Pricipal Component 1. 
+Use the [layer manager](https://developers.google.com/earth-engine/playground#layer-manager) to stretch the result appropriately. What do you observe? Try displaying some of the other principal components. The image parameters in the code chunk below are built specifically for Principal Component 1. 
 
 ```javascript
 var point = ee.Geometry.Point([-80.42, 37.22]);
@@ -375,7 +375,7 @@ var pcImage = principalComponents
           [['pc1', 'pc2', 'pc3', 'pc4', 'pc5', 'pc6', 'pc7', 'pc8']]
         );      
 // Customize the visual parameters for PC1
-imageVisParam = {
+var imageVisParam = {
   "opacity":1,
   "bands":["pc1"],
   "min":-420,"max":-400,
@@ -547,7 +547,7 @@ Map.centerObject(point, 12);
 Map.addLayer(smoothed, trueColorVis, 'smoothed image');
 ```
 
-To make the image even smoother, try increasing the size of the neighborhood by increasing the pixel radius. to the human eye, the image is more blurry, but in many Machine Learning and Computer Vision algorithms, this process improves our output by reducing noise. 
+To make the image even smoother, try increasing the size of the neighborhood by increasing the pixel radius. to the human eye, the image is blurrier, but in many Machine Learning and Computer Vision algorithms, this process improves our output by reducing noise. 
 
 
 A Gaussian kernel can also be used for smoothing. Think of filtering with a Gaussian kernel as computing the weighted average in each pixel's neighborhood. 
