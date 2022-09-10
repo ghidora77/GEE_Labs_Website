@@ -197,7 +197,7 @@ map
 
 One additional note: GEE provides a rich suite of datasets, and while many of them are traditional sensed imagery (shows reality as it is), others are derived datasets. For instance, the *Global Map of Oil Palm Plantations* [dataset](https://developers.google.com/earth-engine/datasets/catalog/BIOPAMA_GlobalOilPalm_v1) is derived from analysis using the Sentinel composite imagery. If you look at the bands, there are only three values, which refer to categories of palm plantations (industrical Palm Oil Plantation, small farm Palm Oil Plantation or not palm oil). Datasets such as these will have different methods for visualizing the data. As you can see below, this derived dataset is different than typical satellite imagery - the intent is to classify each 10m pixel value as one of the above categories. 
 
-![Sensed Versus Derived](https://loz-webimages.s3.amazonaws.com/GEE_Labs/A03_03.png)
+![Sensed Versus Derived](https://loz-webimages.s3.amazonaws.com/GEE_Labs/A03-03.png)
 
 #### National Cropland Data Layer 
 Another common one is the National Cropland Data Layer - each pixel has 30m resolution, and defines the cropland type for the United States. Not all derived datasets are available all over the world, being that many are sponsored by government agencies acting in the purview of their own country. Explore the map below and match the code to the cropland type. 
