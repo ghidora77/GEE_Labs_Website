@@ -1,4 +1,4 @@
-# Image Processing
+# Lab 2 - Image Processing
 
 ## Overview
 In this lab, we will search for and visualize imagery in Google Earth Engine. We will discuss the difference between radiance and reflectance, make true color and false color composites from different bands and visually identify land cover types based on characteristics from the imagery. We will also discuss atmospheric effect on data collection by looking at the different data products available. 

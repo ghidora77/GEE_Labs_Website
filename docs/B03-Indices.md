@@ -1,4 +1,4 @@
-# Lab 03 - Spectral Indices 
+# Lab 3 - Spectral Indices 
 
 ## Overview
 

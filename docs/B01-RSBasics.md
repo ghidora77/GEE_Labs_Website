@@ -1,4 +1,4 @@
-# Digital Images
+# Lab 1 - Remote Sensing Basics
 
 ## Overview
 

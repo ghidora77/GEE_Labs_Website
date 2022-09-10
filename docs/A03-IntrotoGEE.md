@@ -1,6 +1,6 @@
 
 
-# Introduction to Google Earth Engine
+# Prelab - Intro to GEE
 
 ## Overview
 
@@ -119,7 +119,7 @@ Most Google Earth Engine tutorials begin with an introduction to the data you wi
 #### Flowchart
 Below is a simple flow chart of how the raster and vector data works together. Throughout this course we will expand upon this and go into how this all works together to extract data. 
 
-![Sensed Versus Derived](https://loz-webimages.s3.amazonaws.com/GEE_Labs/03_01.png)
+![Sensed Versus Derived](https://loz-webimages.s3.amazonaws.com/GEE_Labs/A03-01.png)
 
 
 ## Images and Image Collections
@@ -197,7 +197,7 @@ map
 
 One additional note: GEE provides a rich suite of datasets, and while many of them are traditional sensed imagery (shows reality as it is), others are derived datasets. For instance, the *Global Map of Oil Palm Plantations* [dataset](https://developers.google.com/earth-engine/datasets/catalog/BIOPAMA_GlobalOilPalm_v1) is derived from analysis using the Sentinel composite imagery. If you look at the bands, there are only three values, which refer to categories of palm plantations (industrical Palm Oil Plantation, small farm Palm Oil Plantation or not palm oil). Datasets such as these will have different methods for visualizing the data. As you can see below, this derived dataset is different than typical satellite imagery - the intent is to classify each 10m pixel value as one of the above categories. 
 
-![Sensed Versus Derived](https://loz-webimages.s3.amazonaws.com/GEE_Labs/03-03.png)
+![Sensed Versus Derived](https://loz-webimages.s3.amazonaws.com/GEE_Labs/A03_03.png)
 
 #### National Cropland Data Layer 
 Another common one is the National Cropland Data Layer - each pixel has 30m resolution, and defines the cropland type for the United States. Not all derived datasets are available all over the world, being that many are sponsored by government agencies acting in the purview of their own country. Explore the map below and match the code to the cropland type. 
@@ -212,7 +212,7 @@ map1 = build_map(40.71, -100.55, 9, {}, image, 'NLCD')
 map1
 ```
 
-![NLCD](https://loz-webimages.s3.amazonaws.com/GEE_Labs/03-04.png)
+![NLCD](https://loz-webimages.s3.amazonaws.com/GEE_Labs/A03-04.png)
 
 ## Geometries
 
@@ -274,7 +274,7 @@ fromList = ee.FeatureCollection(features)
 
 If run this code block in GEE code editor, you can see the information that is contained within the Feature Collection - three elements (features) and two columns (the `index` and the `properties`). By clicking on the dropdown next to each one, you can see that the first feature is a Polygon that has the name of 'Voronoi'.
 
-![Feature Collection Information](https://loz-webimages.s3.amazonaws.com/GEE_Labs/03-05.png)
+![Feature Collection Information](https://loz-webimages.s3.amazonaws.com/GEE_Labs/A03-05.png)
 
 Once you have information in a Feature Collection, you can filter it to find specific information, such as the name of an object or based on the size of a polygon, or provide aggregated analysis. The [documentation](https://developers.google.com/earth-engine/guides/features) on working with Feature Collections  is comprehensive and provides many ideas on how to use them efficiently in in your analysis. 
 
@@ -295,11 +295,10 @@ map3 = build_map(lat, lon, zoom, {'min':0, 'max':800}, image, name)
 map3
 ```
 
-![Elevation Map](https://loz-webimages.s3.amazonaws.com/GEE_Labs/03-06.png)
+![Elevation Map](https://loz-webimages.s3.amazonaws.com/GEE_Labs/A03-06.png)
 
 
 ```python
-
 # Build a polygon within the country of Niger in GEE Code Editor
 poly = ee.Geometry.Polygon(
         [[[1.3574234405151886, 14.106344008176682],

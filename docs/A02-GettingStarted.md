@@ -1,4 +1,4 @@
-# Getting Set Up
+# PreLab - Authentication
 This is a short module that explains the process of authenticating your Earth Engine account and working with the Python API. There is no need to run this script, but it is designed to explain the process of getting scripts running. If you are new to Earth Engine and running into errors, it is likely in package management or authentication.
 
 ## Setting up an Account
