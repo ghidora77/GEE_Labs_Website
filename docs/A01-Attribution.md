@@ -1,4 +1,5 @@
 # Google Earth Engine Introduction
+
 ## Why Google Earth Engine?
 Research in Remote Sensing has evolved drastically over the past few decades.
 

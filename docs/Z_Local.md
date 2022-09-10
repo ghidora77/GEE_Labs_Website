@@ -1,4 +1,4 @@
-# Resources for Python in Local environment
+# Appendix - Python in a Local environment
 Unfortunately, building your Python environment can be challenging. Many packages are built upon other packages, and when changes are made this can create a cascade of conflicts. Additionally, there are fundamental differences between Windows and Linux/Mac, both of which can have an array of issues. Geospatial packages in particular are notorious for requiring robust conflict management.
 
 For short courses or running a one-off script, Google Colab works well - you can immediately start running scripts and do not have to maintain an environment. However, there are some drawbacks, including having to constantly re-authenticate with GEE, install any packages not natively supported on Colab, certain visualization packages do not work, and everything is tied to GSuite. If you will be using GEE for more than a few weeks or working with Python in the future, we recommend that you learn how to work with a package and environment management system or a hosted solution that maintains your environment.

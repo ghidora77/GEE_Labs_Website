@@ -1,3 +1,5 @@
+
+
 # Introduction to Google Earth Engine
 
 ## Overview
@@ -9,36 +11,33 @@ This is a pre-lab designed to introduce the functionality and structure of Googl
 * GEE Python Environment
 * Geospatial packages within your Python Environment 
 
-By the end of this lab, you should be able to access GEE imagery, upload your own assets, build some basic visualizations and be comfortable working with both the code editor and Python. This lab contains many different outside sources - spending the time now getting associated with the tools we'll be using will save you significant time as we delve into more complex topics.
+By the end of this lab, you should be able to access GEE imagery, build some basic visualizations and be comfortable working with both the code editor and Python. This lab contains many different outside sources - spending the time now getting associated with the tools we'll be using will save you significant time as we delve into more complex topics.
 
-Important note: The JavaScript code editor is easier to get up and running, while the Python has more extensive data and analytical tools available, and is more commonly used throughout the Remote Sensing industry. Each code block is in Python, but some parts of this lab references JavaScript. In later labs, we will focus on Python.
+> The JavaScript code editor is easier to get up and running, while the Python has more extensive data and analytical tools available, and is more commonly used throughout the Remote Sensing industry. Both are important and when working with GEE, you will spend significant amounts of time using the JavaScript. Each code block within these notebooks is in Python, but some parts of this lab references JavaScript (mainly outputs and things printed in the console). In later labs, we will focus on Python.
 
 #### Learning Outcomes
 
 - Navigate and find what you need within the Google Earth Engine infrastructure
 - Describe and understand the major GEE data types and their associated methods
-- Building custom vector data within GEE
+- Build custom vector data within GEE
 
 [Video Introduction to GEE](https://www.youtube.com/watch?v=Ypo28T6wPbQ)
 
 
 ```python
-# Python instructions 
-!pip install geemap
+#!pip install geemap
 import ee, geemap, pprint
-ee.Authenticate()
+#ee.Authenticate()
 def build_map(lat, lon, zoom, vizParams, image, name):
     map = geemap.Map(center = [lat, lon], zoom = zoom)
     map.addLayer(image, vizParams, name)
     return map
-
-# Initialize the Earth Engine module.
 ee.Initialize()
 ```
 
 #### Getting Set Up
 
-In addition to the petabytes of satellite imagery and products that GEE has available, it allows you to incorporate your own raster, vector, and relational data into your analysis. Note that this process is automatically linked to the same Google Drive account that signed up for GEE. Using Python has more flexibility and is easier to incorporate outside information in a variety of formats.
+In addition to the petabytes of satellite imagery and products that GEE has available, it allows you to incorporate your own raster, vector, and relational data into your analysis. Note that when using the code editor this process is automatically linked to the same Google Drive account that signed up for GEE. Using Python has more flexibility and is easier to incorporate outside information in a variety of formats.
 
 If you are not familiar with Google Drive, the [Getting Started Guide](https://support.google.com/a/users/answer/9282958?hl=en) reviews the basics of maintaining resources within your Google Drive account. Although Google Cloud Platform Storage is beyond the scope of this course, it's an option and discussed in the documentation. We will go more in-depth on working with external data later, but below are some good resources to peruse.
 
@@ -53,7 +52,7 @@ If you are not familiar with Google Drive, the [Getting Started Guide](https://s
 
 Understanding how Google Earth Engine works is critical for its effective use. The Developer's [overview](https://developers.google.com/earth-engine/guides/concepts_overview) provides much more detail on the intricacies of how GEE processes data on the Google Cloud Platform, but in the simplest terms, there are two sides to the process - the `client` side and `server` side. 
 
-When you open your web browser and begin to work in the code editor, that is considered the `client` side. You can write code in the editor or your notebook and the code will be processed completely within your browser or local machine. The code chunk below simply creates variables `x` and `y`, adds them together as the variable `z` and prints the result. Google Earth Engine plays no role in the execution of the code unless you specifically tell it to.
+When you run code in a code block or the code editor, that is considered the `client` side. You can write code in the editor or your notebook and the code will be processed completely within your browser or local machine. The code chunk below simply creates variables `x` and `y`, adds them together as the variable `z` and prints the result. Google Earth Engine plays no role in the execution of the code.
 
 
 ```python
@@ -66,16 +65,16 @@ print(z)
     3
 
 
-To begin using the cloud computing resources of GEE, we have to call upon the server side. Let's say we want to import an image collection. In the snippet below, there is an `ee` before the `ImageCollection` constructor. In simple terms, this signals to Earth Engine that we will be using its resources. Without that indicator, GEE will cede operations to the JavaScript and process within the browser.
+To begin using the cloud computing resources of GEE, we have to call upon the server side. Let's say we want to import an image collection. In the snippet below, there is an `ee` before the `ImageCollection` constructor. In simple terms, this signals to Earth Engine that we will be using its resources. Without that indicator, GEE does not play a role in operations.
 
 
 ```python
 sentinelCollection = ee.ImageCollection('COPERNICUS/S2_SR')
 ```
 
-Over time, you will gain experience understanding the role of working with JavaScript on the `client` side and the `server` side, but the main point in this section is that when programming, we will be building 'packages' that draw upon GEE resources to complete their operations.
+Over time, you will gain experience understanding the role of working with `client` side and the `server` side operations, but the main point in this section is that when programming, we will be building 'packages' that draw upon GEE resources to complete their operations.
 
-An extension of this topic is listed [here](https://developers.google.com/earth-engine/guides/client_server), along with discussions of some specific programming topics (mapping instead of looping) - it might be advanced, but the bottom line is understand that the `client` and `server` work together to create an output. 
+An extension of this topic is listed [here](https://developers.google.com/earth-engine/guides/client_server), along with discussions of some specific programming topics (mapping instead of looping) - it might be advanced, but the bottom line is understand that the `client` and `server` work together to create an output.
 
 #### JavaScript
 The intent of this course is not to teach the intricacies of programming within JavaScript. JavaScript is the core language for web development and many of the tutorials and resources you might find online will not be directly relevant to the type of JavaScript that you will need to work in Earth Engine (e.g., React, JQuery, dynamic app development). JavaScript was chosen because it is an extremely popular language (~97% of websites use it in some fashion) and as an object-oriented language, it is well-suited to pair objects (in this case, imagery provided by Google Earth Engine) with methods (such as using the `reduce()` function to summarize the analytical information from a processed image). 
@@ -120,7 +119,7 @@ Most Google Earth Engine tutorials begin with an introduction to the data you wi
 #### Flowchart
 Below is a simple flow chart of how the raster and vector data works together. Throughout this course we will expand upon this and go into how this all works together to extract data. 
 
-![Sensed Versus Derived](https://github.com/ghidora77/03_GEE_Labs_DSPG/blob/main/im/im_00_06.png?raw=true)
+![Sensed Versus Derived](https://loz-webimages.s3.amazonaws.com/GEE_Labs/03_01.png)
 
 
 ## Images and Image Collections
@@ -138,7 +137,7 @@ Below is a simple flow chart of how the raster and vector data works together. T
 
 - Metadata, stored as a set of properties for that band. 
 
-You can create images from constants, lists, or other objects. In the code editor 'docs', you'll find numerous processes you can apply to images. Ensure that you do not confuse an individual image with an image collection, which is a set of images grouped together, most often as a time series, and also known as a `stack`.
+You can create images from constants, lists, or other objects. In the code editor 'docs', you'll find numerous processes you can apply to images. Ensure that you do not confuse an individual image with an image collection, which is a set of images grouped together, most often as a time series, (also known as a `stack`).
 
 ## Image Collections
 
@@ -180,26 +179,25 @@ image = (
          .sort('CLOUDY_PIXEL_PERCENTAGE')
          .first()
 )
-
 bands = ['B4', 'B3', 'B2']
-
 vizParams = {
     'bands': bands, 
     'min': 0, 
     'max': 3300
 }
-
 # Define a map centered in Niger
 map = build_map(lat, lon, zoom, vizParams, image, name)
 # Add the image layer to the map and display it.
 map
 ```
 
+![map of Niger](https://loz-webimages.s3.amazonaws.com/GEE_Labs/03-02.png)
 
 ### Sensed versus Derived Imagery
 
 One additional note: GEE provides a rich suite of datasets, and while many of them are traditional sensed imagery (shows reality as it is), others are derived datasets. For instance, the *Global Map of Oil Palm Plantations* [dataset](https://developers.google.com/earth-engine/datasets/catalog/BIOPAMA_GlobalOilPalm_v1) is derived from analysis using the Sentinel composite imagery. If you look at the bands, there are only three values, which refer to categories of palm plantations (industrical Palm Oil Plantation, small farm Palm Oil Plantation or not palm oil). Datasets such as these will have different methods for visualizing the data. As you can see below, this derived dataset is different than typical satellite imagery - the intent is to classify each 10m pixel value as one of the above categories. 
-![Sensed Versus Derived](https://github.com/ghidora77/03_GEE_Labs_DSPG/blob/main/im/im_00_01.png?raw=true)
+
+![Sensed Versus Derived](https://loz-webimages.s3.amazonaws.com/GEE_Labs/03-03.png)
 
 #### National Cropland Data Layer 
 Another common one is the National Cropland Data Layer - each pixel has 30m resolution, and defines the cropland type for the United States. Not all derived datasets are available all over the world, being that many are sponsored by government agencies acting in the purview of their own country. Explore the map below and match the code to the cropland type. 
@@ -214,6 +212,7 @@ map1 = build_map(40.71, -100.55, 9, {}, image, 'NLCD')
 map1
 ```
 
+![NLCD](https://loz-webimages.s3.amazonaws.com/GEE_Labs/03-04.png)
 
 ## Geometries
 
@@ -251,8 +250,6 @@ Let's say we created an individual point, which we want to associate with data t
 point = ee.Geometry.Point([-79.68, 42.06])
 # Create a Feature from the geometry
 treeFeature = ee.Feature(point, {'type': 'Pine', 'size': 15})
-
-pprint.pprint(treeFeature.getInfo())
 ```
 
 
@@ -270,16 +267,14 @@ features = [
   ee.Feature(ee.Geometry.Point(-73.96, 40.781), {'name': 'Thiessen'}),
   ee.Feature(ee.Geometry.Point(6.4806, 50.8012), {'name': 'Dirichlet'})
 ]
-
 # Create a FeatureCollection from the list and print it.
 fromList = ee.FeatureCollection(features)
-pprint.pprint(fromList.getInfo())
 ```
 
 
-If run this code block in Google Earth Engine, you can see the information that is contained within the Feature Collection - three elements (features) and two columns (the `index` and the `properties`). By clicking on the dropdown next to each one, you can see that the first feature is a Polygon that has the name of 'Voronoi'.
+If run this code block in GEE code editor, you can see the information that is contained within the Feature Collection - three elements (features) and two columns (the `index` and the `properties`). By clicking on the dropdown next to each one, you can see that the first feature is a Polygon that has the name of 'Voronoi'.
 
-![Feature Collection Information](https://github.com/ghidora77/03_GEE_Labs_DSPG/blob/main/im/im_00_03.png?raw=true)
+![Feature Collection Information](https://loz-webimages.s3.amazonaws.com/GEE_Labs/03-05.png)
 
 Once you have information in a Feature Collection, you can filter it to find specific information, such as the name of an object or based on the size of a polygon, or provide aggregated analysis. The [documentation](https://developers.google.com/earth-engine/guides/features) on working with Feature Collections  is comprehensive and provides many ideas on how to use them efficiently in in your analysis. 
 
@@ -292,17 +287,19 @@ Up until now, we have focused on objects: Images, Features, and Geometries. Redu
 # Define the variables
 lat = 13.7; lon = 2.54
 zoom = 11
+
 name = 'Shuttle Radar Topography Mission (SRTM)'
 # The input image to reduce, in this case an SRTM elevation map.
 image = ee.Image('CGIAR/SRTM90_V4')
-map3 = build_map(lat, lon, zoom, {}, image, name)
-#map3 = build_map(lat, lon, zoom, {'min':0, 'max':800}, image, name)
+map3 = build_map(lat, lon, zoom, {'min':0, 'max':800}, image, name)
 map3
-
 ```
+
+![Elevation Map](https://loz-webimages.s3.amazonaws.com/GEE_Labs/03-06.png)
 
 
 ```python
+
 # Build a polygon within the country of Niger in GEE Code Editor
 poly = ee.Geometry.Polygon(
         [[[1.3574234405151886, 14.106344008176682],
@@ -325,7 +322,7 @@ pprint.pprint(max.getInfo())
 ```
 
 
-We have successfully calculated the elevation in an area of Niger in under 2 seconds! In future projects, we will calculate a wide range of usable values incredibly quickly. 
+We have successfully calculated the maximum elevation in an area about the size of Niger in under 1 second! In future projects, we will calculate a wide range of usable values incredibly quickly. 
 
 There are hundreds of different operations for using `Reducer`, with the functions listed on the left hand table under 'Docs'. Certain functions will only work with specific object types, but follow along with the Reducer [documentation](https://developers.google.com/earth-engine/guides/reducers_intro) to get a better understanding of how to aggregate data and extract meaningful results. Getting familiar with Reducer is an essential component to working with Google Earth Engine. 
 
