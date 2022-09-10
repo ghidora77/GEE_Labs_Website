@@ -27,7 +27,7 @@ In the context of geospatial imagery, we refer to these pixel-based data structu
 
 Let's start with a grayscale image of some peppers. This image is a rectangle that contains 384 rows and 512 columns of pixels - because it is greyscale, there is only one brightness magnitude value (between 0 and 255) for each position. While humans see shapes, hues and definition, a computer is only recording a brightness value for each pixel. 
 
-![Grayscale Image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/04-01.png)
+![Grayscale Image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B01-01.png)
 
 Below is a small segment of the matrix of values of the greyscale image between rows 50 and 60 and columns 50 and 60. Note that when working with imagery, the row/column position starts on the top left. Using our row/column designation:
 
@@ -35,7 +35,7 @@ Below is a small segment of the matrix of values of the greyscale image between 
 * `greyscale(50, 54)` has a value of 49
 * `greyscale(60, 60)` has a value of 47
 
-![Matrix of Grayscale Image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/04-02.png)
+![Matrix of Grayscale Image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B01-02.png)
 
 
 
@@ -43,19 +43,19 @@ Below is a small segment of the matrix of values of the greyscale image between 
 
 The image is still the same, although this now has color. The number of rows, columns and the size of each pixel remain the same, but unlike the greyscale image, we now have three layers, or bands. Each band represents the value in each of the three primary colors: red, green, blue. If we look at the size of our matrix, it is now 384x512x3. For each row and column position, we now have 3 separate values between 0 and 255, which blend together into a color that we, as humans, can process. 
 
-![Color Image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/04-03.png)
+![Color Image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B01-03.png)
 
 #### Extension to Geospatial Imagery
 
 Geospatial imagery poses two additional complications on top of a traditional color photograph. For analysis, we need to be able to tie our imagery to the real world. In the image of peppers, each pixel was built on an arbitrary axis of rows and columns that start at zero. However, this gives us no meaningful information about where in the world the red bell pepper is located. With geospatial imagery, we need to associate pixels with location. We need to know the exact size of the pixel, and position on earth. The high-resolution imagery below is produced by the 'National Agriculture Imagery Program'. This imagery has a red, green and blue value and a latitude and longitude (-74.01, 40.72), in addition to a size (each pixel represents 1 meter by 1 meter). With this information, we can associate our pixel values with location on earth (New York), and aggregate the information we need. 
 
-![Pixel Location](https://loz-webimages.s3.amazonaws.com/GEE_Labs/04-04.png)
+![Pixel Location](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B01-04.png)
 
 #### Bands in Satellite Imagery
 
 The other complexity we are faced with is that satellite imagery often has many layers. While our image of peppers had only a red, green and blue value, many satellite platforms are equipped to provide much more information. Most platforms have a value in the near infrared range, while others might have numerous bands, with different scales and resolutions. For instance, the Landsat 8 sensor has eleven bands capturing information from eleven different portions of the electromagentic spectrum, including near infrared (NIR) and thermal bands that are invisible to the human eye. Many machine learning projects, which we will explore in later labs, involve normalizing or transforming the information contained within each of these layers. Note that while each pixel size must be the same within each individual layer, the layers can have different sizes. For instance, a satellite platform may have 5 meter spatial resolution in the red/green/blue range, but 60m resolution in the near infra-red range. While visualizing satellite imagery as a traditional photograph is a good starting point, there's much more information that we can incorporate into our analysis. We often build false or pseudocolor images by utilizing different combintions of bands, or we can focus in on certain infrared signatures to detect asphalt roads and roofs. The possibilities of analysis within remote sensing are endless, but this also leads to complications. 
 
-![Spectral Band Documentation](https://loz-webimages.s3.amazonaws.com/GEE_Labs/04-05.png)
+![Spectral Band Documentation](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B01-05.png)
 
 As said before, digital images are often referred to as 'raster' data. ESRI, makers of ArcGIS has an excellent overview of using raster imagery in geospatial analysis featured [here](https://desktop.arcgis.com/en/arcmap/10.3/manage-data/raster-and-images/what-is-raster-data.htm).
 
@@ -79,11 +79,11 @@ Let’s view a digital image in GEE to better understand this concept. There are
 
 1. You can navigate to the GEE [datasets](https://developers.google.com/earth-engine/datasets/) page, choose the image collection you would like to work with and import the code example (click the button called `import`), which is normally located at the bottom of each dataset page. This code example is a standalone code chunk that will correctly visualize the data, and is an excellent way to get an understanding for the different satellite platforms - feel free to explore some datasets you are interested in, change variables and inputs to see what happens. 
 
-![Dataset Code Example](https://loz-webimages.s3.amazonaws.com/GEE_Labs/04-06.png)
+![Dataset Code Example](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B01-06.png)
 
 2. In the search bar of the code editor, you can search for the specific imagery you are looking for. When you click on it, a pop-up window will come up that allows you to either import the image directly (bottom right) or copy the path to the image collection (left-hand side). They both work the same way, using the import button will incorporate it into the variable list directly (separated top section of the editor), where you have to specifically define the variable if you copy the path to the image collection. 
 
-![Image Collection Snippet](https://loz-webimages.s3.amazonaws.com/GEE_Labs/04-07.png)
+![Image Collection Snippet](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B01-07.png)
 
 In the map window of GEE, click on the `point` geometry tool using the [geometry drawing tools](https://developers.google.com/earth-engine/playground#geometry-tools) to define your area of interest. For the purpose of consistency in this exercise, place a point on the Virginia Tech Drillfield, which will bring you roughly to (-80.42, 37.23). As a reminder, you can find more information on geometry drawing tools in GEE’s Guides. Name the import `point`.
 
@@ -130,7 +130,7 @@ map = build_map(lat, lon, zoom, vizParams, image, name)
 map
 ```
 
-![NAIP](https://loz-webimages.s3.amazonaws.com/GEE_Labs/04-08.png)
+![NAIP](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B01-08.png)
 
 Evaluate the image object printed to the console by selecting the wrench and clicking on the "information" or "i" button in the upper left hand set of options. Select a location on the map after clicking the "i" button to see the bands.
 
