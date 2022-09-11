@@ -20,7 +20,7 @@ To inspect a Landsat 8 image (also called a *scene*) in our region of interest (
 
 You can either scroll to the area on the map you're interested in and choose a point or use the search bar to find your location. Use the geometry tool to make a point in the country Niger (for these exercises we will include the point location in the script). 
 
-![Using Search Bar](https://github.com/ghidora77/03_GEE_Labs_DSPG/blob/main/im/im_02_01a.png?raw=true)
+![Using Search Bar](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B02-01.png)
 
 We will specifically be using USGS Landsat 8 Collection 1 Tier 1 Raw Scenes - if you read the documentation, the values refer to scaled, calibrated at-sensor radiance. Tier 1 means it is ready for analysis and is the highest quality imagery. There's quite a bit to learn about how the Landsat data is processed - if you will be working with Landsat extensively, take the time to read the Data Users [Handbook](https://www.usgs.gov/landsat-missions/landsat-8-data-users-handbook) for more information.
 
@@ -82,15 +82,14 @@ map = build_map(lat, lon, zoom, vizParams, image, name)
 map
 ```
 
-
-    Map(center=[13.7, 2.6], controls=(WidgetControl(options=['position', 'transparent_bg'], widget=HBox(children=(…
+![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B02-02.png)
 
 
 The variable `image` now stores a reference to an object of type `ee.Image`. In other words, we have taken the image collection and reduced it down to a single image, which is now ready for visualization. 
 
 Before we visualize the data, go to the console and click on the dropdown. 
 
-![Image Properties](https://github.com/ghidora77/03_GEE_Labs_DSPG/blob/main/im/im_02_01b.png?raw=true)
+![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B02-03.png)
 
 
 Expand and explore the image by clicking the triangle next to the image name to see more information stored in that object. Specifically, expand `properties` and inspect the long list of metadata items stored as properties of the image. This is where the `CLOUD_COVER` property you just used is stored.
@@ -134,8 +133,7 @@ map1 = build_map(lat, lon, zoom, vizParams, image, name)
 map1
 ```
 
-
-    Map(center=[13.7, 2.6], controls=(WidgetControl(options=['position', 'transparent_bg'], widget=HBox(children=(…
+![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B02-04.png)
 
 
 There is more than one way to discover the appropriate min and max values to display. Try going to the **Inspector** tab and clicking somewhere on the map. The value in each band, in the pixel where you clicked, is displayed as a list in the console. Try clicking on dark and bright objects to get a sense of the range of pixel values. Also, [layer manager](https://developers.google.com/earth-engine/playground#layer-manager) in the upper right of the map display lets you automatically compute a linear stretch based on the pixels in the map display. 
@@ -173,15 +171,14 @@ map2 = build_map(lat, lon, zoom, vizParams, image, name)
 map2
 ```
 
-
-    Map(center=[13.7, 2.6], controls=(WidgetControl(options=['position', 'transparent_bg'], widget=HBox(children=(…
+![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B02-05.png)
 
 
 Read through the Landsat data documentation and try playing with different band combinations, min and max values to build different visualizations. 
 
 **Unique Feature**: You can include multiple visualization parameters in your script and toggle the layers on and off with the layer manager for easy comparison. 
 
-![Layer Manager](https://github.com/ghidora77/03_GEE_Labs_DSPG/blob/main/im/im_02_03.png?raw=true)
+![Layer Manager](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B02-06.png))
 
 ## At-Sensor Radiance
 
@@ -234,13 +231,12 @@ map3.add_ee_layer(radiance, vizParams)
 map3
 ```
 
-
-    Map(center=[13.7, 2.6], controls=(WidgetControl(options=['position', 'transparent_bg'], widget=HBox(children=(…
+![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B02-07.png)
 
 
 Examine the radiance image by using **Inspector** and clicking different land cover types on the map near Blacksburg, VA. Click the chart icon (![Chart](./im/im_02_04.png)) in the console to get a bar chart of the different radiance values for each pixel. If the shape of the chart resembles Figure 1, that's because the radiance (in bands 1-7) is mostly reflected solar irradiance. The radiance detected in bands 10-11 is thermal, and is *emitted* (not reflected) from the surface.
 
-![Electromagnetic Spectrum](https://github.com/ghidora77/03_GEE_Labs_DSPG/blob/main/im/im_02_05.png?raw=true)
+![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B02-08.png)
 
 ## Top-of-Atmosphere (TOA) Reflectance 
 
@@ -294,8 +290,7 @@ map4
 
 ```
 
-
-    Map(center=[13.7, 2.6], controls=(WidgetControl(options=['position', 'transparent_bg'], widget=HBox(children=(…
+![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B02-09.png)
 
 
 Since reflectance is a unitless ratio in [0, 1], change the visualization parameters to correctly display the TOA data:
