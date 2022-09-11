@@ -167,19 +167,6 @@ While doing this, we will introduce three of the most well-known satellite missi
 2. Landsat
 3. Sentinel
 
-
-```python
-#!pip install geemap
-import ee, geemap, pprint
-#ee.Authenticate()
-def build_map(lat, lon, zoom, vizParams, image, name):
-    map = geemap.Map(center = [lat, lon], zoom = zoom)
-    map.addLayer(image, vizParams, name)
-    return map
-# Initialize the Earth Engine module.
-ee.Initialize()
-```
-
 ## Spatial Resolution                                                     
 
 Spatial resolution refers to the real-world representation of each pixel. This ranges widely, with the private satellite company Maxar announcing 15cm [resolution](https://blog.maxar.com/earth-intelligence/2020/introducing-15-cm-hd-the-highest-clarity-from-commercial-satellite-imagery), Sentinel at 10m, Landsat at 30m, and MODIS at 500. There are also large global products that have spatial resolution in the kilometers. The key point in dealing with spatial resolution is ensuring that your analysis drives your data collection, as there are tradeoffs involved. Using high resolution imagery can be expensive, both monetarily and computationally, if conducting continent wide analysis. Yet using low-resolution imagery will not be effective if your use case necessitates identifying individual buildings or small vehicles. Understanding the appropriate spatial resolution needed for your analysis is essential, and is why there are different platforms that focus on different spatial resolutions.
@@ -216,7 +203,7 @@ map = build_map(lat, lon, zoom, vizParams, image, name)
 map
 ```
 
-![MODIS](https://loz-webimages.s3.amazonaws.com/GEE_Labs/05-01.png)
+![MODIS](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B01-10.png)
 
 
 We will discuss some of the benefits of working with a false-color imagery in later sections, but we can modify the bands we want to visualize. In this case, we are using a random set of bands, where the value of band six is visualized with red, band three is visualized with green, and band one with blue. Because the value of band six has a higher range, this image shows up with a heavy red presence. 
@@ -234,7 +221,7 @@ map1 = build_map(lat, lon, zoom, vizParams, image, name)
 map1
 ```
 
-![MODIS False Color](https://loz-webimages.s3.amazonaws.com/GEE_Labs/05-02.png)
+![MODIS False Color](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B01-11.png)
 
 Compare the  size of MODIS pixels to objects on the ground. It may help to turn on the satellite basemap and lower the opacity of the layer (top right of map section of code editor) to see high-resolution data for comparison.
 
@@ -270,7 +257,7 @@ map2 = build_map(lat, lon, zoom, vizParams, image, name)
 map2
 ```
 
-![Landsat 5](https://loz-webimages.s3.amazonaws.com/GEE_Labs/05-03.png)
+![Landsat 5](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B01-12.png)
 
 The Thematic Mapper ([TM](https://landsat.gsfc.nasa.gov/thematic-mapper/)) was flown aboard Landsat 4-5 and then succeeded by the Enhanced Thematic Mapper ([ETM+](https://landsat.gsfc.nasa.gov/the-enhanced-thematic-mapper-plus-etm/)) aboard Landsat 7 and the Operational Land Imager ([OLI](https://landsat.gsfc.nasa.gov/landsat-8/operational-land-imager)) / Thermal Infrared Sensor ([TIRS](https://landsat.gsfc.nasa.gov/landsat-8/thermal-infrared-sensor-tirs)) sensors aboard Landsat 8. TM data have a spatial resolution of 30 meters, which has remained the Landsat standard resolution. We can check this by importing the '*USGS Landsat 5 TM Collection 1 Tier 1 TOA Reflectance*', visualizing and printing our scale results. For some additional discussion about the transition from MSS to TM data, see [this page](https://www.usgs.gov/core-science-systems/nli/landsat/landsat-5?qt-science_support_page_related_con=0#qt-science_support_page_related_con).
 
@@ -298,7 +285,7 @@ map3 = build_map(lat, lon, zoom, vizParams, image, name)
 map3
 ```
 
-![Landsat False Color](https://loz-webimages.s3.amazonaws.com/GEE_Labs/05-04.png)
+![Landsat False Color](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B01-13.png)
 
 ### Sentinel
 
@@ -327,7 +314,7 @@ map4 = build_map(lat, lon, zoom, vizParams, image, name)
 map4
 ```
 
-![Sentinel](https://loz-webimages.s3.amazonaws.com/GEE_Labs/05-05.png)
+![Sentinel](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B01-14.png)
 
 ### High Resolution Data
 
@@ -360,7 +347,7 @@ map5 = build_map(37.23, -80.41, 16, vizParams, image, name)
 map5
 ```
 
-![NAIP](https://loz-webimages.s3.amazonaws.com/GEE_Labs/05-06.png)
+![NAIP](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B01-15.png)
 
 
 Look at the difference in the resolution - with Landsat and MODIS, each pixel could broadly identify the land type, but NAIP imagery has very high resolution - you can see individual parked cars, the outline of small trees, building envelopes, etc. Start asking yourself how the spatial resolutions of different platforms could help you answer unique questions.
@@ -387,7 +374,7 @@ Spectral resolution refers to the number and width of spectral bands in which th
 
 You will have to read through the documentation for each image collection to understand the spectral response of the bands. 
 
-![Specctral Ranges per Band](https://loz-webimages.s3.amazonaws.com/GEE_Labs/05-07.png)
+![Specctral Ranges per Band](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B01-16.png)
 
 **Important note**: not all bands contain radiometric data. Some are quality control data, while others include information about the zenith or cloud coverage. You can use these other bands to either mask out low-quality pixels or conduct additional calculations. It is a good idea to read through the documentation of each dataset you will be working with to get a good understanding of the band structure.
 
@@ -395,7 +382,7 @@ You will have to read through the documentation for each image collection to und
 
 Radiometric resolution refers to the value, or 'digital number' that the sensor records: _coarse_ radiometric resolution would record a scene with only a narrow range of values, whereas _fine_ radiometric resolution would record the same scene using a wide range of values. The _precision_ of the sensing, or the level of _quantization_ is another way to refer to radiometric resolution. 8 bit values (0-255) is the standard in many image processing tools. 
 
-![Radiometric Resolution](https://loz-webimages.s3.amazonaws.com/GEE_Labs/05-08.jpeg)
+![Radiometric Resolution](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B01-17.jpeg)
 
 Radiometric resolution is determined from the minimum radiance to which the detector is sensitive (L<sub>min</sub>), the maximum radiance at which the sensor saturates (L<sub>max</sub>), and the number of bits used to store the DNs (Q): 
 
@@ -441,4 +428,4 @@ map6 = build_map(lat, lon, zoom, vizParams, image, name)
 map6
 ```
 
-![Planet Labs](https://loz-webimages.s3.amazonaws.com/GEE_Labs/05-09.png)
+![Planet Labs](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B01-18.png)
