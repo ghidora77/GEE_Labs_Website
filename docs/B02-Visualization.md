@@ -1,3 +1,6 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 # Lab 2 - Image Processing
 
 ## Overview
@@ -26,6 +29,8 @@ We will specifically be using USGS Landsat 8 Collection 1 Tier 1 Raw Scenes - if
 
 We will filter the `ImageCollection` by date (year 2014) and location (to the ROI, which for this exercise is in Niger), sort by a metadata property included in the imagery called `CLOUD_COVER` and get the first image out of this sorted collection.
 
+<Tabs>
+<TabItem value="py" label="Python">
 
 ```python
 #!pip install geemap
@@ -51,10 +56,48 @@ def add_ee_layer(self, ee_image_object, vis_params, name):
 # Initialize the Earth Engine module.
 ee.Initialize()
 ```
+</TabItem>
+</Tabs>
 
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+var lat = 37.22; var lon = -80.42;
+var zoom = 11;
+var image_collection_name = "LANDSAT/LC08/C01/T1_TOA";
+var date_start = '2014-01-01';
+var date_end = '2014-12-31';
+var point = ee.Geometry.Point([lon, lat]);
+
+var landsat = ee.ImageCollection("LANDSAT/LC08/C01/T1_TOA")
+//  Note that we need to cast the result of first() to Image.   
+var image = ee.Image(landsat        
+                     //  Filter to get only images in the specified range.  
+                     .filterDate(date_start, date_end)        
+                     //  Filter to get only images at the location of the point.     
+                     .filterBounds(point)        
+                     //  Sort the collection by a metadata property.     
+                     .sort('CLOUD_COVER')        
+                     //  Get the first image out of this collection.     
+                     .first());  
+//  Print the information to the console 
+print('A Landsat scene:', image);  
+var vizParams = {    
+  bands: ['B4', 'B3', 'B2'],    
+  min: 0,    
+  max: 0.4
+};  
+// Add the image to the  map, using the visualization parameters.   
+Map.setCenter(lon, lat, zoom)
+Map.addLayer(image, vizParams, 'true-color image');  
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
 
 ```python
-lat = 13.7; lon = 2.6
+lat = 37.22; lon = -80.42; 
 zoom = 11
 image_collection_name = "LANDSAT/LC08/C01/T1_TOA"
 date_start = '2014-01-01'
@@ -81,6 +124,12 @@ vizParams = {
 map = build_map(lat, lon, zoom, vizParams, image, name)
 map
 ```
+</TabItem>
+</Tabs>
+
+
+
+
 
 ![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B02-02.png)
 
@@ -104,6 +153,42 @@ Recall from the last lab that Landsat 8 measures radiance in multiple spectral b
 
 To build a true color image we are building a variable called `trueColor`  that selects the red / green / blue bands in order and includes the min and max value to account for the appropriate radiometric resolution - this piece can be tricky, as it is unique for each dataset you work with. You can find the band names and min-max values to use from the dataset documentation page, but a great starting point is to use the 'code example' snippet for each dataset, which will set up the visualization parameters for you.  
 
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+
+var lat = 37.22; var lon = -80.42;
+var zoom = 11;
+var image_collection_name = "LANDSAT/LC08/C01/T1_TOA";
+var date_start = '2014-01-01';
+var date_end = '2014-12-31';
+
+var point = ee.Geometry.Point([lon, lat]);
+var landsat = ee.ImageCollection("LANDSAT/LC08/C01/T1")
+//  Note that we need to cast the result of first() to Image.   
+var image = ee.Image(landsat        
+                     //  Filter to get only images in the specified range.  
+                     .filterDate(date_start, date_end)        
+                     //  Filter to get only images at the location of the point.     
+                     .filterBounds(point)        
+                     //  Sort the collection by a metadata property.     
+                     .sort('CLOUD_COVER')        
+                     //  Get the first image out of this collection.     
+                     .first());  
+//  Print the information to the console 
+//  Define visualization parameters in a JavaScript dictionary.   
+var trueColor = {    
+  bands: ['B4', 'B3', 'B2'],    
+  min: 4000,    
+  max: 18000
+};  
+// Add the image to the  map, using the visualization parameters.   
+Map.addLayer(image, trueColor, 'true-color image');  
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
 
 ```python
 zoom = 11
@@ -133,6 +218,11 @@ map1 = build_map(lat, lon, zoom, vizParams, image, name)
 map1
 ```
 
+</TabItem>
+
+</Tabs>
+
+
 ![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B02-04.png)
 
 
@@ -142,6 +232,44 @@ There is more than one way to discover the appropriate min and max values to dis
 
 Let's do the same thing, but this time we will build a false-color composite. This particular set of bands results in a *color-IR composite* because the near infra-red (NIR) band is set to red. As you inspect the map, look at the pixel values and try to find relationships between the NIR band and different land types. Using false color composites is a very common and powerful method of identifying land characteristics by leveraging the power of signals outside of the visible realm. Mining engineers commonly use hyperspectral data to pinpoint composites with unique signatures, and urban growth researchers commonly use the infrared band to pinpoint roads and urban areas. 
 
+
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+var lat = 37.22; var lon = -80.42;
+var zoom = 11;
+var image_collection_name = "LANDSAT/LC08/C01/T1_TOA";
+var date_start = '2014-01-01';
+var date_end = '2014-12-31';
+
+var point = ee.Geometry.Point([lon, lat]);
+var landsat = ee.ImageCollection("LANDSAT/LC08/C01/T1")
+//  Note that we need to cast the result of first() to Image.   
+var image = ee.Image(landsat        
+                     //  Filter to get only images in the specified range.  
+                     .filterDate(date_start, date_end)        
+                     //  Filter to get only images at the location of the point.     
+                     .filterBounds(point)        
+                     //  Sort the collection by a metadata property.     
+                     .sort('CLOUD_COVER')        
+                     //  Get the first image out of this collection.     
+                     .first());  
+//  Print the information to the console 
+print('A Landsat scene:', image);  
+//  Define visualization parameters in a JavaScript dictionary.   
+//  Define false-color visualization parameters.   
+var falseColor = {
+  bands: ['B5', 'B4', 'B3'],    
+  min: 4000,    
+  max: 13000   
+};  
+// Add the image to the  map, using the visualization parameters.   
+Map.addLayer(image, falseColor, 'false-color composite'); 
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
 
 ```python
 zoom = 11
@@ -171,6 +299,14 @@ map2 = build_map(lat, lon, zoom, vizParams, image, name)
 map2
 ```
 
+</TabItem>
+
+</Tabs>
+
+
+
+
+
 ![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B02-05.png)
 
 
@@ -185,9 +321,12 @@ Read through the Landsat data documentation and try playing with different band 
 The image data you have used so far is stored as a digital number that measures the intensity within the bit range - if data is collected in an 8-bit system, 255 would be very high intensity and 0 will be no intensity. To convert each digital number into a physical unit (at-sensor [radiance](https://en.wikipedia.org/wiki/Radiance) in Watts/m2/sr/𝝁m), we can use a linear equation:
 
 $$
-L_{\lambda} = a_{\lambda} * DN_{\lambda} + b_{\lambda}  \qquad
+L_{\lambda} = a_{\lambda} * DN_{\lambda} + b_{\lambda} \qquad
 $$
 
+$$
+I = \int_0^{2\pi} \sin(x)\,dx
+$$
 
 Note that every term is indexed by lamda ($\lambda$, the symbol for wavelength) because the coefficients are different in each band. See [Chander et al. (2009)](http://www.sciencedirect.com/science/article/pii/S0034425709000169) for details on this linear transformation between DN and radiance. In this exercise, you will generate a radiance image and examine the differences in radiance from different targets.
 
@@ -197,6 +336,45 @@ This code applies the transformation to a subset of bands (specified by a list o
 
 Note that the visualization parameters are different to account for the radiance units.
 
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+
+var lat = 37.22; var lon = -80.42;
+var zoom = 11;
+var date_start = '2014-01-01';
+var date_end = '2014-12-31';
+
+
+var point = ee.Geometry.Point([lon, lat]);
+var landsat = ee.ImageCollection("LANDSAT/LC08/C01/T1")
+//  Note that we need to cast the result of first() to Image.   
+var image = ee.Image(landsat        
+                     //  Filter to get only images in the specified range.  
+                     .filterDate(date_start, date_end)        
+                     //  Filter to get only images at the location of the point.     
+                     .filterBounds(point)        
+                     //  Sort the collection by a metadata property.     
+                     .sort('CLOUD_COVER')        
+                     //  Get the first image out of this collection.     
+                     .first());  
+
+
+
+//  Use these bands.    
+var bands = ['B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B10', 'B11'];  
+// Get an image that  contains only the bands of interest.   
+var dnImage = image.select(bands);  
+// Apply the  transformation.   
+var radiance =  ee.Algorithms.Landsat.calibratedRadiance(dnImage);  
+// Display the result.   
+var radParams = {bands: ['B4', 'B3', 'B2'], min: 0, max: 100};  
+Map.addLayer(radiance, radParams, 'radiance');  
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
 
 ```python
 zoom = 11
@@ -231,6 +409,15 @@ map3.add_ee_layer(radiance, vizParams)
 map3
 ```
 
+</TabItem>
+
+</Tabs>
+
+
+
+
+
+
 ![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B02-07.png)
 
 
@@ -252,6 +439,60 @@ Top of Atmosphere reflectance is the reflectance that includes the radiation fro
 
 Let's examine the spectra for TOA Landsat data. To get TOA data for Landsat, we can do the transformation using the built-in functions created by Earth Engine. We will be using 'USGS Landsat 8 Collection 1 Tier 1 TOA Reflectance' ImageCollection.
 
+
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+
+var lat = 37.22; var lon = -80.42;
+var zoom = 11;
+var date_start = '2014-01-01';
+var date_end = '2014-12-31';
+
+var point = ee.Geometry.Point([lon, lat]);
+var landsat = ee.ImageCollection("LANDSAT/LC08/C01/T1_TOA")
+//  Note that we need to cast the result of first() to Image.   
+var image = ee.Image(landsat        
+                     //  Filter to get only images in the specified range.  
+                     .filterDate(date_start, date_end)        
+                     //  Filter to get only images at the location of the point.     
+                     .filterBounds(point)        
+                     //  Sort the collection by a metadata property.     
+                     .sort('CLOUD_COVER')        
+                     //  Get the first image out of this collection.     
+                     .first());  
+
+//  Use these bands.    
+var bands = ['B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B10', 'B11'];  
+Map.addLayer(image, 
+             {bands: ['B4', 'B3', 'B2'], 
+              min: 0, max: 0.3}, 'toa');  
+// Define reflective  bands as bands B1-B7. See the docs for slice().   
+var reflectiveBands = bands.slice(0, 7);      
+// See  http://landsat.usgs.gov/band_designations_landsat_satellites.php   
+var wavelengths = [0.44, 0.48, 0.56, 0.65, 0.86, 1.61, 2.2];      
+// Select only the  reflectance bands of interest.   
+var reflectanceImage = image.select(reflectiveBands);      
+// Define an object of customization parameters for the chart.   
+var options = {
+  title: 'Landsat  8 TOA spectrum in Blacksburg, VA',    
+               hAxis: {title: 'Wavelength  (micrometers)'},
+               vAxis: {title: 'Reflectance'},
+               lineWidth: 1,
+               pointSize: 4};      
+// Make the chart, using  a 30 meter pixel.   
+var chart = ui.Chart.image.regions(
+  reflectanceImage, 
+  point, null, 30, null, wavelengths)
+		.setOptions(options);      
+// Display the chart.   
+print(chart); 
+```
+
+
+</TabItem>
+<TabItem value="py" label="Python">
 
 ```python
 zoom = 11
@@ -290,12 +531,15 @@ map4
 
 ```
 
-![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B02-09.png)
+</TabItem>
 
+</Tabs>
+
+![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B02-09.png)
 
 Since reflectance is a unitless ratio in [0, 1], change the visualization parameters to correctly display the TOA data:
 
-Using **Inspector**, click several locations on the map and examine the resultant spectra. It should be apparent, especially if you chart the spectra, that the scale of pixel values in different bands is drastically different. Specifically, bands 10-11 are not in [0, 1].  The reason is that these are thermal bands, and are converted to brightness temperature, in Kelvin, as part of the TOA conversion. Very little radiance is reflected in this wavelength range; most is emitted from the Earth's surface. That emitted radiance can be used to estimate [brightness temperature](https://en.wikipedia.org/wiki/Brightness_temperature) using the inverted [Planck equation](https://en.wikipedia.org/wiki/Planck's_law). Examine the temperature of various locations. To make plots of reflectance, select the reflective bands from the TOA image and use the Earth Engine [charting API](https://developers.google.com/earth-engine/charts). 
+Using **Inspector**, click several locations on the map and examine the resultant spectra. It should be apparent, especially if you chart the spectra, that the scale of pixel values in different bands is drastically different. Specifically, bands 10-11 are not in [0, 1].  The reason is that these are thermal bands, and are converted to brightness temperature, in Kelvin, as part of the TOA conversion. Very little radiance is reflected in this wavelength range; most is emitted from the Earth's surface. That emitted radiance can be used to estimate [brightness temperature](https://en.wikipedia.org/wiki/Brightness_temperature) using the inverted [Planck equation](https://en.wikipedia.org/wiki/Planck's_law). Examine the temperature of various locations. To make plots of reflectance, select the reflective bands from the TOA image and use the Earth Engine [charting API](https://developers.google.com/earth-engine/charts).
 
 There are several new methods in this code. The `slice()` method gets entries in a list based on starting and ending indices. Search the docs (on the **Docs** tab) for 'slice' to find other places this method can be used. Construction of the chart is handled by an object of customization parameters ([learn more about customizing charts](https://developers.google.com/earth-engine/charts_image_histogram)) passed to [Chart.image.regions()](https://developers.google.com/earth-engine/charts_image_regions). Customizing charts within GEE can be difficult, so spend time modifying the characteristics. 
 
