@@ -395,7 +395,7 @@ It might be possible to dig around in the metadata to find values for L<sub>min<
 
 You've learned about how an image stores pixel data in each band as digital numbers (DNs) and how the pixels are organized spatially. When you add an image to the map, Earth Engine handles the spatial display for you by recognizing the projection and putting all the pixels in the right place. However, you must specify how to stretch the DNs to fit the standard 8-bit display image  that GEE uses ( `min` and `max` parameters). Specifying `min` and `max` applies (where DN' is the displayed value):
 
-   $$ DN' =   \frac{ 255 (DN - min)}{(max - min)} $$
+   $$DN' =   \frac{ 255 (DN - min)}{(max - min)}$$
 
 For instance, if you are working with NAIP imagery, you can set the min radiometric resolution to 0 and the max to 255 to model 8-bit radiometric resolution. 
 
