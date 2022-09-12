@@ -504,7 +504,7 @@ radiance =  ee.Algorithms.Landsat.calibratedRadiance(dnImage)
 vizParams = {
     'bands': ['B4', 'B3', 'B2'], 
     'min': 0.1, 
-    'max': 0.6
+    'max': 0.3
 }
 map4 = build_map(lat, lon, zoom, vizParams, image, name)
 map4.add_ee_layer(reflectanceImage, vizParams)
