@@ -324,10 +324,6 @@ $$
 L_{\lambda} = a_{\lambda} * DN_{\lambda} + b_{\lambda} \qquad
 $$
 
-$$
-I = \int_0^{2\pi} \sin(x)\,dx
-$$
-
 Note that every term is indexed by lamda ($\lambda$, the symbol for wavelength) because the coefficients are different in each band. See [Chander et al. (2009)](http://www.sciencedirect.com/science/article/pii/S0034425709000169) for details on this linear transformation between DN and radiance. In this exercise, you will generate a radiance image and examine the differences in radiance from different targets.
 
 Earth Engine provides built-in functions for converting Landsat imagery to radiance in Watts/m2/sr/𝝁m. It will automatically reference the metadata values for each band and apply the equation for you, saving you the trouble of conducing numerous calculations.
@@ -412,10 +408,6 @@ map3
 </TabItem>
 
 </Tabs>
-
-
-
-
 
 
 ![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B02-07.png)
@@ -543,6 +535,38 @@ Using **Inspector**, click several locations on the map and examine the resultan
 
 There are several new methods in this code. The `slice()` method gets entries in a list based on starting and ending indices. Search the docs (on the **Docs** tab) for 'slice' to find other places this method can be used. Construction of the chart is handled by an object of customization parameters ([learn more about customizing charts](https://developers.google.com/earth-engine/charts_image_histogram)) passed to [Chart.image.regions()](https://developers.google.com/earth-engine/charts_image_regions). Customizing charts within GEE can be difficult, so spend time modifying the characteristics. 
 
+> **Question 1**: Upload the TOA reflectance plot you generated for Blacksburg, VA and briefly describe the relationship of reflectance peaks and troughs in the chart to the electromagnetic spectrum. 
+
 ## Surface Reflectance 
 
 The ratio of upward radiance *at the Earth's surface* to downward radiance *at the Earth's surface* is called surface reflectance. Unlike TOA reflectance, in which this information is collected at the sensor, the radiances at the Earth's surface have been affected by the atmosphere. both the inbound and outbound radiance from the sun is affected by its path through the atmosphere to the sensor. Unravelling those effects is called atmospheric correction ("compensation" is probably a more accurate term) and is beyond our scope of this lab. However, most satellite imagery providers complete this correction for the consumers. While you could use the raw scenes directly, if your goal is conduct analysis quickly and effectively, using the corrected Surface Reflectance image collections are quite beneficial and will save you quite a bit of time.
+
+> **Question 2**: Upload the surface reflectance plot you just generated and briefly describe its features. What differs or remains the same between the TOA plot and the surface reflectance plot?
+
+> **Question 3**: When you add `sr` to the map, you will need to scale the imagery or change the visualization parameters. Why? Read the dataset description to find out.  
+>
+> Hint: What is the scale factor for bands 1-9?
+
+## Additional Exercises
+
+> **Question 4**: In your code, set the value of a variable called `azimuth` to the solar azimuth of the image from 1d. Do not hardcode the number. Use `get()`. Print the result and show you set the value of `azimuth`.
+
+> **Question 5**: Add a layer to the map in which the image from 1d is displayed with band 7 set to red, band 5 set to green and band 3 set to blue. Upload a visual of the layer and show how you would display the layer name as `falsecolor`. 
+
+> **Question 6**: What is the brightness temperature of the given Blacksburg, VA point? 
+>
+> Show how you make a variable in your code called temperature and set it to the band 10 brightness temperature. Use [this guide](https://developers.google.com/earth-engine/reducers_reduce_region) for help.
+
+\# Remove Quotations for code to run
+
+```javascript
+var point = ee.Geometry.Point([-80.42, 37.22]);
+
+var  temperature = toaImage.reduceRegion(
+ { #YOUR SOLUTION HERE#   })
+	.get(  #YOUR SOLUTION HERE#); 
+```
+
+> ***\*Question 7\****: What is the surface reflectance (in [0,1], meaning you will need to apply the scale factor) in band 5 (NIR) at the Blacksburg, VA point? 
+>
+> Show how you make a variable in your code called `reflectance` that stores this value.
