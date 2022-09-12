@@ -449,9 +449,6 @@ var image = ee.Image(landsat
 
 //  Use these bands.    
 var bands = ['B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B10', 'B11'];  
-Map.addLayer(image, 
-             {bands: ['B4', 'B3', 'B2'], 
-              min: 0, max: 0.3}, 'toa');  
 // Define reflective  bands as bands B1-B7. See the docs for slice().   
 var reflectiveBands = bands.slice(0, 7);      
 // See  http://landsat.usgs.gov/band_designations_landsat_satellites.php   
@@ -459,6 +456,10 @@ var wavelengths = [0.44, 0.48, 0.56, 0.65, 0.86, 1.61, 2.2];
 // Select only the  reflectance bands of interest.   
 var reflectanceImage = image.select(reflectiveBands);      
 // Define an object of customization parameters for the chart.   
+
+Map.addLayer(reflectanceImage, 
+             {bands: ['B4', 'B3', 'B2'], 
+              min: 0, max: 0.3}, 'toa'); 
 var options = {
   title: 'Landsat  8 TOA spectrum in Blacksburg, VA',    
                hAxis: {title: 'Wavelength  (micrometers)'},
@@ -469,7 +470,7 @@ var options = {
 var chart = ui.Chart.image.regions(
   reflectanceImage, 
   point, null, 30, null, wavelengths)
-		.setOptions(options);      
+        .setOptions(options);      
 // Display the chart.   
 print(chart); 
 ```
@@ -501,7 +502,7 @@ reflectanceImage =  image.select(reflectiveBands);
 radiance =  ee.Algorithms.Landsat.calibratedRadiance(dnImage)
 
 vizParams = {
-    'bands': ['B5', 'B4', 'B3'], 
+    'bands': ['B4', 'B3', 'B2'], 
     'min': 0.1, 
     'max': 0.6
 }
@@ -514,7 +515,7 @@ map4
 
 </Tabs>
 
-![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B02-09.png)
+![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B02-10.png)
 
 Since reflectance is a unitless ratio in [0, 1], change the visualization parameters to correctly display the TOA data:
 
