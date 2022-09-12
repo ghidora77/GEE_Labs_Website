@@ -341,8 +341,6 @@ var lat = 37.22; var lon = -80.42;
 var zoom = 11;
 var date_start = '2014-01-01';
 var date_end = '2014-12-31';
-
-
 var point = ee.Geometry.Point([lon, lat]);
 var landsat = ee.ImageCollection("LANDSAT/LC08/C01/T1")
 //  Note that we need to cast the result of first() to Image.   
@@ -355,9 +353,6 @@ var image = ee.Image(landsat
                      .sort('CLOUD_COVER')        
                      //  Get the first image out of this collection.     
                      .first());  
-
-
-
 //  Use these bands.    
 var bands = ['B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B10', 'B11'];  
 // Get an image that  contains only the bands of interest.   
@@ -365,7 +360,7 @@ var dnImage = image.select(bands);
 // Apply the  transformation.   
 var radiance =  ee.Algorithms.Landsat.calibratedRadiance(dnImage);  
 // Display the result.   
-var radParams = {bands: ['B4', 'B3', 'B2'], min: 0, max: 100};  
+var radParams = {bands: ['B5', 'B4', 'B3'], min: 20, max: 110};  
 Map.addLayer(radiance, radParams, 'radiance');  
 ```
 
@@ -373,13 +368,12 @@ Map.addLayer(radiance, radParams, 'radiance');
 <TabItem value="py" label="Python">
 
 ```python
-zoom = 11
+lat = 37.22;  lon = -80.42;zoom = 11
 image_collection_name = "LANDSAT/LC08/C01/T1"
 date_start = '2014-01-01'
 date_end = '2014-12-31'
 name = 'Landsat'
 point = ee.Geometry.Point([lon, lat])
-
 image = (
     ee.ImageCollection(image_collection_name)
          .filterBounds(point)
@@ -387,19 +381,14 @@ image = (
          .sort('CLOUD_COVER')
          .first()
 )
-
 bands = ['B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B10', 'B11']
-
 dnImage = image.select(bands)
-
 radiance =  ee.Algorithms.Landsat.calibratedRadiance(dnImage)
-
 vizParams = {
     'bands': ['B5', 'B4', 'B3'], 
-    'min': 50, 
-    'max': 150
+    'min': 20, 
+    'max': 110
 }
-
 map3 = build_map(lat, lon, zoom, vizParams, image, name)
 map3.add_ee_layer(radiance, vizParams)
 map3
