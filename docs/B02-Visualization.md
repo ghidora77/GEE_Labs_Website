@@ -63,6 +63,7 @@ ee.Initialize()
 <TabItem value="js" label="JavaScript">
 
 ```javascript
+// Code Chunk 01
 var lat = 37.22; var lon = -80.42;
 var zoom = 11;
 var image_collection_name = "LANDSAT/LC08/C01/T1_TOA";
@@ -97,6 +98,7 @@ Map.addLayer(image, vizParams, 'true-color image');
 <TabItem value="py" label="Python">
 
 ```python
+
 lat = 37.22; lon = -80.42; 
 zoom = 11
 image_collection_name = "LANDSAT/LC08/C01/T1_TOA"
@@ -157,7 +159,7 @@ To build a true color image we are building a variable called `trueColor`  that 
 <TabItem value="js" label="JavaScript">
 
 ```javascript
-
+// Code Chunk 02
 var lat = 37.22; var lon = -80.42;
 var zoom = 11;
 var image_collection_name = "LANDSAT/LC08/C01/T1_TOA";
@@ -237,6 +239,7 @@ Let's do the same thing, but this time we will build a false-color composite. Th
 <TabItem value="js" label="JavaScript">
 
 ```javascript
+// Code Chunk 03
 var lat = 37.22; var lon = -80.42;
 var zoom = 11;
 var image_collection_name = "LANDSAT/LC08/C01/T1_TOA";
@@ -336,7 +339,7 @@ Note that the visualization parameters are different to account for the radiance
 <TabItem value="js" label="JavaScript">
 
 ```javascript
-
+// Code Chunk 4
 var lat = 37.22; var lon = -80.42;
 var zoom = 11;
 var date_start = '2014-01-01';
@@ -425,7 +428,7 @@ Let's examine the spectra for TOA Landsat data. To get TOA data for Landsat, we 
 <TabItem value="js" label="JavaScript">
 
 ```javascript
-
+// Code Chunk 5
 var lat = 37.22; var lon = -80.42;
 var zoom = 11;
 var date_start = '2014-01-01';
@@ -490,14 +493,11 @@ image = (
          .sort('CLOUD_COVER')
          .first()
 )
-
 bands = ['B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B10', 'B11']
 reflectiveBands = bands[0:8]; 
 # See http://landsat.usgs.gov/band_designations_landsat_satellites.php  
 wavelengths = [0.44, 0.48, 0.56, 0.65, 0.86, 1.61, 2.2]
-
 reflectanceImage =  image.select(reflectiveBands);  
-
 radiance =  ee.Algorithms.Landsat.calibratedRadiance(dnImage)
 
 vizParams = {
@@ -505,11 +505,9 @@ vizParams = {
     'min': 0.1, 
     'max': 0.6
 }
-
 map4 = build_map(lat, lon, zoom, vizParams, image, name)
 map4.add_ee_layer(reflectanceImage, vizParams)
 map4
-
 ```
 
 </TabItem>
@@ -530,23 +528,27 @@ There are several new methods in this code. The `slice()` method gets entries in
 
 The ratio of upward radiance *at the Earth's surface* to downward radiance *at the Earth's surface* is called surface reflectance. Unlike TOA reflectance, in which this information is collected at the sensor, the radiances at the Earth's surface have been affected by the atmosphere. both the inbound and outbound radiance from the sun is affected by its path through the atmosphere to the sensor. Unravelling those effects is called atmospheric correction ("compensation" is probably a more accurate term) and is beyond our scope of this lab. However, most satellite imagery providers complete this correction for the consumers. While you could use the raw scenes directly, if your goal is conduct analysis quickly and effectively, using the corrected Surface Reflectance image collections are quite beneficial and will save you quite a bit of time.
 
-> **Question 2**: Upload the surface reflectance plot you just generated and briefly describe its features. What differs or remains the same between the TOA plot and the surface reflectance plot?
+In the datasets page for Landsat 8, it's broken up into the raw images, TOA, and Surface Reflectance. 
 
-> **Question 3**: When you add `sr` to the map, you will need to scale the imagery or change the visualization parameters. Why? Read the dataset description to find out.  
+![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B02-10.png)
+
+> **Question 2**: Use the code chunk 5 pattern above to build a true-color (red-green-blue) image using Surface Reflectance data from Landsat 8 and a plot with the same wavelengths and structure as you did with the TOA. Upload the surface reflectance plot you and briefly describe its features. What differs or remains the same between the TOA plot and the surface reflectance plot?
+>
+> Note that the band names differ between the surface reflectance data and the TOA data. 
+
+> **Question 3**: When you build the surface reflectance visualization, you will need to scale the imagery and change the visualization parameters. Why? Read the dataset description to find out.  
 >
 > Hint: What is the scale factor for bands 1-9?
 
 ## Additional Exercises
 
-> **Question 4**: In your code, set the value of a variable called `azimuth` to the solar azimuth of the image from 1d. Do not hardcode the number. Use `get()`. Print the result and show you set the value of `azimuth`.
+> **Question 4**: In your code, set the value of a variable called `azimuth` to the solar azimuth of the image from code chunk 4. Do not hardcode the number. Use `get()`. Print the result and show you set the value of `azimuth`.
 
-> **Question 5**: Add a layer to the map in which the image from 1d is displayed with band 7 set to red, band 5 set to green and band 3 set to blue. Upload a visual of the layer and show how you would display the layer name as `falsecolor`. 
+> **Question 5**: Add a layer to the map in which the image from code chunk 4 is displayed with band 7 set to red, band 5 set to green and band 3 set to blue. Upload a visual of the layer and show how you would display the layer name as `falsecolor`.
 
 > **Question 6**: What is the brightness temperature of the given Blacksburg, VA point? 
 >
 > Show how you make a variable in your code called temperature and set it to the band 10 brightness temperature. Use [this guide](https://developers.google.com/earth-engine/reducers_reduce_region) for help.
-
-\# Remove Quotations for code to run
 
 ```javascript
 var point = ee.Geometry.Point([-80.42, 37.22]);
@@ -556,6 +558,6 @@ var  temperature = toaImage.reduceRegion(
 	.get(  #YOUR SOLUTION HERE#); 
 ```
 
-> ***\*Question 7\****: What is the surface reflectance (in [0,1], meaning you will need to apply the scale factor) in band 5 (NIR) at the Blacksburg, VA point? 
+> **Question 7**: What is the surface reflectance (in [0,1], meaning you will need to apply the scale factor) in band 5 (NIR) at the Blacksburg, VA point? 
 >
 > Show how you make a variable in your code called `reflectance` that stores this value.
