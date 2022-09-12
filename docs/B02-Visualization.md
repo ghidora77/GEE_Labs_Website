@@ -559,6 +559,8 @@ var  temperature = toaImage.reduceRegion(
 	.get(  #YOUR SOLUTION HERE#); 
 ```
 
-> **Question 7**: What is the surface reflectance (in [0,1], meaning you will need to apply the scale factor) in band 5 (NIR) at the Blacksburg, VA point? 
+> **Question 7**: If you plot the Surface Reflectance data with the TOA visibility parameters, you'll notice that you get a blank image. To fix this issue, we have to apply a scale factor, which can be found in the [documentation](https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LC08_C02_T1_L2#bands) - note that all the optical bands (SR_B1-SR_B7) have a certain scale, while the other bands (that start with ST) vary. 
 >
-> Show how you make a variable in your code called `reflectance` that stores this value.
+> Bring in the Landsat Surface Reflectance collection, filter it down to one specific image from the point listed above (Blacksburg, VA), and use the [multiply](https://developers.google.com/earth-engine/apidocs/ee-image-multiply) method to scale all of the bands (there are examples in both the the `multiply` documentation and the code Landsat SR Code snippet).
+>
+> Then, use the `reduceRegion()` method to find the reflectance value for band 5. Create a variable named reflectance to store this value and print it to the console. The value should fall into the range of [0-1]
