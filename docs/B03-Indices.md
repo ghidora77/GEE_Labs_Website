@@ -160,7 +160,7 @@ map1
 
 ![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B03-03.png)
 
-> **Question 1A**: What are some of the sample pixel values of the NDVI in the below categories. Indicate which parts of the images you used and how you determined what each of their values were.
+> **Question 1**: What are some of the sample pixel values of the NDVI in the below categories. Indicate which parts of the images you used and how you determined what each of their values were.
 >
 > 1. Vegetation
 > 2. Urban features
@@ -237,7 +237,7 @@ map2
 
 ![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B03-04.png)
 
-> **Question 1B**: Compare EVI to NDVI across those same land use categories as in the previous question. What do you observe -- how are the images and values similar or different across the two indices?
+> **Question 2.1**: Compare EVI to NDVI across those same land use categories as in the previous question. What do you observe -- how are the images and values similar or different across the two indices?
 
 #### Normalized Difference Water Index (NDWI)
 
@@ -371,7 +371,7 @@ map4
 
 You can combine the code blocks to compare the actual values at different pixel locations. Use inspector to test out different land areas.
 
-> **Question 2**: Compare NDWI and NDWBI. What do you observe? What do each of the indices try to focus on?
+> **Question 2.2**: Compare NDWI and NDWBI. What do you observe? What do each of the indices try to focus on?
 
 
 #### Normalized Difference Bare Index (NDBI)
@@ -581,7 +581,7 @@ map6
 
 The charcoal burn area is now very evident. Being that Landsat has historical data and a wide array of sensors, this can be a powerful way to understand natural phenomena. 
 
-> **Question 3**: Compare NDBI and the BAI displayed results -- what do you observe?
+> **Question 2.3**: Compare NDBI and the BAI displayed results -- what do you observe?
 
 #### Normalized Burn Ratio Thermal (NBRT)
 
@@ -741,8 +741,8 @@ map8
 
 ## Additional Exercises
 
-> **Question 9**: Look in google scholar to identify 2-3 publications that have used NDVI and two-three that used EVI. For what purposes were these indices used and what was the justification provided for that index? 
+> **Question 5.1**: Look in google scholar to identify 2-3 publications that have used NDVI and two-three that used EVI. For what purposes were these indices used and what was the justification provided for that index? 
 
-> **Question 10**: Discuss a spectral index that we did not cover in this lab relates to your area of research/interest. What is the the name of the spectral index, the formula used to calculate it, and what is it used to detect? Provide a citation of an academic article that has fruitfully used that index. 
+> **Question 5.2**: Discuss a spectral index that we did not cover in this lab relates to your area of research/interest. What is the the name of the spectral index, the formula used to calculate it, and what is it used to detect? Provide a citation of an academic article that has fruitfully used that index. 
 
-> **Question 11**: Find 1-2 articles that use any of the linear transformation methods we practiced in this lab in the service of addressing an important social issue (e.g., one related to agriculture, environment, or development). Provide the citations and discussed how the transformation is used and how it's justified in the article. 
+> **Question 5.3**: Find 1-2 articles that use any of the linear transformation methods we practiced in this lab in the service of addressing an important social issue (e.g., one related to agriculture, environment, or development). Provide the citations and discussed how the transformation is used and how it's justified in the article. 
