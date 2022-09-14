@@ -10,7 +10,7 @@ Spectroscopy is the study of how radiation is absorbed, reflected and emitted by
 
 Land covers are separable at different wavelengths. Vegetation curves (green) have high reflectance in the NIR range, where radiant energy is scattered by cell walls ([Bowker, 1985](http://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/19850022138.pdf)) and low reflectance in the red range, where radiant energy is [absorbed by chlorophyll](https://en.wikipedia.org/wiki/Chlorophyll#/media/File:Chlorophyll_ab_spectra-en.svg). We can leverage this information to build indices that help us differentiate vegetation from urban areas. In the next few sections, we will cover several of the most important indices in use. 
 
-![Land Cover Reflectance](https://github.com/ghidora77/03_GEE_Labs_DSPG/blob/main/im/im_03_01.png?raw=true)
+![Land Cover Reflectance](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B03-01.png)
 
 ## Important Indices 
 
@@ -29,26 +29,12 @@ First, build a baseline true color image around our region of interest, Niger. W
 
 ```python
 #!pip install geemap
-
-import ee, geemap, pprint, folium
+import ee, geemap, pprint
 #ee.Authenticate()
-
 def build_map(lat, lon, zoom, vizParams, image, name):
     map = geemap.Map(center = [lat, lon], zoom = zoom)
     map.addLayer(image, vizParams, name)
     return map
-
-def add_ee_layer(self, ee_image_object, vis_params, name):
-  map_id_dict = ee.Image(ee_image_object).getMapId(vis_params)
-  folium.raster_layers.TileLayer(
-      tiles=map_id_dict['tile_fetcher'].url_format,
-      attr='Map Data &copy; <a href="https://earthengine.google.com/">Google Earth Engine</a>',
-      name=name,
-      overlay=True,
-      control=True
-  ).add_to(self)
-
-# Initialize the Earth Engine module.
 ee.Initialize()
 ```
 
@@ -61,7 +47,6 @@ date_start = '2015-06-01'
 date_end = '2015-09-01'
 name = 'Landsat 8 TOA spectrum'
 point = ee.Geometry.Point([lon, lat])
-
 image = (
     ee.ImageCollection(image_collection_name)
          .filterBounds(point)
@@ -69,23 +54,19 @@ image = (
          .sort('CLOUD_COVER')
          .first()
 )
-
 bands = ['B4', 'B3', 'B2']
-
 vizParams = {
     'bands': bands, 
     'min': 0, 
     'max': 0.3
 }
-
-# Define a map centered on southern Maine.
+# Define a map centered on Blacksburg
 map = build_map(lat, lon, zoom, vizParams, image, name)
 map.add_ee_layer(image, vizParams)
 map
 ```
 
-
-    Map(center=[13.7, 2.6], controls=(WidgetControl(options=['position', 'transparent_bg'], widget=HBox(children=(…
+![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B03-02.png)
 
 
 Now that we have the true color baseline image, we can build the NDVI index and visualize it. For visualization, we are creating a custom palette, where low values trend towards white and high values trend towards green. 
@@ -104,8 +85,7 @@ map1 = build_map(lat, lon, zoom, vizParams, ndvi, name)
 map1
 ```
 
-
-    Map(center=[13.7, 2.6], controls=(WidgetControl(options=['position', 'transparent_bg'], widget=HBox(children=(…
+![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B03-03.png)
 
 
 #### Enhanced Vegetation Index (EVI) 
@@ -131,8 +111,7 @@ map2 = build_map(lat, lon, zoom, vizParams, evi, name)
 map2
 ```
 
-
-    Map(center=[13.7, 2.6], controls=(WidgetControl(options=['position', 'transparent_bg'], widget=HBox(children=(…
+![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B03-04.png)
 
 
 #### Normalized Difference Water Index (NDWI)
@@ -156,8 +135,7 @@ map3 = build_map(lat, lon, zoom, vizParams, ndwi, name)
 map3
 ```
 
-
-    Map(center=[13.7, 2.6], controls=(WidgetControl(options=['position', 'transparent_bg'], widget=HBox(children=(…
+![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B03-05.png)
 
 
 #### Normalized Difference Water *Body* Index (NDWBI)
@@ -181,8 +159,7 @@ map4 = build_map(lat, lon, zoom, vizParams, ndwbi, name)
 map4
 ```
 
-
-    Map(center=[13.7, 2.6], controls=(WidgetControl(options=['position', 'transparent_bg'], widget=HBox(children=(…
+![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B03-06.png)
 
 
 You can combine the code blocks to compare the actual values at different pixel locations. Use inspector to test out different land areas.
@@ -212,8 +189,7 @@ map4 = build_map(lat, lon, zoom, vizParams, ndbi, name)
 map4
 ```
 
-
-    Map(center=[13.7, 2.6], controls=(WidgetControl(options=['position', 'transparent_bg'], widget=HBox(children=(…
+![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B03-07.png)
 
 
 #### Burned Area Index (BAI) 
@@ -252,8 +228,7 @@ map5.add_ee_layer(image, vizParams)
 map5
 ```
 
-
-    Map(center=[37.85, -120.083], controls=(WidgetControl(options=['position', 'transparent_bg'], widget=HBox(chil…
+![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B03-08.png)
 
 
 Closely examine the true color display of this image. Can you spot where the fire occurred? If difficult, let's look at the burn index.
@@ -282,13 +257,10 @@ map6 = build_map(lat, lon, zoom, vizParams, bai, name)
 map6
 ```
 
-
-    Map(center=[37.85, -120.083], controls=(WidgetControl(options=['position', 'transparent_bg'], widget=HBox(chil…
+![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B03-09.png)
 
 
 The charcoal burn area is now very evident. Being that Landsat has historical data and a wide array of sensors, this can be a powerful way to understand natural phenomena. 
-
-
 
 #### Normalized Burn Ratio Thermal (NBRT)
 
@@ -315,8 +287,7 @@ map7
 #Map.addLayer(nbrt, {min: 1, max: 0.9,  palette: burnPalette}, 'NBRT'); 
 ```
 
-
-    Map(center=[37.85, -120.083], controls=(WidgetControl(options=['position', 'transparent_bg'], widget=HBox(chil…
+![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B03-10.png)
 
 
 #### Normalized Difference Snow Index (NDSI)
@@ -368,6 +339,5 @@ map8.add_ee_layer(ndsi, vizParams2)
 map8
 ```
 
-
-    Map(center=[39.19, -106.81], controls=(WidgetControl(options=['position', 'transparent_bg'], widget=HBox(child…
+![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B03-11.png)
 
