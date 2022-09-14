@@ -1,3 +1,6 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 # Lab 3 - Spectral Indices 
 
 ## Overview
@@ -27,6 +30,10 @@ Because NDVI is a popular and well-known index, we can use the built-in function
 First, build a baseline true color image around our region of interest, Niger. We will work with the Landsat 8 Collection 1 Tier 1 TOA Reflectance data from 2015, sort by cloud cover and extract the first image.
 
 
+<Tabs>
+
+<TabItem value="py" label="Python">
+
 ```python
 #!pip install geemap
 import ee, geemap, pprint
@@ -36,8 +43,33 @@ def build_map(lat, lon, zoom, vizParams, image, name):
     map.addLayer(image, vizParams, name)
     return map
 ee.Initialize()
+
+```
+</TabItem>
+</Tabs>
+
+
+
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+var point = ee.Geometry.Point([-80.42, 37.22]);
+var landsat = ee.ImageCollection("LANDSAT/LC08/C01/T1_TOA")
+var  image = ee.Image(landsat     
+                      .filterBounds(point)     
+                      .filterDate('2015-06-01', '2015-09-01')
+                      .sort('CLOUD_COVER')
+                      .first());
+var trueColor = {bands: ['B4', 'B3', 'B2'], 
+                 min: 0, max: 0.3};   
+Map.centerObject(point, 12);                  
+Map.addLayer(image, trueColor, 'image');  
 ```
 
+</TabItem>
+
+<TabItem value="py" label="Python">
 
 ```python
 lat = 13.7; lon = 2.6
@@ -65,6 +97,9 @@ map = build_map(lat, lon, zoom, vizParams, image, name)
 map.add_ee_layer(image, vizParams)
 map
 ```
+</TabItem>
+</Tabs>
+
 
 ![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B03-02.png)
 
