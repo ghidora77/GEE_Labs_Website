@@ -160,7 +160,7 @@ map1
 
 ![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B03-03.png)
 
-> **Question 1**: What are some of the sample pixel values of the NDVI in the below categories. Indicate which parts of the images you used and how you determined what each of their values were.
+> **Question 1**: What are some of the sample pixel values of the NDVI in the below categories? Indicate which parts of the images you used and how you determined what each of their values were.
 >
 > 1. Vegetation
 > 2. Urban features
@@ -741,8 +741,6 @@ map8
 
 ## Additional Exercises
 
-> **Question 5.1**: Look in google scholar to identify 2-3 publications that have used NDVI and two-three that used EVI. For what purposes were these indices used and what was the justification provided for that index? 
+> **Question 3.1**: Look in google scholar to identify 2-3 publications that have used NDVI and two-three that used EVI. For what purposes were these indices used and what was the justification provided for that index? 
 
-> **Question 5.2**: Discuss a spectral index that we did not cover in this lab relates to your area of research/interest. What is the the name of the spectral index, the formula used to calculate it, and what is it used to detect? Provide a citation of an academic article that has fruitfully used that index. 
-
-> **Question 5.3**: Find 1-2 articles that use any of the linear transformation methods we practiced in this lab in the service of addressing an important social issue (e.g., one related to agriculture, environment, or development). Provide the citations and discussed how the transformation is used and how it's justified in the article. 
+> **Question 3.2**: Discuss a spectral index that we did not cover in this lab relates to your area of research/interest. What is the the name of the spectral index, the formula used to calculate it, and what is it used to detect? Provide a citation of an academic article that has fruitfully used that index. 
