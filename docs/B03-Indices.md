@@ -107,7 +107,43 @@ map
 Now that we have the true color baseline image, we can build the NDVI index and visualize it. For visualization, we are creating a custom palette, where low values trend towards white and high values trend towards green. 
 
 
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+var point = ee.Geometry.Point([-80.42, 37.22]);
+var landsat = ee.ImageCollection("LANDSAT/LC08/C01/T1_TOA")
+var image = ee.Image(landsat     
+                      .filterBounds(point)     
+                      .filterDate('2015-06-01', '2015-09-01')
+                      .sort('CLOUD_COVER')
+                      .first());
+var  ndvi = image.normalizedDifference(['B5', 'B4']);  
+var  vegPalette = ['white', 'green']; 
+Map.centerObject(point, 12);
+Map.addLayer(ndvi, {min: -1, max: 1,  
+                    palette: vegPalette}, 'NDVI'); 
+```
+
+</TabItem>
+
+<TabItem value="py" label="Python">
+
 ```python
+lat = 13.7; lon = 2.6
+zoom = 11
+image_collection_name = "LANDSAT/LC08/C01/T1_TOA"
+date_start = '2015-06-01'
+date_end = '2015-09-01'
+name = 'Landsat 8 TOA spectrum'
+point = ee.Geometry.Point([lon, lat])
+image = (
+    ee.ImageCollection(image_collection_name)
+         .filterBounds(point)
+         .filterDate(date_start, date_end)
+         .sort('CLOUD_COVER')
+         .first()
+)
 ndvi = image.normalizedDifference(['B5', 'B4']); 
 vegPalette = ['white', 'green']; 
 vizParams = {
@@ -119,6 +155,8 @@ vizParams = {
 map1 = build_map(lat, lon, zoom, vizParams, ndvi, name)
 map1
 ```
+</TabItem>
+</Tabs>
 
 ![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B03-03.png)
 
@@ -138,7 +176,50 @@ $$\text{EVI} = 2.5 * (\text{NIR} - \text{red}) / (\text{NIR} + 6 * \text{red} - 
 Since it is not a normalized difference index, we need to build a unique [expression](https://developers.google.com/earth-engine/image_math#expressions) and then identify all of the different segments. Programmatically, bands are specifically referenced with the help of [an object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Grammar_and_Types#Object_literals) that is passed as the second argument to `image.expression()` (everything within the curly brackets). 
 
 
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+var point = ee.Geometry.Point([-80.42, 37.22]);
+var landsat = ee.ImageCollection("LANDSAT/LC08/C01/T1_TOA")
+var  image = ee.Image(landsat     
+                      .filterBounds(point)     
+                      .filterDate('2015-06-01', '2015-09-01')
+                      .sort('CLOUD_COVER')
+                      .first());
+// Build the expression
+var exp = '2.5  * ((NIR - RED) / (NIR + 6 * RED - 7.5 * BLUE + 1))';
+var evi = image.expression( exp, 
+                            {'NIR': image.select('B5'),
+                             'RED': image.select('B4'),
+                             'BLUE': image.select('B2')
+                            });  
+var vegPalette = ['white', 'green']; 
+Map.centerObject(point, 12);
+Map.addLayer(evi,  
+             {min: -1, max: 1,  palette: vegPalette}, 
+             'EVI');  
+```
+
+</TabItem>
+
+<TabItem value="py" label="Python">
+
 ```python
+lat = 13.7; lon = 2.6
+zoom = 11
+image_collection_name = "LANDSAT/LC08/C01/T1_TOA"
+date_start = '2015-06-01'
+date_end = '2015-09-01'
+name = 'Landsat 8 TOA spectrum'
+point = ee.Geometry.Point([lon, lat])
+image = (
+    ee.ImageCollection(image_collection_name)
+         .filterBounds(point)
+         .filterDate(date_start, date_end)
+         .sort('CLOUD_COVER')
+         .first()
+)
 # Build the expression
 exp = '2.5  * ((NIR - RED) / (NIR + 6 * RED - 7.5 * BLUE + 1))'
 evi = image.expression( exp, 
@@ -151,6 +232,8 @@ evi = image.expression( exp,
 map2 = build_map(lat, lon, zoom, vizParams, evi, name)
 map2
 ```
+</TabItem>
+</Tabs>
 
 ![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B03-04.png)
 
@@ -163,7 +246,46 @@ The Normalized Difference Water Index (NDWI) was developed by [Gao (1996)](http:
 $$\text{NDWI} = (\text{NIR} - \text{SWIR})) / (\text{NIR} + \text{SWIR})$$
 
 
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+var point = ee.Geometry.Point([-80.42, 37.22]);
+var landsat = ee.ImageCollection("LANDSAT/LC08/C01/T1_TOA")
+var  image = ee.Image(landsat     
+                      .filterBounds(point)     
+                      .filterDate('2015-06-01', '2015-09-01')
+                      .sort('CLOUD_COVER')
+                      .first());
+var ndwi = image.normalizedDifference(['B5', 'B6']);  
+var waterPalette = ['white', 'blue'];   
+Map.centerObject(point, 12);
+Map.addLayer(ndwi,  
+             {min: -1, max: 1,  palette: waterPalette}, 
+             'NDWI');  
+
+
+```
+
+</TabItem>
+
+<TabItem value="py" label="Python">
+
 ```python
+lat = 13.7; lon = 2.6
+zoom = 11
+image_collection_name = "LANDSAT/LC08/C01/T1_TOA"
+date_start = '2015-06-01'
+date_end = '2015-09-01'
+name = 'Landsat 8 TOA spectrum'
+point = ee.Geometry.Point([lon, lat])
+image = (
+    ee.ImageCollection(image_collection_name)
+         .filterBounds(point)
+         .filterDate(date_start, date_end)
+         .sort('CLOUD_COVER')
+         .first()
+)
 ndwi = image.normalizedDifference(['B5', 'B6']);  
 waterPalette = ['white', 'blue'];   
 
@@ -176,6 +298,8 @@ vizParams = {
 map3 = build_map(lat, lon, zoom, vizParams, ndwi, name)
 map3
 ```
+</TabItem>
+</Tabs>
 
 ![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B03-05.png)
 
@@ -189,7 +313,47 @@ $$\text{NDWBI} = (\text{green} - \text{NIR}) / (\text{green} + \text{NIR})$$
 As previously, implement NDWBI with `normalizedDifference()` and display the result.
 
 
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+var point = ee.Geometry.Point([-80.42, 37.22]);
+var landsat = ee.ImageCollection("LANDSAT/LC08/C01/T1_TOA")
+var  image = ee.Image(landsat     
+                      .filterBounds(point)     
+                      .filterDate('2015-06-01', '2015-09-01')
+                      .sort('CLOUD_COVER')
+                      .first());
+var waterPalette = ['white', 'blue'];            
+var ndwbi = image.normalizedDifference(['B3', 'B5']);   
+Map.addLayer(ndwbi, 
+             {min: -1, 
+              max: 0.5,  
+              palette: waterPalette}, 
+             'NDWBI');   
+
+
+```
+
+</TabItem>
+
+<TabItem value="py" label="Python">
+
 ```python
+lat = 13.7; lon = 2.6
+zoom = 11
+image_collection_name = "LANDSAT/LC08/C01/T1_TOA"
+date_start = '2015-06-01'
+date_end = '2015-09-01'
+name = 'Landsat 8 TOA spectrum'
+point = ee.Geometry.Point([lon, lat])
+image = (
+    ee.ImageCollection(image_collection_name)
+         .filterBounds(point)
+         .filterDate(date_start, date_end)
+         .sort('CLOUD_COVER')
+         .first()
+)
 ndwbi = image.normalizedDifference(['B3', 'B5']);  
 vizParams = {
     'min': -1, 
@@ -200,6 +364,8 @@ vizParams = {
 map4 = build_map(lat, lon, zoom, vizParams, ndwbi, name)
 map4
 ```
+</TabItem>
+</Tabs>
 
 ![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B03-06.png)
 
@@ -217,7 +383,44 @@ $$\text{NDBI} = (\text{SWIR} - \text{NIR}) / (\text{SWIR} + \text{NIR})$$
 Note that NDBI is the negative of NDWI. Compute NDBI and display with a suitable palette. (Check [this reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) to demystify the palette reversal)
 
 
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+var point = ee.Geometry.Point([-80.42, 37.22]);
+var landsat = ee.ImageCollection("LANDSAT/LC08/C01/T1_TOA")
+var  image = ee.Image(landsat     
+                      .filterBounds(point)     
+                      .filterDate('2015-06-01', '2015-09-01')
+                      .sort('CLOUD_COVER')
+                      .first());
+var waterPalette = ['white', 'blue'];   
+var barePalette =  waterPalette.slice().reverse(); 
+var ndbi = image.normalizedDifference(['B6', 'B5']);   
+Map.addLayer(ndbi, {min: -1, max: 0.5,  palette: barePalette}, 'NDBI');   
+
+
+```
+
+</TabItem>
+
+<TabItem value="py" label="Python">
+
 ```python
+lat = 13.7; lon = 2.6
+zoom = 11
+image_collection_name = "LANDSAT/LC08/C01/T1_TOA"
+date_start = '2015-06-01'
+date_end = '2015-09-01'
+name = 'Landsat 8 TOA spectrum'
+point = ee.Geometry.Point([lon, lat])
+image = (
+    ee.ImageCollection(image_collection_name)
+         .filterBounds(point)
+         .filterDate(date_start, date_end)
+         .sort('CLOUD_COVER')
+         .first()
+)
 ndbi = image.normalizedDifference(['B6', 'B5']); 
 # Reverse the water palette
 barePalette =  waterPalette.copy()
@@ -231,6 +434,8 @@ vizParams = {
 map4 = build_map(lat, lon, zoom, vizParams, ndbi, name)
 map4
 ```
+</TabItem>
+</Tabs>
 
 ![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B03-07.png)
 
@@ -239,6 +444,27 @@ map4
 
 The Burned Area Index (BAI) was developed by [Chuvieco et al. (2002)](http://www.tandfonline.com/doi/abs/10.1080/01431160210153129) to assist in the delineation of burn scars and assessment of burn severity. It is based on maximizing the spectral characteristics of charcoal reflectance. To examine burn indices, load an image from 2013 showing the [Rim fire](https://en.wikipedia.org/wiki/Rim_Fire) in the Sierra Nevadas. We'll start by creating a true image of the area to see how well this index highlights the presence of wildfire.
 
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+var point = ee.Geometry.Point(-120.083, 37.850);
+var landsat = ee.ImageCollection("LANDSAT/LC08/C01/T1_TOA")
+var image = ee.Image(landsat
+  .filterBounds(point)
+  .filterDate('2013-08-17', '2013-09-27')
+  .sort('CLOUD_COVER')
+  .first());
+var trueColor = {bands: ['B4', 'B3', 'B2'], 
+                 min: 0, max: 0.3};   
+Map.centerObject(point, 12);                  
+Map.addLayer(image, trueColor, 'image');  
+
+```
+
+</TabItem>
+
+<TabItem value="py" label="Python">
 
 ```python
 lat = 37.850; lon = -120.083; 
@@ -246,7 +472,7 @@ zoom = 11
 image_collection_name = "LANDSAT/LC08/C01/T1_TOA"
 date_start = '2013-08-17'
 date_end = '2013-09-27'
-name = 'Landsat  8 TOA spectrum in Blacksburg, VA'
+name = 'Landsat  8 TOA spectrum'
 point = ee.Geometry.Point([lon, lat])
 
 image = (
@@ -270,6 +496,8 @@ map5 = build_map(lat, lon, zoom, vizParams, image, name)
 map5.add_ee_layer(image, vizParams)
 map5
 ```
+</TabItem>
+</Tabs>
 
 ![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B03-08.png)
 
@@ -277,7 +505,54 @@ map5
 Closely examine the true color display of this image. Can you spot where the fire occurred? If difficult, let's look at the burn index.
 
 
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+var point = ee.Geometry.Point(-120.083, 37.850);
+var landsat = ee.ImageCollection("LANDSAT/LC08/C01/T1_TOA")
+var image = ee.Image(landsat
+  .filterBounds(point)
+  .filterDate('2013-08-17', '2013-09-27')
+  .sort('CLOUD_COVER')
+  .first());
+var trueColor = {bands: ['B4', 'B3', 'B2'], 
+                 min: 0, max: 0.3};   
+Map.centerObject(point, 12);                  
+Map.addLayer(image, trueColor, 'image');  
+
+// Build Burn Index expression
+var exp = '1.0  / ((0.1 - RED)**2 + (0.06 - NIR)**2)';
+var bai = image.expression(exp,   
+                               {'NIR': image.select('B5'),   
+                                'RED': image.select('B4') });
+                                
+var burnPalette = ['green', 'blue', 'yellow', 'red'];   
+Map.addLayer(bai, {min: 0, max: 400,  palette: burnPalette}, 'BAI');
+
+```
+
+</TabItem>
+
+<TabItem value="py" label="Python">
+
 ```python
+lat = 37.850; lon = -120.083; 
+zoom = 11
+image_collection_name = "LANDSAT/LC08/C01/T1_TOA"
+date_start = '2013-08-17'
+date_end = '2013-09-27'
+name = 'Landsat  8 TOA spectrum'
+point = ee.Geometry.Point([lon, lat])
+
+image = (
+    ee.ImageCollection(image_collection_name)
+         .filterBounds(point)
+         .filterDate(date_start, date_end)
+         .sort('CLOUD_COVER')
+         .first()
+)
+
 # Build Burn Index expression
 exp = '1.0  / ((0.1 - RED)**2 + (0.06 - NIR)**2)';
 bai = image.expression(exp, 
@@ -299,6 +574,8 @@ vizParams = {
 map6 = build_map(lat, lon, zoom, vizParams, bai, name)
 map6
 ```
+</TabItem>
+</Tabs>
 
 ![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B03-09.png)
 
@@ -311,8 +588,53 @@ The charcoal burn area is now very evident. Being that Landsat has historical da
 The Normalized Burn Ratio Thermal (NBRT) was developed based on the idea that burned land has low NIR reflectance (less vegetation), high SWIR reflectance (think ash), and high brightness temperature ([Holden et al. 2005](http://www.tandfonline.com/doi/abs/10.1080/01431160500239008)). Unlike the other indices, a lower NBRT means a higher likelihood of recent burn (for visualization, reverse the scale). This index can be used to diagnose the severity of wildfires (see [van Wagtendonk et al. 2004](http://www.sciencedirect.com/science/article/pii/S003442570400152X)).
 
 
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+var point = ee.Geometry.Point(-120.083, 37.850);
+var landsat = ee.ImageCollection("LANDSAT/LC08/C01/T1_TOA")
+var image = ee.Image(landsat
+  .filterBounds(point)
+  .filterDate('2013-08-17', '2013-09-27')
+  .sort('CLOUD_COVER')
+  .first());
+var trueColor = {bands: ['B4', 'B3', 'B2'], 
+                 min: 0, max: 0.3};   
+Map.centerObject(point, 12);                  
+Map.addLayer(image, trueColor, 'image');  
+// Build Burn Index expression
+var exp = '(NIR - 0.0001 * SWIR *  Temp) / (NIR + 0.0001 * SWIR * Temp)'
+var nbrt = image.expression(exp,   
+                                {'NIR': image.select('B5'),   
+                                 'SWIR': image.select('B7'),   
+                                 'Temp': image.select('B11')  
+                                });  
+var burnPalette = ['green', 'blue', 'yellow', 'red'];   
+Map.addLayer(nbrt, {min: 1, max: 0.9,  palette: burnPalette}, 'NBRT'); 
+
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
 ```python
-   
+lat = 37.850; lon = -120.083; 
+zoom = 11
+image_collection_name = "LANDSAT/LC08/C01/T1_TOA"
+date_start = '2013-08-17'
+date_end = '2013-09-27'
+name = 'Landsat  8 TOA spectrum'
+point = ee.Geometry.Point([lon, lat])
+
+image = (
+    ee.ImageCollection(image_collection_name)
+         .filterBounds(point)
+         .filterDate(date_start, date_end)
+         .sort('CLOUD_COVER')
+         .first()
+)
+
 # Build Burn Index expression
 exp = '(NIR - 0.0001 * SWIR *  Temp) / (NIR + 0.0001 * SWIR * Temp)'
 nbrt = image.expression(exp, {
@@ -330,6 +652,8 @@ map7 = build_map(lat, lon, zoom, vizParams, nbrt, name)
 map7
 #Map.addLayer(nbrt, {min: 1, max: 0.9,  palette: burnPalette}, 'NBRT'); 
 ```
+</TabItem>
+</Tabs>
 
 ![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B03-10.png)
 
@@ -342,6 +666,32 @@ $$\text{NDSI} = (\text{green} - \text{SWIR}) /(\text{green} + \text{SWIR})$$
 
 Let's look at Aspen, Colorado and use Landsat 8 data in the winter. You can use the layer manager to turn on and off the snow layer to compare results with the true color image. How does it compare? Reference the spectral reflectance chart at the beginning of the lab and look at the profile for snow. You will see that it has a distinct profile. In the image below, it does a very good job of matching the true color image - valleys and roads that do not have snow on them are accurately shown. 
 
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+var point = ee.Geometry.Point([-106.81, 39.19]);
+var landsat = ee.ImageCollection("LANDSAT/LC08/C01/T1_TOA")
+var image = ee.Image(landsat
+  .filterBounds(point)
+  .filterDate('2013-11-17', '2014-03-27')
+  .sort('CLOUD_COVER')
+  .first());
+var trueColor = {bands: ['B4', 'B3', 'B2'], 
+                 min: 0, max: 0.3};   
+Map.centerObject(point, 12);                  
+Map.addLayer(image, trueColor, 'image');  
+var ndsi = image.normalizedDifference(['B3', 'B6']);      
+var snowPalette = ['red', 'green', 'blue', 'white'];   
+Map.addLayer(ndsi,              
+             {min: -0.5, max: 0.5,  palette: snowPalette},              
+             'NDSI');  
+
+```
+
+</TabItem>
+
+<TabItem value="py" label="Python">
 
 ```python
 lat = 39.19; lon = -106.81; 
@@ -382,6 +732,8 @@ map8 = build_map(lat, lon, zoom, vizParams, image, name)
 map8.add_ee_layer(ndsi, vizParams2)
 map8
 ```
+</TabItem>
+</Tabs>
 
 ![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B03-11.png)
 
