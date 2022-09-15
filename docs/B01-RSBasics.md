@@ -831,3 +831,35 @@ map6
 </Tabs>
 
 ![Planet Labs](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B01-18.png)
+
+
+
+## Resampling and ReProjection
+
+Earth Engine makes every effort to handle projection and scale so that you don't have to. However, there are occasions where an understanding of projections is important to get the output you need. Earth Engine requests inputs to your computations in the projection and scale of the output. The map in the console uses a [Mercator projection](http://epsg.io/3857). 
+
+The scale is determined from the map's zoom level. When you add something to this map, Earth Engine secretly reprojects the input data to Mercator, resampling (with nearest neighbor) to the screen resolution pixels based on the map's zoom level, then does all the computations with the reprojected, resampled imagery. In the previous examples, the reproject() calls force the computations to be done at the resolution of the input pixels.
+
+If you are familiar working with remote sensing data in another programming language, such as R or Python, you have to deal with projections and resampling on your own. Google Earth Engine takes care of this behind the scenes, which simplifies your work. We mention it here because this is a change when starting to use GEE. A more thorough discussion about projections is in the [documentation](https://developers.google.com/earth-engine/guides/projections). 
+
+Bottom line: **You should rarely, if ever, have to use `reproject()` and `resample()`.** 
+
+
+## Additional Exercises
+
+Now that we have some familiarity with higher quality images, let's look at the (broken) Landsat 7 satellite. Using what we've learned in this lab, select an image from Landsat 7 that contains the Blacksburg area with minimal cloud cover (for now, using the Collection 1 Tier 1 calibrated top-of-atmosphere (TOA) reflectance data product). Look at the image. 
+
+> **Question 5**: What is the obvious (hint: post-2003) problem with the Landsat 7 image? What is the nature of that problem and what have some researchers done to try to correct it? Please research online in addition to using what you have learned in class/from the book.
+
+> **Question 6**: Name three major changes you can view in the Blacksburg Area in the last decade using any of the above imagery (and state the source).
+
+Conduct a search to compare the technical characteristics of the following sensors: 
+
+1. MODIS (NASA) versus Sentinel (ESA)
+2. AVHRR (NASA) versus IRS-P6 (or choose another Indian Remote Sensing satellite)  
+
+* Note: when using the internet to answer this question, be sure to cite your sources and ensure that you are obtaining information from an official, reputable source!
+
+---
+
+> **Question 7**: Based on the characteristics you describe, for which applications is one sensor likely to be more suitable than the other ones?
