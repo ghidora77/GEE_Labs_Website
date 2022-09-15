@@ -412,27 +412,52 @@ map3
 
 ![Elevation Map](https://loz-webimages.s3.amazonaws.com/GEE_Labs/A03-06.png)
 
-
 <Tabs>
 <TabItem value="js" label="JavaScript">
 
 ```javascript
-// Make a list of Features.
-var features = [
-  ee.Feature(ee.Geometry.Rectangle(30.01, 59.80, 30.59, 60.15), {name: 'Voronoi'}),
-  ee.Feature(ee.Geometry.Point(-73.96, 40.781), {name: 'Thiessen'}),
-  ee.Feature(ee.Geometry.Point(6.4806, 50.8012), {name: 'Dirichlet'})
-];
+// Define the variables
+var lat = 13.7; var lon = 2.54
+var zoom = 11
 
-// Create a FeatureCollection from the list and print it.
-var fromList = ee.FeatureCollection(features);
-print(fromList);
+//name = 'Shuttle Radar Topography Mission (SRTM)'
+// The input image to reduce, in this case an SRTM elevation map.
+var image = ee.Image('CGIAR/SRTM90_V4');
+Map.addLayer(image, {'min':0, 'max':800}, 'SRTM')
+
+// Build a polygon within the country of Niger in GEE Code Editor
+var poly = ee.Geometry.Polygon(
+        [[[1.3574234405151886, 14.106344008176682],
+          [1.3574234405151886, 12.888520121683442],
+          [3.8842789092651886, 12.888520121683442],
+          [3.8842789092651886, 14.106344008176682]]]
+)
+
+//Reduce the image within the given region, using a reducer that
+// computes the max pixel value.  We also specify the spatial
+// resolution at which to perform the computation, in this case 200
+// meters.
+var max = image.reduceRegion({
+  reducer: ee.Reducer.max(),
+  geometry: poly,
+  scale: 200
+})
+// Print the result (a Dictionary) to the console.
+print(max)
 ```
 
 </TabItem>
 <TabItem value="py" label="Python">
 
 ```python
+# Define the variables
+lat = 13.7; lon = 2.54
+zoom = 11
+
+name = 'Shuttle Radar Topography Mission (SRTM)'
+# The input image to reduce, in this case an SRTM elevation map.
+image = ee.Image('CGIAR/SRTM90_V4')
+
 # Build a polygon within the country of Niger in GEE Code Editor
 poly = ee.Geometry.Polygon(
         [[[1.3574234405151886, 14.106344008176682],
