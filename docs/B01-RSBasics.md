@@ -1,3 +1,6 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 # Lab 1 - Remote Sensing Basics
 
 ## Overview
@@ -93,6 +96,9 @@ Import NAIP imagery by searching for 'naip' and choosing the *'NAIP: National Ag
 
 Get a single, recent NAIP image over your study area and inspect it:
 
+<Tabs>
+
+<TabItem value="py" label="Python">
 
 ```python
 #!pip install geemap
@@ -105,7 +111,33 @@ def build_map(lat, lon, zoom, vizParams, image, name):
 # Initialize the Earth Engine module.
 ee.Initialize()
 ```
+</TabItem>
+</Tabs>
 
+
+
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+// Point at Virginia Tech  
+var point = ee.Geometry.Point([-80.42, 37.22]);
+// Import the NAIP imagery
+var naip = ee.ImageCollection("USDA/NAIP/DOQQ")
+//  Get a single NAIP image over the area of interest.  
+var  image = ee.Image(naip  
+                      .filterBounds(point)
+                      .sort('system:time_start', false)
+                      .first());
+//  Print the image to the console.  
+print('Inspect the image object:', image);     
+//  Display the image with the default visualization.  
+Map.centerObject(point, 18);  
+Map.addLayer(image, {}, 'Original image');
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
 
 ```python
 lat = 37.22; lon = -80.42
@@ -129,6 +161,8 @@ vizParams = {
 map = build_map(lat, lon, zoom, vizParams, image, name)
 map
 ```
+</TabItem>
+</Tabs>
 
 ![NAIP](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B01-08.png)
 
@@ -143,12 +177,23 @@ Evaluate the image object printed to the console by selecting the wrench and cli
 In addition to using the dropdowns, you can also access these data programmatically with the `.projection()` method:
 
 
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+// Display the projection of band 0
+print('Inspect the projection of band 0:', image.select(0).projection());
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
 ```python
 # Display the projection of band 0
 print('Inspect the projection of band 0:', image.select(0).projection().getInfo())
 ```
-
-    Inspect the projection of band 0: {'type': 'Projection', 'crs': 'EPSG:26917', 'transform': [0.6, 0, 549629.3999999999, 0, -0.6, 4123089]}
+</TabItem>
+</Tabs>
 
 Note that the projection can differ by band, which is why it's good practice to inspect the projection of individual image bands. If you call `.projection()` on an image for which the projection differs by band, you'll get an error. Exchange the NAIP imagery with the Planet SkySat MultiSpectral image collection, and note that the error occurs because the 'P' band has a different pixel size than the others. Explore the `ee.Projection` docs to learn about useful methods offered by the `Projection` object. To play with projections offline, try [this tool](http://www.giss.nasa.gov/tools/gprojector/).
 
@@ -180,6 +225,28 @@ There are two Moderate Resolution Imaging Spectro-Radiometers ([MODIS](http://mo
 In the code below, we are working with the MODIS Terra Surface Reflectance 8-day Global 500m resolution data. Change the number in the `zoom` variable to scroll in and out - notice that when scrolled in each pixel is quite large and granular. 
 
 
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+var dataset = ee.ImageCollection('MODIS/006/MOD09A1')
+                  .filter(ee.Filter.date('2018-01-01', '2018-05-01'))
+                  .first();
+var trueColor =
+    dataset.select(['sur_refl_b01', 'sur_refl_b04', 'sur_refl_b03']);
+var trueColorVis = {
+  min: -100.0,
+  max: 3000.0,
+};
+var zoom = 10
+// Set Center on Virginia Tech
+Map.setCenter(-80.42, 37.22, zoom);
+Map.addLayer(trueColor, trueColorVis, 'True Color');
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
 ```python
 # Define the variables
 lat = 13.7; lon = 2.54
@@ -202,14 +269,47 @@ vizParams = {
 map = build_map(lat, lon, zoom, vizParams, image, name)
 map
 ```
+</TabItem>
+</Tabs>
 
 ![MODIS](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B01-10.png)
 
 
 We will discuss some of the benefits of working with a false-color imagery in later sections, but we can modify the bands we want to visualize. In this case, we are using a random set of bands, where the value of band six is visualized with red, band three is visualized with green, and band one with blue. Because the value of band six has a higher range, this image shows up with a heavy red presence. 
 
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+var dataset = ee.ImageCollection('MODIS/006/MOD09A1')
+                  .filter(ee.Filter.date('2018-01-01', '2018-05-01'))
+                  .first();
+var modisBands = ['sur_refl_b06', 'sur_refl_b03', 'sur_refl_b01'];
+// Define visualization parameters for MODIS.
+var modisVis = {bands: modisBands, min: 0, max: 3000};
+var zoom = 10
+// Set Center on Virginia Tech
+Map.setCenter(-80.42, 37.22, zoom);
+// Add the MODIS image to the map
+Map.addLayer(dataset, modisVis, 'MODIS');
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
 
 ```python
+# Define the variables
+lat = 13.7; lon = 2.54
+zoom = 11
+image_collection_name = 'MODIS/006/MOD09A1'
+date_start = '2018-01-01'
+date_end = '2018-05-01'
+name = 'MODIS'
+image = (
+    ee.ImageCollection(image_collection_name)
+         .filterDate(date_start, date_end)
+         .first()
+)
 bands = ['sur_refl_b06', 'sur_refl_b03', 'sur_refl_b01']
 
 vizParams = {
@@ -220,12 +320,38 @@ vizParams = {
 map1 = build_map(lat, lon, zoom, vizParams, image, name)
 map1
 ```
+</TabItem>
+</Tabs>
 
 ![MODIS False Color](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B01-11.png)
 
 Compare the  size of MODIS pixels to objects on the ground. It may help to turn on the satellite basemap and lower the opacity of the layer (top right of map section of code editor) to see high-resolution data for comparison.
 
 Print the size of the pixels (in meters) to the console. You can read more about how Google Earth Engine works with scale in their [documentation](https://developers.google.com/earth-engine/guides/scale). While the listed pixel resolution for this satellite platform is 500m, the printout is likely different - this is due to the way that GEE aggregates pixels to fit into a 256x256 tile. The details of this process are outside the scope of this course, but understand that GEE is conducting projections and resampling behind the scenes.  
+
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+var dataset = ee.ImageCollection('MODIS/006/MOD09A1')
+                  .filter(ee.Filter.date('2018-01-01', '2018-05-01'))
+                  .first();
+
+// Get the scale of the data from the first band's projection:
+var modisScale = dataset.select('sur_refl_b01')
+    .projection()
+    .nominalScale();
+print('MODIS scale:', modisScale);
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```python
+
+```
+</TabItem>
+</Tabs>
 
 > Question: What is the size of the pixel?
 
@@ -235,6 +361,24 @@ Multi-spectral [scanners](https://landsat.gsfc.nasa.gov/multispectral-scanner-sy
 
 Note one very important point - always refer to the documentation to make sure you are working with the correct information. If you look at the Landsat 8 documentation, you'll see that `SR_B4` means something different (It's Near InfraRed in Landsat 5, but the Red band in Landsat 8)
 
+
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+// Update - does not match the Python
+// Landsat 5 Collection 1 Tier 1 
+// Images between 1985 and 1989
+var dataset = ee.ImageCollection('LANDSAT/LM05/C01/T1')
+                  .filterDate('1985-01-01', '1989-12-31');
+// NIR, Red Green Band                
+var nearInfrared321 = dataset.select(['B3', 'B2', 'B1']);
+Map.setCenter(-80.42, 37.22, 12);
+Map.addLayer(nearInfrared321, {}, 'Near Infrared (321)');
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
 
 ```python
 # Landsat 5
@@ -256,6 +400,34 @@ vizParams = {
 map2 = build_map(lat, lon, zoom, vizParams, image, name)
 map2
 ```
+</TabItem>
+</Tabs>
+
+As before, let's extract the nominal scale from the image and print it to the console. 
+
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+// Landsat 5 Collection 1 Tier 1 
+// Images between 1985 and 1989
+var dataset = ee.ImageCollection('LANDSAT/LM05/C01/T1')
+                  .filterDate('1985-01-01', '1989-12-31');
+// NIR, Red Green Band                
+var nearInfrared321 = dataset.select(['B3', 'B2', 'B1']);
+// Get the scale of the MSS data from its projection:
+var mssScale = nearInfrared321.first().projection().nominalScale();
+print('MSS scale:', mssScale);
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```python
+## TODO: Add in Python equiv
+```
+</TabItem>
+</Tabs>
 
 ![Landsat 5](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B01-12.png)
 
@@ -263,6 +435,27 @@ The Thematic Mapper ([TM](https://landsat.gsfc.nasa.gov/thematic-mapper/)) was f
 
 > You can find the information on the different Landsat missions on the GEE datasets [page](https://developers.google.com/earth-engine/datasets/catalog/landsat). There is some fascinating information about the history of the Landsat missions, but for the purposes of this exercise find the Landsat mission that you are interested in and navigate to the 'Bands' tab - here you can find the naming for the bands and the associate description. 
 
+
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+var tm = ee.ImageCollection("LANDSAT/LT05/C01/T1_TOA");
+// Filter TM imagery by location, date and cloudiness.
+var tmImage = ee.Image(tm
+            .filterBounds(Map.getCenter())
+            .filterDate('2011-05-01', '2011-10-01')
+            .sort('CLOUD_COVER')
+            .first());
+// Display the TM image as a color-IR composite.
+Map.addLayer(tmImage, {bands: ['B4', 'B3', 'B2'], min: 0, max: 0.4}, 'TM'); 
+// Get the scale of the TM data from its projection:
+var tmScale = tmImage.select('B1').projection().nominalScale();
+print('TM scale:', tmScale);
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
 
 ```python
 # Landsat 8
@@ -284,13 +477,28 @@ vizParams = {
 map3 = build_map(lat, lon, zoom, vizParams, image, name)
 map3
 ```
+</TabItem>
+</Tabs>
 
 ![Landsat False Color](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B01-13.png)
+
+> **Question 1**: By assigning the NIR, red, and green bands to RGB (4-3-2), what features appear bright red in a Landsat 5 image and why? Explore water bodies, urban centers, farms and forests to find relationships between the bands. 
+
 
 ### Sentinel
 
 The Copernicus Program is a European incentive that is run by the European Space Agency (ESA). Sentinel is the satellite constellation that collects high-resolution and Synthetic Aperture Radar imagery globally. Sentinel has 10m resolution. 
 
+
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+TODO: Add in JS Equivalent
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
 
 ```python
 image_collection_name = 'COPERNICUS/S2_SR'
@@ -313,6 +521,8 @@ vizParams = {
 map4 = build_map(lat, lon, zoom, vizParams, image, name)
 map4
 ```
+</TabItem>
+</Tabs>
 
 ![Sentinel](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B01-14.png)
 
@@ -324,6 +534,23 @@ The National Agriculture Imagery Program ([NAIP](http://www.fsa.usda.gov/program
 
 Since NAIP imagery is distributed as 'quarters' of Digital Ortho Quads at irregular intervals, load everything from 2012 and [mosaic()](https://developers.google.com/earth-engine/guides/ic_composite_mosaic) the image together.
 
+
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+var naip = ee.ImageCollection("USDA/NAIP/DOQQ");
+// Get NAIP images for the study period and region of interest.
+var naipImages = naip.filterDate('2012-01-01', '2012-12-31')
+                      .filterBounds(Map.getCenter());
+// Mosaic adjacent images into a single image.
+var naipImage = naipImages.mosaic();
+// Display the NAIP mosaic as a color-IR composite.
+Map.addLayer(naipImage, {bands: ['R', 'G', 'B']}, 'NAIP');
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
 
 ```python
 image_collection_name = "USDA/NAIP/DOQQ"
@@ -346,6 +573,8 @@ vizParams = {
 map5 = build_map(37.23, -80.41, 16, vizParams, image, name)
 map5
 ```
+</TabItem>
+</Tabs>
 
 ![NAIP](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B01-15.png)
 
@@ -353,6 +582,27 @@ map5
 Look at the difference in the resolution - with Landsat and MODIS, each pixel could broadly identify the land type, but NAIP imagery has very high resolution - you can see individual parked cars, the outline of small trees, building envelopes, etc. Start asking yourself how the spatial resolutions of different platforms could help you answer unique questions.
 
 Check the scale of NAIP by getting the first image from the mosaic (images within the mosaic might have different projections) and getting its scale (meters).
+
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+// Get the NAIP resolution from the first image in the mosaic.
+var naipScale = ee.Image(naipImages.first()).
+              projection().nominalScale();   
+print('NAIP scale:', naipScale);
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```python
+# TODO: Update for Python
+```
+</TabItem>
+</Tabs>
+
+> **Question 2**: We looked at NAIP imagery from 2012 and found that the spatial resolution was 1m around Blacksburg. What is the scale of the most recent round (2018) of NAIP imagery for the area around Blacksburg, VA? How did you determine the scale?
 
 ## Temporal Resolution
 
@@ -368,6 +618,64 @@ Resolution of a few popular platforms:
 4. NAIP:       Annual
 5. Planet:     Daily
 
+Landsats (5 and later) produce imagery at 16-day cadence. TM and MSS are on the same satellite (Landsat 5), so it you can print the TM series to see the temporal resolution. Unlike MODIS, data from these sensors is produced on a scene basis, so to see a time series, it's necessary to filter by location in addition to time. You can see that some images have been skipped (e.g., between January 7th and February 8th) possibly due to quality control. 
+
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+var tm = ee.ImageCollection("LANDSAT/LT05/C01/T1_TOA");
+// Filter to get a year's worth of TM scenes.
+var tmSeries = tm
+  .filterBounds(Map.getCenter())
+  .filterDate('2011-01-01', '2011-12-31');
+// Print the filtered TM ImageCollection. 
+print('TM series:', tmSeries);
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```python
+# TODO: Update
+```
+</TabItem>
+</Tabs>
+
+While you look at the date ranges in the filename or expand each Image in the list to look at the `Date_Acquired` property, there is a better way to extract this information programmatically.  In this case, we are building a function within JavaScript and extracting the date and time from each image
+
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+var tm = ee.ImageCollection("LANDSAT/LT05/C01/T1_TOA");
+// Filter to get a year's worth of TM scenes.
+var tmSeries = tm
+  .filterBounds(Map.getCenter())
+  .filterDate('2011-01-01', '2011-12-31');
+// Build a function called getDate
+var getDate = function(image) {
+// Note that you need to cast the argument
+  var time = ee.Image(image).get('system:time_start');
+// Return the time (in milliseconds since Jan 1, 1970) as a Date
+  return ee.Date(time);
+};
+var dates = tmSeries.toList(100).map(getDate);
+print(dates)
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```python
+# TODO: Update
+```
+</TabItem>
+</Tabs>
+
+**Question 4**: What is the temporal resolution of the Sentinel-2 satellites? How can you determine this?
+
+
 ## Spectral Resolution
 
 Spectral resolution refers to the number and width of spectral bands in which the sensor takes measurements. You can think of the width of spectral bands as the wavelength interval on the electromagnetic spectrum for each band. A sensor that measures radiance in multiple bands (e.g., collects a value for red, green, blue and near infrared) is called a *multispectral* sensor (generally 3-10 bands), while a sensor with many bands (possibly hundreds) is called a *hyperspectral* sensor (these are not hard and fast definitions). For example, compare the [multi-spectral OLI](http://landsat.gsfc.nasa.gov/?p=5779) aboard Landsat 8 to [Hyperion](https://eo1.usgs.gov/sensors/hyperioncoverage), a hyperspectral sensor that collects 220 unique spectral channels aboard the EO-1 satellite.
@@ -377,6 +685,38 @@ You will have to read through the documentation for each image collection to und
 ![Specctral Ranges per Band](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B01-16.png)
 
 **Important note**: not all bands contain radiometric data. Some are quality control data, while others include information about the zenith or cloud coverage. You can use these other bands to either mask out low-quality pixels or conduct additional calculations. It is a good idea to read through the documentation of each dataset you will be working with to get a good understanding of the band structure.
+
+You can use the code below to check the number of bands in Earth Engine, but you will have to read through the documentation for each image collection to understand the spectral response of the bands. 
+
+To see the number of bands in an image, use:
+
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+var dataset = ee.ImageCollection('MODIS/006/MOD09A1')
+                  .filter(ee.Filter.date('2018-01-01', '2018-05-01'))
+                  .first();
+// Get the MODIS band names as a List
+var modisBands = dataset.bandNames();
+// Print the list.
+print('MODIS bands:', modisBands);
+// Print the length of the list.
+print('Length of the bands list:', modisBands.length());
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```python
+# TODO: Update
+```
+</TabItem>
+</Tabs>
+
+> **Question 3.1**: What is the spectral resolution of the MODIS instrument? How did you determine it?
+
+> **Question 3.2**: Investigate the bands available for the USDA NASS Cropland Data Layers (CDL). What do the individual bands within the CDL represent? Which band(s) would you select if you were interested in evaluating the extent of pasture areas in the US?
 
 ## Radiometric Resolution
 
@@ -399,8 +739,68 @@ You've learned about how an image stores pixel data in each band as digital numb
 
 For instance, if you are working with NAIP imagery, you can set the min radiometric resolution to 0 and the max to 255 to model 8-bit radiometric resolution. 
 
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+var dataset = ee.ImageCollection('USDA/NAIP/DOQQ')
+                  .filter(ee.Filter.date('2017-01-01', '2018-12-31'));
+var trueColor = dataset.select(['R', 'G', 'B']);
+// Scale of min, max
+var trueColorVis = {
+  min: 0.0,
+  max: 255.0,
+};
+Map.setCenter(-80.42, 37.22, 15);
+Map.addLayer(trueColor, trueColorVis, 'True Color');
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```python
+image_collection_name = "USDA/NAIP/DOQQ"
+date_start = '2012-01-01'
+date_end = '2012-12-31'
+name = 'NAIP'
+point = ee.Geometry.Point([-80.41, 37.23])
+image = (
+    ee.ImageCollection(image_collection_name)
+            .filterDate(date_start, date_end)
+            .filterBounds(point)
+)
+image = image.mosaic()
+bands = ['R', 'G', 'B']
+vizParams = {
+    'bands': bands,
+    #'min': 0, 
+    #'max': 255
+}
+map5 = build_map(37.23, -80.41, 16, vizParams, image, name)
+map5
+```
+</TabItem>
+</Tabs>
+
 By contrast, the Planet MultiSpectral SkySat imagery uses 16 bit collection, so you have to adjust the min and max values.  If your image is not displaying correctly (such as a black screen) check the documentation for your data and adjust your min and max values. 
 
+
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+var dataset = ee.ImageCollection('SKYSAT/GEN-A/PUBLIC/ORTHO/MULTISPECTRAL');
+var falseColor = dataset.select(['R', 'G', 'B']);
+var falseColorVis = {
+  min: 200.0,
+  max: 6000.0,
+};
+Map.setCenter(-70.892, 41.6555, 15);
+Map.addLayer(falseColor, falseColorVis, 'False Color');
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
 
 ```python
 lat = 41.66; lon = -70.9; 
@@ -427,5 +827,7 @@ vizParams = {
 map6 = build_map(lat, lon, zoom, vizParams, image, name)
 map6
 ```
+</TabItem>
+</Tabs>
 
 ![Planet Labs](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B01-18.png)
