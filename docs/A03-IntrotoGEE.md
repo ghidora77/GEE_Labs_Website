@@ -236,7 +236,7 @@ map
 </TabItem>
 </Tabs>
 
-![map of Niger](https://loz-webimages.s3.amazonaws.com/GEE_Labs/03-02.png)
+![map of Niger](https://loz-webimages.s3.amazonaws.com/GEE_Labs/A03-02.png)
 
 ### Sensed versus Derived Imagery
 
