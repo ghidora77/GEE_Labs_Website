@@ -1,4 +1,5 @@
-
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
 # Prelab - Intro to GEE
 
@@ -55,22 +56,48 @@ Understanding how Google Earth Engine works is critical for its effective use. T
 When you run code in a code block or the code editor, that is considered the `client` side. You can write code in the editor or your notebook and the code will be processed completely within your browser or local machine. The code chunk below simply creates variables `x` and `y`, adds them together as the variable `z` and prints the result. Google Earth Engine plays no role in the execution of the code.
 
 
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+var x = 1; var y = 2;
+var z = x + y;
+print(z)
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
 ```python
+
 x = 1
 y = 2
 z = x + y
 print(z)
 ```
-
-    3
-
+</TabItem>
+</Tabs>
 
 To begin using the cloud computing resources of GEE, we have to call upon the server side. Let's say we want to import an image collection. In the snippet below, there is an `ee` before the `ImageCollection` constructor. In simple terms, this signals to Earth Engine that we will be using its resources. Without that indicator, GEE does not play a role in operations.
 
 
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+var sentinelCollection = ee.ImageCollection('COPERNICUS/S2_SR');
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
 ```python
+
 sentinelCollection = ee.ImageCollection('COPERNICUS/S2_SR')
 ```
+</TabItem>
+</Tabs>
+
 
 Over time, you will gain experience understanding the role of working with `client` side and the `server` side operations, but the main point in this section is that when programming, we will be building 'packages' that draw upon GEE resources to complete their operations.
 
@@ -163,6 +190,22 @@ As a result, we can now use the variable 'first' to visualize the image.
 There is a comprehensive [guide](https://developers.google.com/earth-engine/guides/image_visualization) to working on visualization with different types of imagery that goes quite in-depth. It is a worthwhile read and covers some interesting topics such as false-color composites, mosaicking and single-band visualization. Work with some of the code-snippets to understand how to build visualizations for different sets of imagery. 
 
 
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+var first = ee.ImageCollection('COPERNICUS/S2_SR')
+                .filterBounds(ee.Geometry.Point(-70.48, 43.3631))
+                .filterDate('2019-01-01', '2019-12-31')
+                .sort('CLOUDY_PIXEL_PERCENTAGE')
+                .first();
+Map.centerObject(first, 11);
+Map.addLayer(first, {bands: ['B4', 'B3', 'B2'], min: 0, max: 2000}, 'first');
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
 ```python
 # Define the variables
 lat = 13.7; lon = 2.54
@@ -190,6 +233,8 @@ map = build_map(lat, lon, zoom, vizParams, image, name)
 # Add the image layer to the map and display it.
 map
 ```
+</TabItem>
+</Tabs>
 
 ![map of Niger](https://loz-webimages.s3.amazonaws.com/GEE_Labs/03-02.png)
 
@@ -203,6 +248,21 @@ One additional note: GEE provides a rich suite of datasets, and while many of th
 Another common one is the National Cropland Data Layer - each pixel has 30m resolution, and defines the cropland type for the United States. Not all derived datasets are available all over the world, being that many are sponsored by government agencies acting in the purview of their own country. Explore the map below and match the code to the cropland type. 
 
 
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+var image = (ee.ImageCollection('USDA/NASS/CDL')
+                  .filter(ee.Filter.date('2018-01-01', '2019-12-31'))
+                  .first())
+var image = image.select('cropland')
+Map.centerObject(image, 11);
+Map.addLayer(image, {}, 'NLCD');
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
 ```python
 image = (ee.ImageCollection('USDA/NASS/CDL')
                   .filter(ee.Filter.date('2018-01-01', '2019-12-31'))
@@ -211,6 +271,9 @@ image = image.select('cropland')
 map1 = build_map(40.71, -100.55, 9, {}, image, 'NLCD')
 map1
 ```
+</TabItem>
+</Tabs>
+
 
 ![NLCD](https://loz-webimages.s3.amazonaws.com/GEE_Labs/A03-04.png)
 
@@ -244,6 +307,18 @@ A Feature in GEE is an object which stores a `geometry`  (`Point`, `Line`, `Poly
 
 Let's say we created an individual point, which we want to associate with data that we collected. The first line establishes the variable `point`, which is then used as the `geometry` to create a `feature`. The curly braces represent a dictionary, which creates `Key:Value` pairs, which in our case is the type of tree and a measurement of the size. This new variable, `treeFeature`, now contains geographic information along with attribute data about that point. 
 
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+// geometry created from within GEE
+var point = ee.Geometry.Point([-79.68, 42.06]);
+// Create a Feature from the geometry
+var treeFeature = ee.Feature(point, {type: 'Pine', size: 15});
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
 
 ```python
 # Earth Engine Geometry
@@ -251,7 +326,8 @@ point = ee.Geometry.Point([-79.68, 42.06])
 # Create a Feature from the geometry
 treeFeature = ee.Feature(point, {'type': 'Pine', 'size': 15})
 ```
-
+</TabItem>
+</Tabs>
 
 Obviously this is just one point, but JavaScript and GEE engine provide functionality for bringing different data sources together and automatically associating geometries with attribute data. This can be done within GEE or outside, depending on your preferences.
 
@@ -259,6 +335,24 @@ Obviously this is just one point, but JavaScript and GEE engine provide function
 
 Just like the relationship between images and image collections, feature collections are features that can be grouped together for ease of use and analysis. They can be different types and combinations of geometry, as well as associated tabular data. The code segment from the documentation consolidates the operations discussed earlier. Each line has an interior layer which creates the geometry, which is then associated with attribute data (information within the {} ) and then converted to a Feature. This variable is a `list`, which contains three separate, individual features.  This is then converted to a feature collection with the command `ee.FeatureCollection(features)`
 
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+// Make a list of Features.
+var features = [
+  ee.Feature(ee.Geometry.Rectangle(30.01, 59.80, 30.59, 60.15), {name: 'Voronoi'}),
+  ee.Feature(ee.Geometry.Point(-73.96, 40.781), {name: 'Thiessen'}),
+  ee.Feature(ee.Geometry.Point(6.4806, 50.8012), {name: 'Dirichlet'})
+];
+
+// Create a FeatureCollection from the list and print it.
+var fromList = ee.FeatureCollection(features);
+print(fromList);
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
 
 ```python
 # Make a list of Features.
@@ -270,7 +364,8 @@ features = [
 # Create a FeatureCollection from the list and print it.
 fromList = ee.FeatureCollection(features)
 ```
-
+</TabItem>
+</Tabs>
 
 If run this code block in GEE code editor, you can see the information that is contained within the Feature Collection - three elements (features) and two columns (the `index` and the `properties`). By clicking on the dropdown next to each one, you can see that the first feature is a Polygon that has the name of 'Voronoi'.
 
@@ -283,6 +378,23 @@ Once you have information in a Feature Collection, you can filter it to find spe
 Up until now, we have focused on objects: Images, Features, and Geometries. Reducers are a method of aggregating data for analysis. For instance, we could take an Image Collection and use `reducer` to find the average value of the magnitude of each pixel across all the images of the collection, simplifying the data into a single layer. Or we could reduce an image to a set of regions, grouping similar data together to create an aggregated map. The applications of Reducer are endless, and can be applied to both Images and Features. There are different functions for different object types, and Reducer can be combined and sequenced to create a chain of analysis. From the documentation, the code chunk below creates the variable `max` which is the maximum elevation (in meters) of the imagery within our bounding box.
 
 
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+// Define the variables
+var lat = 13.7; var lon = 2.54
+var zoom = 11
+
+//name = 'Shuttle Radar Topography Mission (SRTM)'
+// The input image to reduce, in this case an SRTM elevation map.
+var image = ee.Image('CGIAR/SRTM90_V4');
+Map.addLayer(image, {'min':0, 'max':800}, 'SRTM')
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
 ```python
 # Define the variables
 lat = 13.7; lon = 2.54
@@ -294,9 +406,31 @@ image = ee.Image('CGIAR/SRTM90_V4')
 map3 = build_map(lat, lon, zoom, {'min':0, 'max':800}, image, name)
 map3
 ```
+</TabItem>
+</Tabs>
+
 
 ![Elevation Map](https://loz-webimages.s3.amazonaws.com/GEE_Labs/A03-06.png)
 
+
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+// Make a list of Features.
+var features = [
+  ee.Feature(ee.Geometry.Rectangle(30.01, 59.80, 30.59, 60.15), {name: 'Voronoi'}),
+  ee.Feature(ee.Geometry.Point(-73.96, 40.781), {name: 'Thiessen'}),
+  ee.Feature(ee.Geometry.Point(6.4806, 50.8012), {name: 'Dirichlet'})
+];
+
+// Create a FeatureCollection from the list and print it.
+var fromList = ee.FeatureCollection(features);
+print(fromList);
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
 
 ```python
 # Build a polygon within the country of Niger in GEE Code Editor
@@ -319,6 +453,8 @@ max = image.reduceRegion(
 # Print the result (a Dictionary) to the console.
 pprint.pprint(max.getInfo())
 ```
+</TabItem>
+</Tabs>
 
 
 We have successfully calculated the maximum elevation in an area about the size of Niger in under 1 second! In future projects, we will calculate a wide range of usable values incredibly quickly. 
