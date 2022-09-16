@@ -13,7 +13,7 @@ Based on observations of agricultural land covers in the NIR-red spectral space,
 
 $$p_1 = R^T p_0$$
 
-where: 
+where:
 
 1. **$p_0$** is the original pixel vector (a stack of the *p* band values as an [Array](https://developers.google.com/earth-engine/arrays_intro)) 
 
@@ -62,6 +62,7 @@ var vizParams = {
   bands: ['brightness', 'greenness', 'wetness'],
   min: -0.1, max: [0.5,  0.1, 0.1]
 };
+Map.centerObject(point, 9)
 Map.addLayer(componentsImage, vizParams, 'TC components');  
 ```
 
@@ -123,6 +124,7 @@ map8
 
 ![Tassled Cap](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B03-13.png)
 
+> **Question 3:** Upload the a tasseled cap image from a point near Blacksburg, VA and interpret the output. what are some of the values that you can extract when using **Inspector**? Are the results meaningful? 
 
 #### Principal Component Analysis (PCA)
 
@@ -226,6 +228,13 @@ map8
 </Tabs>
 
 ![Tassled Cap](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B03-14.png)
+
+> **Question 4**: How much did you need to stretch the results to display outputs for principal component 2? 
+>
+> Display and upload images of each the other principal components, stretching each band as needed for visual interpretation and indicating how you selected the min and max values. 
+>
+> How do you interpret each PC band? On what basis do you make that interpretation? 
+
 
 
 #### Spectral Unmixing
@@ -375,7 +384,8 @@ var unmixed =  ee.Image(endmembers).matrixSolve(arrayImage);
 var unmixedImage = unmixed.arrayProject([0])
 				.arrayFlatten(
           [['bare', 'veg', 'water']]
-        );  
+        );
+Map.centerObject(point, 11)
 Map.addLayer(unmixedImage, {}, 'Unmixed');  
 ```
 
@@ -406,11 +416,11 @@ map8
 
 ![Tassled Cap](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B03-16.png)
 
+> Question 5: Repeat this process for Blacksburg, VA. Upload the mean spectra chart you generated for bare, water, and land and the map. Interpret the output of the image by selecting different pixels with **Inspector**
 
 #### Hue-Saturation-Value Transform
 
 The Hue-Saturation-Value (HSV) model [is a color transform of the RGB color space](https://en.wikipedia.org/wiki/HSL_and_HSV). Among many other things, it is useful for [pan-sharpening](https://en.wikipedia.org/wiki/Pansharpened_image). This involves converting an RGB to HSV, swapping the panchromatic band for the value (V), then converting back to RGB. For example, using the Landsat 8 scene:
-
 
 <Tabs>
 <TabItem value="js" label="JavaScript">
@@ -469,6 +479,7 @@ map8
 
 ![Tassled Cap](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B03-17.png)
 
+> **Question 6**: Compare the pan-sharpened image with the original image. What do you notice that's different? The same? 
 
 ## Spectral Transformation
 
@@ -625,6 +636,8 @@ map9
 </TabItem>
 </Tabs>
 
+> **Question 7**: What happens as you increase the pixel radius for each smoothing? What differences can you discern between the weights and the visualizations of the two smoothing kernels?
+
 
 #### Edge Detection
 
@@ -677,3 +690,13 @@ map10
 </Tabs>
 
 ![Tassled Cap](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B03-20.png)
+
+> **Question 8:** Choose another edge detection method and upload the image - what characteristics do you see, and how does it compare to Laplacian Edge detection? 
+
+## Additional Exercises
+
+> **Question 9**: Look in google scholar to identify 2-3 publications that have used NDVI and two-three that used EVI. For what purposes were these indices used and what was the justification provided for that index? 
+
+> **Question 10**: Discuss a spectral index that we did not cover in this lab relates to your area of research/interest. What is the the name of the spectral index, the formula used to calculate it, and what is it used to detect? Provide a citation of an academic article that has fruitfully used that index. 
+
+> **Question 11**: Find 1-2 articles that use any of the linear transformation methods we practiced in this lab in the service of addressing an important social issue (e.g., one related to agriculture, environment, or development). Provide the citations and discussed how the transformation is used and how it's justified in the article. 
