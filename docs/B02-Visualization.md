@@ -405,7 +405,7 @@ map3
 ![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B02-07.png)
 
 
-Examine the radiance image by using **Inspector** and clicking different land cover types on the map near Blacksburg, VA. Click the chart icon (![Chart](./im/im_02_04.png)) in the console to get a bar chart of the different radiance values for each pixel. If the shape of the chart resembles Figure 1, that's because the radiance (in bands 1-7) is mostly reflected solar irradiance. The radiance detected in bands 10-11 is thermal, and is *emitted* (not reflected) from the surface.
+Examine the radiance image by using **Inspector** and clicking different land cover types on the map near Blacksburg, VA. Click the chart icon in the console to get a bar chart of the different radiance values for each pixel. If the shape of the chart resembles Figure 1, that's because the radiance (in bands 1-7) is mostly reflected solar irradiance. The radiance detected in bands 10-11 is thermal, and is *emitted* (not reflected) from the surface.
 
 ![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B02-08.png)
 
