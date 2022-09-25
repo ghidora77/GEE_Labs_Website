@@ -179,14 +179,15 @@ There is a comprehensive [guide](https://developers.google.com/earth-engine/guid
 <TabItem value="js" label="JavaScript">
 
 ```javascript
-var lat = 13.7; var lon = 2.54
+// Code Chunk 1
+var lat = 13.7; var lon = 2.54; var zoom = 11
 var first = ee.ImageCollection('COPERNICUS/S2_SR')
                 .filterBounds(ee.Geometry.Point(2.54, 13.7))
                 .filterDate('2019-01-01', '2019-12-31')
                 .sort('CLOUDY_PIXEL_PERCENTAGE')
                 .first();
 // Define a map centered in Niger
-Map.centerObject(first, 11);
+Map.centerObject(first, zoom);
 Map.addLayer(first, {bands: ['B4', 'B3', 'B2'], min: 0, max: 3300}, 'first');
 ```
 
@@ -194,7 +195,8 @@ Map.addLayer(first, {bands: ['B4', 'B3', 'B2'], min: 0, max: 3300}, 'first');
 <TabItem value="py" label="Python">
 
 ```python
-lat = 13.7; lon = 2.54
+# Code Chunk 1
+lat = 13.7; lon = 2.54; zoom = 11
 image = (
     ee.ImageCollection('COPERNICUS/S2_SR')
          .filterBounds(ee.Geometry.Point(lon, lat))
@@ -209,7 +211,7 @@ vizParams = {
     'max': 3300
 }
 # Define a map centered in Niger
-map = build_map(lat, lon, 11, vizParams, image, 'Sentinel - Surface Reflection')
+map = build_map(lat, lon, zoom, vizParams, image, 'Sentinel - Surface Reflection')
 map
 ```
 </TabItem>
@@ -231,6 +233,7 @@ Another common one is the National Cropland Data Layer - each pixel has 30m reso
 <TabItem value="js" label="JavaScript">
 
 ```javascript
+// Code Chunk 2
 var lat = 40.71; var lon = -100.55; var zoom = 11
 var image = (ee.ImageCollection('USDA/NASS/CDL')
              .filter(ee.Filter.date('2018-01-01', '2019-12-31'))
@@ -245,6 +248,7 @@ Map.addLayer(image, {}, 'NLCD');
 <TabItem value="py" label="Python">
 
 ```python
+# Code Chunk 2
 lat = 40.71; lon = -100.55; zoom = 11
 image = (ee.ImageCollection('USDA/NASS/CDL')
          .filter(ee.Filter.date('2018-01-01', '2019-12-31'))
@@ -368,6 +372,7 @@ Up until now, we have focused on objects: Images, Features, and Geometries. Redu
 <TabItem value="js" label="JavaScript">
 
 ```javascript
+// Code Chunk 3A
 var lat = 13.7; var lon = 2.54; var zoom = 9
 // The input image to reduce, in this case an SRTM elevation map.
 var image = ee.Image('CGIAR/SRTM90_V4');
@@ -379,6 +384,7 @@ Map.addLayer(image, {'min':0, 'max':800}, 'Shuttle Radar Topography Mission (SRT
 <TabItem value="py" label="Python">
 
 ```python
+# Code Chunk 3A
 # Define the variables
 lat = 13.7; lon = 2.54; zoom = 9
 # The input image to reduce, in this case an SRTM elevation map.
@@ -397,6 +403,7 @@ map
 <TabItem value="js" label="JavaScript">
 
 ```javascript
+// Code Chunk 3B
 // Build a polygon within the country of Niger in GEE Code Editor
 var poly = ee.Geometry.Polygon(
         [[[1.0381928005666774, 23.471775399486358],
@@ -423,6 +430,7 @@ print(max)
 <TabItem value="py" label="Python">
 
 ```python
+# Code Chunk 3B
 # Build a polygon within the country of Niger in GEE Code Editor
 poly = ee.Geometry.Polygon(
         [[[1.0381928005666774, 23.471775399486358],

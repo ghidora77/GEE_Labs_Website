@@ -97,42 +97,16 @@ Import NAIP imagery by searching for 'naip' and choosing the *'NAIP: National Ag
 Get a single, recent NAIP image over your study area and inspect it:
 
 <Tabs>
-
-<TabItem value="py" label="Python">
-
-```python
-#!pip install geemap
-import ee, geemap, pprint
-#ee.Authenticate()
-def build_map(lat, lon, zoom, vizParams, image, name):
-    map = geemap.Map(center = [lat, lon], zoom = zoom)
-    map.addLayer(image, vizParams, name)
-    return map
-# Initialize the Earth Engine module.
-ee.Initialize()
-```
-</TabItem>
-</Tabs>
-
-
-
-<Tabs>
 <TabItem value="js" label="JavaScript">
 
 ```javascript
-// Point at Virginia Tech  
-var point = ee.Geometry.Point([-80.42, 37.22]);
-// Import the NAIP imagery
-var naip = ee.ImageCollection("USDA/NAIP/DOQQ")
+var lat = 37.22; var lon = -80.42; var zoom = 15
 //  Get a single NAIP image over the area of interest.  
-var  image = ee.Image(naip  
-                      .filterBounds(point)
+var  image = ee.Image(ee.ImageCollection("USDA/NAIP/DOQQ")  
+                      .filterBounds(ee.Geometry.Point([lon, lat]))
                       .sort('system:time_start', false)
                       .first());
-//  Print the image to the console.  
-print('Inspect the image object:', image);     
-//  Display the image with the default visualization.  
-Map.centerObject(point, 18);  
+Map.centerObject(ee.Geometry.Point([lon, lat]), 18);  
 Map.addLayer(image, {}, 'Original image');
 ```
 
@@ -140,25 +114,13 @@ Map.addLayer(image, {}, 'Original image');
 <TabItem value="py" label="Python">
 
 ```python
-lat = 37.22; lon = -80.42
-zoom = 16
-image_collection_name = "USDA/NAIP/DOQQ"
-date_start = '2019-01-01'
-date_end = '2019-12-31'
-name = 'NAIP'
-point = ee.Geometry.Point([lon, lat])
-image = (
-    ee.ImageCollection(image_collection_name)
-         .filterBounds(ee.Geometry.Point(lon, lat))
-         .first()
-)
-bands = ['R', 'G', 'B']
-vizParams = {
-    'bands': bands, 
-    'min': 0, 
-    'max': 255
-}
-map = build_map(lat, lon, zoom, vizParams, image, name)
+lat = 37.22;  lon = -80.42;  zoom = 15
+#  Get a single NAIP image over the area of interest.  
+image = ee.Image(ee.ImageCollection("USDA/NAIP/DOQQ")  
+                      .filterBounds(ee.Geometry.Point([lon, lat]))
+                      .sort('system:time_start', False)
+                      .first());
+map = build_map(lat, lon, zoom, {}, image, name)
 map
 ```
 </TabItem>
@@ -229,37 +191,34 @@ In the code below, we are working with the MODIS Terra Surface Reflectance 8-day
 <TabItem value="js" label="JavaScript">
 
 ```javascript
-var dataset = ee.ImageCollection('MODIS/006/MOD09A1')
+var lat = 13.7; var lon = 2.54; var zoom = 10
+var image = ee.ImageCollection('MODIS/006/MOD09A1')
                   .filter(ee.Filter.date('2018-01-01', '2018-05-01'))
                   .first();
-var trueColor =
-    dataset.select(['sur_refl_b01', 'sur_refl_b04', 'sur_refl_b03']);
-var trueColorVis = {
+var bands = ['sur_refl_b01', 'sur_refl_b04', 'sur_refl_b03']
+var vizParams = {
+  bands: bands,
   min: -100.0,
   max: 3000.0,
 };
-var zoom = 10
 // Set Center on Virginia Tech
-Map.setCenter(-80.42, 37.22, zoom);
-Map.addLayer(trueColor, trueColorVis, 'True Color');
+Map.setCenter(lon, lat, zoom);
+Map.addLayer(image, vizParams, 'True Color');
 ```
 
 </TabItem>
 <TabItem value="py" label="Python">
 
 ```python
-# Define the variables
 lat = 13.7; lon = 2.54
 zoom = 11
 image_collection_name = 'MODIS/006/MOD09A1'
 date_start = '2018-01-01'
 date_end = '2018-05-01'
 name = 'MODIS'
-image = (
-    ee.ImageCollection(image_collection_name)
-         .filterDate(date_start, date_end)
-         .first()
-)
+image = (ee.ImageCollection('MODIS/006/MOD09A1')
+         .filter(ee.Filter.date('2018-01-01', '2018-05-01'))
+         .first())
 bands = ['sur_refl_b01', 'sur_refl_b04', 'sur_refl_b03']
 vizParams = {
     'bands': bands, 
@@ -281,16 +240,18 @@ We will discuss some of the benefits of working with a false-color imagery in la
 <TabItem value="js" label="JavaScript">
 
 ```javascript
+var lat = 13.7; var lon = 2.54; var zoom = 10
 var dataset = ee.ImageCollection('MODIS/006/MOD09A1')
                   .filter(ee.Filter.date('2018-01-01', '2018-05-01'))
                   .first();
-var modisBands = ['sur_refl_b06', 'sur_refl_b03', 'sur_refl_b01'];
-// Define visualization parameters for MODIS.
-var modisVis = {bands: modisBands, min: 0, max: 3000};
+var bands = ['sur_refl_b06', 'sur_refl_b03', 'sur_refl_b01'];
+var modisVis = {
+  bands: bands, 
+  min: 0, 
+  max: 3000
+};
 var zoom = 10
-// Set Center on Virginia Tech
-Map.setCenter(-80.42, 37.22, zoom);
-// Add the MODIS image to the map
+Map.setCenter(lon, lat, zoom);
 Map.addLayer(dataset, modisVis, 'MODIS');
 ```
 
@@ -299,26 +260,19 @@ Map.addLayer(dataset, modisVis, 'MODIS');
 
 ```python
 # Define the variables
-lat = 13.7; lon = 2.54
-zoom = 11
-image_collection_name = 'MODIS/006/MOD09A1'
-date_start = '2018-01-01'
-date_end = '2018-05-01'
-name = 'MODIS'
+lat = 13.7; lon = 2.54; zoom = 8
 image = (
-    ee.ImageCollection(image_collection_name)
-         .filterDate(date_start, date_end)
-         .first()
-)
+    ee.ImageCollection('MODIS/006/MOD09A1')
+         .filterDate('2018-01-01', date_end)
+         .first())
 bands = ['sur_refl_b06', 'sur_refl_b03', 'sur_refl_b01']
-
 vizParams = {
     'bands': bands, 
     'min': -100, 
     'max': 3000
 }
-map1 = build_map(lat, lon, zoom, vizParams, image, name)
-map1
+map = build_map(lat, lon, zoom, vizParams, image, 'MODIS')
+map
 ```
 </TabItem>
 </Tabs>
@@ -336,7 +290,6 @@ Print the size of the pixels (in meters) to the console. You can read more about
 var dataset = ee.ImageCollection('MODIS/006/MOD09A1')
                   .filter(ee.Filter.date('2018-01-01', '2018-05-01'))
                   .first();
-
 // Get the scale of the data from the first band's projection:
 var modisScale = dataset.select('sur_refl_b01')
     .projection()
@@ -348,7 +301,14 @@ print('MODIS scale:', modisScale);
 <TabItem value="py" label="Python">
 
 ```python
-
+dataset = (ee.ImageCollection('MODIS/006/MOD09A1')
+           .filter(ee.Filter.date('2018-01-01', '2018-05-01'))
+           .first());
+# Get the scale of the data from the first band's projection:
+modisScale = (dataset.select('sur_refl_b01')
+    .projection()
+    .nominalScale());
+print('MODIS scale:', modisScale.getInfo());
 ```
 </TabItem>
 </Tabs>
@@ -357,7 +317,7 @@ print('MODIS scale:', modisScale);
 
 ### Landsat
 
-Multi-spectral [scanners](https://landsat.gsfc.nasa.gov/multispectral-scanner-system) (MSS) were flown aboard Landsat missions 1-5 and have a spatial resolution of 60 meters. Let's look at the Landsat 5 MSS Collection 1 Tier 1 Raw Scenes - we can find the information about the bands for Landsat 5 in the [documentation](https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LT05_C02_T1_L2) and then build out some imagery. 
+Multi-spectral [scanners](https://landsat.gsfc.nasa.gov/multispectral-scanner-system) (MSS) were flown aboard Landsat missions 1-5 and have a spatial resolution of 60 meters. Let's look at the Landsat 5 MSS Collection 2 Tier 1 (Level 2) Raw Scenes - we can find the information about the bands for Landsat 5 in the [documentation](https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LT05_C02_T1_L2) and then build out some imagery. 
 
 Note one very important point - always refer to the documentation to make sure you are working with the correct information. If you look at the Landsat 8 documentation, you'll see that `SR_B4` means something different (It's Near InfraRed in Landsat 5, but the Red band in Landsat 8)
 
@@ -366,39 +326,36 @@ Note one very important point - always refer to the documentation to make sure y
 <TabItem value="js" label="JavaScript">
 
 ```javascript
-// Update - does not match the Python
-// Landsat 5 Collection 1 Tier 1 
-// Images between 1985 and 1989
-var dataset = ee.ImageCollection('LANDSAT/LM05/C01/T1')
+var lat = 37.22; var lon = -80.42; var zoom = 12
+// Landsat 5 Collection 2 Tier 1 Level 2
+var image = ee.ImageCollection('LANDSAT/LT05/C02/T1_L2')
                   .filterDate('1985-01-01', '1989-12-31');
-// NIR, Red Green Band                
-var nearInfrared321 = dataset.select(['B3', 'B2', 'B1']);
-Map.setCenter(-80.42, 37.22, 12);
-Map.addLayer(nearInfrared321, {}, 'Near Infrared (321)');
+var bands = ['SR_B3', 'SR_B2', 'SR_B1']
+var vizParams = {
+    'bands': bands, 
+    'min': 500, 
+    'max': 25000
+}
+Map.setCenter(lon, lat, 12);
+Map.addLayer(image, vizParams, 'Landsat 5');
 ```
 
 </TabItem>
 <TabItem value="py" label="Python">
 
 ```python
-# Landsat 5
-image_collection_name = 'LANDSAT/LT05/C02/T1_L2'
-date_start = '1985-01-01'
-date_end = '1989-12-31'
-name = 'Landsat 5'
-image = (
-    ee.ImageCollection(image_collection_name)
-         .filterDate(date_start, date_end)
-         .median()
-)
+lat = 37.22; lon = -80.42; zoom = 12
+# Landsat 5 Collection 2 Tier 1 Level 2
+image = (ee.ImageCollection('LANDSAT/LT05/C02/T1_L2')
+                  .filterDate('1985-01-01', '1989-12-31'));
 bands = ['SR_B3', 'SR_B2', 'SR_B1']
 vizParams = {
     'bands': bands, 
     'min': 500, 
     'max': 25000
 }
-map2 = build_map(lat, lon, zoom, vizParams, image, name)
-map2
+map = build_map(lat, lon, zoom, vizParams, image, 'Landsat 5')
+map
 ```
 </TabItem>
 </Tabs>
@@ -409,14 +366,7 @@ As before, let's extract the nominal scale from the image and print it to the co
 <TabItem value="js" label="JavaScript">
 
 ```javascript
-// Landsat 5 Collection 1 Tier 1 
-// Images between 1985 and 1989
-var dataset = ee.ImageCollection('LANDSAT/LM05/C01/T1')
-                  .filterDate('1985-01-01', '1989-12-31');
-// NIR, Red Green Band                
-var nearInfrared321 = dataset.select(['B3', 'B2', 'B1']);
-// Get the scale of the MSS data from its projection:
-var mssScale = nearInfrared321.first().projection().nominalScale();
+var mssScale = image.first().projection().nominalScale();
 print('MSS scale:', mssScale);
 ```
 
@@ -424,7 +374,8 @@ print('MSS scale:', mssScale);
 <TabItem value="py" label="Python">
 
 ```python
-## TODO: Add in Python equiv
+mssScale = image.first().projection().nominalScale();
+print('MSS scale:', mssScale.getInfo());
 ```
 </TabItem>
 </Tabs>
@@ -440,42 +391,36 @@ The Thematic Mapper ([TM](https://landsat.gsfc.nasa.gov/thematic-mapper/)) was f
 <TabItem value="js" label="JavaScript">
 
 ```javascript
-var tm = ee.ImageCollection("LANDSAT/LT05/C01/T1_TOA");
-// Filter TM imagery by location, date and cloudiness.
-var tmImage = ee.Image(tm
-            .filterBounds(Map.getCenter())
-            .filterDate('2011-05-01', '2011-10-01')
-            .sort('CLOUD_COVER')
-            .first());
-// Display the TM image as a color-IR composite.
-Map.addLayer(tmImage, {bands: ['B4', 'B3', 'B2'], min: 0, max: 0.4}, 'TM'); 
-// Get the scale of the TM data from its projection:
-var tmScale = tmImage.select('B1').projection().nominalScale();
-print('TM scale:', tmScale);
+var lat = 37.22; var lon = -80.42; var zoom = 12
+var image = ee.ImageCollection("LANDSAT/LT05/C02/T1_TOA")
+  .filterDate('2011-01-01', '2011-12-31');
+var bands = ['B4', 'B3', 'B2'];
+var vizParams = {
+  bands: bands,
+  min: 0.0,
+  max: 0.4,
+  gamma: 1.2,
+};
+Map.setCenter(lon, lat, zoom);
+Map.addLayer(image, vizParams, 'True Color (321)');
 ```
 
 </TabItem>
 <TabItem value="py" label="Python">
 
 ```python
-# Landsat 8
-image_collection_name = 'LANDSAT/LC08/C02/T1_L2'
-date_start = '2018-07-01'
-date_end = '2018-12-01'
-name = 'Landsat 8'
-image = (
-    ee.ImageCollection(image_collection_name)
-        .filterDate(date_start, date_end)
-        .median()
-)
-bands = ['SR_B4', 'SR_B3', 'SR_B2']
+lat = 37.22; lon = -80.42; zoom = 12
+image = (ee.ImageCollection("LANDSAT/LT05/C02/T1_TOA")
+  .filterDate('2011-01-01', '2011-12-31'));
+bands = ['B4', 'B3', 'B2'];
 vizParams = {
-    'bands': bands, 
-    'min': 5000, 
-    'max': 20000
-}
-map3 = build_map(lat, lon, zoom, vizParams, image, name)
-map3
+  'bands': bands,
+  'min': 0.0,
+  'max': 0.4,
+  'gamma': 1.2,
+};
+map = build_map(lat, lon, zoom, vizParams, image, name)
+map
 ```
 </TabItem>
 </Tabs>
@@ -494,21 +439,33 @@ The Copernicus Program is a European incentive that is run by the European Space
 <TabItem value="js" label="JavaScript">
 
 ```javascript
-TODO: Add in JS Equivalent
+var lat = 37.22; var lon = -80.42; var zoom = 14
+var image = (
+    ee.ImageCollection('COPERNICUS/S2_SR')
+         .filterBounds(ee.Geometry.Point(lon, lat))
+         .filterDate('2019-01-01', '2019-12-31')
+         .sort('CLOUDY_PIXEL_PERCENTAGE')
+         .first()
+)
+var bands = ['B4', 'B3', 'B2']
+var vizParams = {
+    'bands': bands, 
+    'min': 0, 
+    'max': 3300
+}
+Map.setCenter(lon, lat, zoom);
+Map.addLayer(image, vizParams, 'Sentinel');
 ```
 
 </TabItem>
 <TabItem value="py" label="Python">
 
 ```python
-image_collection_name = 'COPERNICUS/S2_SR'
-date_start = '2019-01-01'
-date_end = '2019-12-31'
-name = 'Sentinel - Surface Reflection'
+lat = 37.22; lon = -80.42; zoom = 14
 image = (
-    ee.ImageCollection(image_collection_name)
+    ee.ImageCollection('COPERNICUS/S2_SR')
          .filterBounds(ee.Geometry.Point(lon, lat))
-         .filterDate(date_start, date_end)
+         .filterDate('2019-01-01', '2019-12-31')
          .sort('CLOUDY_PIXEL_PERCENTAGE')
          .first()
 )
@@ -518,8 +475,8 @@ vizParams = {
     'min': 0, 
     'max': 3300
 }
-map4 = build_map(lat, lon, zoom, vizParams, image, name)
-map4
+map = build_map(lat, lon, zoom, vizParams, image, 'Sentinel')
+map
 ```
 </TabItem>
 </Tabs>
@@ -539,39 +496,40 @@ Since NAIP imagery is distributed as 'quarters' of Digital Ortho Quads at irregu
 <TabItem value="js" label="JavaScript">
 
 ```javascript
-var naip = ee.ImageCollection("USDA/NAIP/DOQQ");
-// Get NAIP images for the study period and region of interest.
-var naipImages = naip.filterDate('2012-01-01', '2012-12-31')
-                      .filterBounds(Map.getCenter());
-// Mosaic adjacent images into a single image.
-var naipImage = naipImages.mosaic();
-// Display the NAIP mosaic as a color-IR composite.
-Map.addLayer(naipImage, {bands: ['R', 'G', 'B']}, 'NAIP');
+var lat = 37.22; var lon = -80.42; var zoom = 14
+var image = (
+    ee.ImageCollection("USDA/NAIP/DOQQ")
+         .filterBounds(ee.Geometry.Point(lon, lat))
+         .filterDate('2012-01-01', '2012-12-31')
+)
+var bands = ['R', 'G', 'B']
+var vizParams = {
+    'bands': bands, 
+    'min': 0, 
+    'max': 255
+}
+Map.setCenter(lon, lat, zoom);
+Map.addLayer(image, vizParams, 'NAIP');
 ```
 
 </TabItem>
 <TabItem value="py" label="Python">
 
 ```python
-image_collection_name = "USDA/NAIP/DOQQ"
-date_start = '2012-01-01'
-date_end = '2012-12-31'
-name = 'NAIP'
-point = ee.Geometry.Point([-80.41, 37.23])
+lat = 37.22; lon = -80.42; zoom = 14
 image = (
-    ee.ImageCollection(image_collection_name)
-            .filterDate(date_start, date_end)
-            .filterBounds(point)
+    ee.ImageCollection("USDA/NAIP/DOQQ")
+         .filterBounds(ee.Geometry.Point(lon, lat))
+         .filterDate('2012-01-01', '2012-12-31')
 )
-image = image.mosaic()
 bands = ['R', 'G', 'B']
 vizParams = {
-    'bands': bands,
-    #'min': 0, 
-    #'max': 255
+    'bands': bands, 
+    'min': 0, 
+    'max': 255
 }
-map5 = build_map(37.23, -80.41, 16, vizParams, image, name)
-map5
+map = build_map(lat, lon, zoom, vizParams, image, 'NAIP')
+map
 ```
 </TabItem>
 </Tabs>
@@ -588,7 +546,7 @@ Check the scale of NAIP by getting the first image from the mosaic (images withi
 
 ```javascript
 // Get the NAIP resolution from the first image in the mosaic.
-var naipScale = ee.Image(naipImages.first()).
+var naipScale = ee.Image(image.first()).
               projection().nominalScale();   
 print('NAIP scale:', naipScale);
 ```
@@ -597,7 +555,9 @@ print('NAIP scale:', naipScale);
 <TabItem value="py" label="Python">
 
 ```python
-# TODO: Update for Python
+naipScale = (ee.Image(image.first()).
+              projection().nominalScale());   
+print('NAIP scale:', naipScale.getInfo());
 ```
 </TabItem>
 </Tabs>
@@ -618,29 +578,7 @@ Resolution of a few popular platforms:
 4. NAIP:       Annual
 5. Planet:     Daily
 
-Landsats (5 and later) produce imagery at 16-day cadence. TM and MSS are on the same satellite (Landsat 5), so it you can print the TM series to see the temporal resolution. Unlike MODIS, data from these sensors is produced on a scene basis, so to see a time series, it's necessary to filter by location in addition to time. You can see that some images have been skipped (e.g., between January 7th and February 8th) possibly due to quality control. 
-
-<Tabs>
-<TabItem value="js" label="JavaScript">
-
-```javascript
-var tm = ee.ImageCollection("LANDSAT/LT05/C01/T1_TOA");
-// Filter to get a year's worth of TM scenes.
-var tmSeries = tm
-  .filterBounds(Map.getCenter())
-  .filterDate('2011-01-01', '2011-12-31');
-// Print the filtered TM ImageCollection. 
-print('TM series:', tmSeries);
-```
-
-</TabItem>
-<TabItem value="py" label="Python">
-
-```python
-# TODO: Update
-```
-</TabItem>
-</Tabs>
+Landsats (5 and later) produce imagery at 16-day cadence. TM and MSS are on the same satellite (Landsat 5), so you can print the TM series to see the temporal resolution. Unlike MODIS, data from these sensors is produced on a scene basis, so to see a time series, it's necessary to filter by location in addition to time. You can see that some images have been skipped (e.g., between January 7th and February 8th) possibly due to quality control.
 
 While you look at the date ranges in the filename or expand each Image in the list to look at the `Date_Acquired` property, there is a better way to extract this information programmatically.  In this case, we are building a function within JavaScript and extracting the date and time from each image
 
@@ -648,11 +586,12 @@ While you look at the date ranges in the filename or expand each Image in the li
 <TabItem value="js" label="JavaScript">
 
 ```javascript
-var tm = ee.ImageCollection("LANDSAT/LT05/C01/T1_TOA");
+var lat = 37.22; var lon = -80.42; var zoom = 14
 // Filter to get a year's worth of TM scenes.
-var tmSeries = tm
+var tmSeries = ee.ImageCollection("LANDSAT/LT05/C01/T1_TOA")
   .filterBounds(Map.getCenter())
   .filterDate('2011-01-01', '2011-12-31');
+
 // Build a function called getDate
 var getDate = function(image) {
 // Note that you need to cast the argument
@@ -668,7 +607,20 @@ print(dates)
 <TabItem value="py" label="Python">
 
 ```python
-# TODO: Update
+lat = 37.22; lon = -80.42; zoom = 14
+# Filter to get a year's worth of TM scenes.
+tmSeries = (ee.ImageCollection("LANDSAT/LT05/C01/T1_TOA")
+  .filterBounds(ee.Geometry.Point(lon, lat))
+  .filterDate('2011-01-01', '2011-12-31'));
+
+# Build a function called getDate
+def getDate(image):
+		# Note that you need to cast the argument
+  time = ee.Image(image).get('system:time_start')
+		# Return the time (in milliseconds since Jan 1, 1970) as a Date
+  return ee.Date(time);
+dates = tmSeries.toList(100).map(getDate);
+print(dates.getInfo())
 ```
 </TabItem>
 </Tabs>
@@ -709,7 +661,15 @@ print('Length of the bands list:', modisBands.length());
 <TabItem value="py" label="Python">
 
 ```python
-# TODO: Update
+dataset = (ee.ImageCollection('MODIS/006/MOD09A1')
+                  .filter(ee.Filter.date('2018-01-01', '2018-05-01'))
+                  .first())
+# Get the MODIS band names as a List
+modisBands = dataset.bandNames();
+# Print the list.
+print('MODIS bands:', modisBands.getInfo());
+#  Print the length of the list.
+print('Length of the bands list:', modisBands.length().getInfo());
 ```
 </TabItem>
 </Tabs>
@@ -743,41 +703,40 @@ For instance, if you are working with NAIP imagery, you can set the min radiomet
 <TabItem value="js" label="JavaScript">
 
 ```javascript
-var dataset = ee.ImageCollection('USDA/NAIP/DOQQ')
-                  .filter(ee.Filter.date('2017-01-01', '2018-12-31'));
-var trueColor = dataset.select(['R', 'G', 'B']);
-// Scale of min, max
-var trueColorVis = {
-  min: 0.0,
-  max: 255.0,
-};
-Map.setCenter(-80.42, 37.22, 15);
-Map.addLayer(trueColor, trueColorVis, 'True Color');
+var lat = 37.22; var lon = -80.42; var zoom = 14
+var image = (
+    ee.ImageCollection("USDA/NAIP/DOQQ")
+         .filterBounds(ee.Geometry.Point(lon, lat))
+         .filterDate('2012-01-01', '2012-12-31')
+)
+var bands = ['R', 'G', 'B']
+var vizParams = {
+    'bands': bands, 
+    'min': 0, 
+    'max': 255
+}
+Map.setCenter(lon, lat, zoom);
+Map.addLayer(image, vizParams, 'NAIP');
 ```
 
 </TabItem>
 <TabItem value="py" label="Python">
 
 ```python
-image_collection_name = "USDA/NAIP/DOQQ"
-date_start = '2012-01-01'
-date_end = '2012-12-31'
-name = 'NAIP'
-point = ee.Geometry.Point([-80.41, 37.23])
+lat = 37.22; lon = -80.42; zoom = 14
 image = (
-    ee.ImageCollection(image_collection_name)
-            .filterDate(date_start, date_end)
-            .filterBounds(point)
+    ee.ImageCollection("USDA/NAIP/DOQQ")
+         .filterBounds(ee.Geometry.Point(lon, lat))
+         .filterDate('2012-01-01', '2012-12-31')
 )
-image = image.mosaic()
 bands = ['R', 'G', 'B']
 vizParams = {
-    'bands': bands,
-    #'min': 0, 
-    #'max': 255
+    'bands': bands, 
+    'min': 0, 
+    'max': 255
 }
-map5 = build_map(37.23, -80.41, 16, vizParams, image, name)
-map5
+map = build_map(lat, lon, zoom, vizParams, image, 'NAIP')
+map
 ```
 </TabItem>
 </Tabs>
@@ -790,42 +749,29 @@ By contrast, the Planet MultiSpectral SkySat imagery uses 16 bit collection, so 
 
 ```javascript
 var dataset = ee.ImageCollection('SKYSAT/GEN-A/PUBLIC/ORTHO/MULTISPECTRAL');
-var falseColor = dataset.select(['R', 'G', 'B']);
-var falseColorVis = {
+var bands = ['N', 'G', 'B'];
+var vizParams = {
+  bands: bands,
   min: 200.0,
   max: 6000.0,
 };
 Map.setCenter(-70.892, 41.6555, 15);
-Map.addLayer(falseColor, falseColorVis, 'False Color');
+Map.addLayer(dataset, vizParams, 'Planet Labs');
 ```
 
 </TabItem>
 <TabItem value="py" label="Python">
 
 ```python
-lat = 41.66; lon = -70.9; 
-zoom = 14
-image_collection_name = 'SKYSAT/GEN-A/PUBLIC/ORTHO/MULTISPECTRAL'
-date_start = '2019-01-01'
-date_end = '2019-12-31'
-name = 'NAIP'
-point = ee.Geometry.Point([lon, lat])
-
-image = (
-    ee.ImageCollection(image_collection_name)
-         .median()
-)
-
+image = ee.ImageCollection('SKYSAT/GEN-A/PUBLIC/ORTHO/MULTISPECTRAL');
 bands = ['N', 'G', 'B']
-
 vizParams = {
     'bands': bands, 
-    'min': 200, # Change to 200
-    'max': 6000 # 6000
+    'min': 200, 
+    'max': 6000 
 }
-
-map6 = build_map(lat, lon, zoom, vizParams, image, name)
-map6
+map = build_map(41.66, -70.9, zoom, vizParams, image, 'Planet Labs')
+map
 ```
 </TabItem>
 </Tabs>
