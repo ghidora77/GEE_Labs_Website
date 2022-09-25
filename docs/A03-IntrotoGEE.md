@@ -24,18 +24,6 @@ By the end of this lab, you should be able to access GEE imagery, build some bas
 
 [Video Introduction to GEE](https://www.youtube.com/watch?v=Ypo28T6wPbQ)
 
-
-```python
-#!pip install geemap
-import ee, geemap, pprint
-#ee.Authenticate()
-def build_map(lat, lon, zoom, vizParams, image, name):
-    map = geemap.Map(center = [lat, lon], zoom = zoom)
-    map.addLayer(image, vizParams, name)
-    return map
-ee.Initialize()
-```
-
 #### Getting Set Up
 
 In addition to the petabytes of satellite imagery and products that GEE has available, it allows you to incorporate your own raster, vector, and relational data into your analysis. Note that when using the code editor this process is automatically linked to the same Google Drive account that signed up for GEE. Using Python has more flexibility and is easier to incorporate outside information in a variety of formats.
@@ -69,9 +57,7 @@ print(z)
 <TabItem value="py" label="Python">
 
 ```python
-
-x = 1
-y = 2
+x = 1; y = 2
 z = x + y
 print(z)
 ```
@@ -92,7 +78,6 @@ var sentinelCollection = ee.ImageCollection('COPERNICUS/S2_SR');
 <TabItem value="py" label="Python">
 
 ```python
-
 sentinelCollection = ee.ImageCollection('COPERNICUS/S2_SR')
 ```
 </TabItem>
@@ -194,31 +179,26 @@ There is a comprehensive [guide](https://developers.google.com/earth-engine/guid
 <TabItem value="js" label="JavaScript">
 
 ```javascript
+var lat = 13.7; var lon = 2.54
 var first = ee.ImageCollection('COPERNICUS/S2_SR')
-                .filterBounds(ee.Geometry.Point(-70.48, 43.3631))
+                .filterBounds(ee.Geometry.Point(2.54, 13.7))
                 .filterDate('2019-01-01', '2019-12-31')
                 .sort('CLOUDY_PIXEL_PERCENTAGE')
                 .first();
+// Define a map centered in Niger
 Map.centerObject(first, 11);
-Map.addLayer(first, {bands: ['B4', 'B3', 'B2'], min: 0, max: 2000}, 'first');
+Map.addLayer(first, {bands: ['B4', 'B3', 'B2'], min: 0, max: 3300}, 'first');
 ```
 
 </TabItem>
 <TabItem value="py" label="Python">
 
 ```python
-# Define the variables
 lat = 13.7; lon = 2.54
-zoom = 11
-image_collection_name = 'COPERNICUS/S2_SR'
-date_start = '2019-01-01'
-date_end = '2019-12-31'
-name = 'Sentinel - Surface Reflection'
-
 image = (
-    ee.ImageCollection(image_collection_name)
+    ee.ImageCollection('COPERNICUS/S2_SR')
          .filterBounds(ee.Geometry.Point(lon, lat))
-         .filterDate(date_start, date_end)
+         .filterDate('2019-01-01', '2019-12-31')
          .sort('CLOUDY_PIXEL_PERCENTAGE')
          .first()
 )
@@ -229,8 +209,7 @@ vizParams = {
     'max': 3300
 }
 # Define a map centered in Niger
-map = build_map(lat, lon, zoom, vizParams, image, name)
-# Add the image layer to the map and display it.
+map = build_map(lat, lon, 11, vizParams, image, 'Sentinel - Surface Reflection')
 map
 ```
 </TabItem>
@@ -252,11 +231,13 @@ Another common one is the National Cropland Data Layer - each pixel has 30m reso
 <TabItem value="js" label="JavaScript">
 
 ```javascript
+var lat = 40.71; var lon = -100.55; var zoom = 11
 var image = (ee.ImageCollection('USDA/NASS/CDL')
-                  .filter(ee.Filter.date('2018-01-01', '2019-12-31'))
-                  .first())
+             .filter(ee.Filter.date('2018-01-01', '2019-12-31'))
+             .filterBounds(ee.Geometry.Point(lon, lat))
+             .first())
 var image = image.select('cropland')
-Map.centerObject(image, 11);
+Map.centerObject(image, zoom);
 Map.addLayer(image, {}, 'NLCD');
 ```
 
@@ -264,12 +245,14 @@ Map.addLayer(image, {}, 'NLCD');
 <TabItem value="py" label="Python">
 
 ```python
+lat = 40.71; lon = -100.55; zoom = 11
 image = (ee.ImageCollection('USDA/NASS/CDL')
-                  .filter(ee.Filter.date('2018-01-01', '2019-12-31'))
-                  .first())
+         .filter(ee.Filter.date('2018-01-01', '2019-12-31'))
+         .filterBounds(ee.Geometry.Point(lon, lat))
+         .first())
 image = image.select('cropland')
-map1 = build_map(40.71, -100.55, 9, {}, image, 'NLCD')
-map1
+map = build_map(lat, lon, zoom, {}, image, 'NLCD')
+map
 ```
 </TabItem>
 </Tabs>
@@ -311,10 +294,11 @@ Let's say we created an individual point, which we want to associate with data t
 <TabItem value="js" label="JavaScript">
 
 ```javascript
-// geometry created from within GEE
+// Earth Engine Geometry
 var point = ee.Geometry.Point([-79.68, 42.06]);
 // Create a Feature from the geometry
 var treeFeature = ee.Feature(point, {type: 'Pine', size: 15});
+print(treeFeature)
 ```
 
 </TabItem>
@@ -325,6 +309,7 @@ var treeFeature = ee.Feature(point, {type: 'Pine', size: 15});
 point = ee.Geometry.Point([-79.68, 42.06])
 # Create a Feature from the geometry
 treeFeature = ee.Feature(point, {'type': 'Pine', 'size': 15})
+print(treeFeature.getInfo())
 ```
 </TabItem>
 </Tabs>
@@ -363,6 +348,7 @@ features = [
 ]
 # Create a FeatureCollection from the list and print it.
 fromList = ee.FeatureCollection(features)
+print(fromList.getInfo())
 ```
 </TabItem>
 </Tabs>
@@ -382,14 +368,11 @@ Up until now, we have focused on objects: Images, Features, and Geometries. Redu
 <TabItem value="js" label="JavaScript">
 
 ```javascript
-// Define the variables
-var lat = 13.7; var lon = 2.54
-var zoom = 11
-
-//name = 'Shuttle Radar Topography Mission (SRTM)'
+var lat = 13.7; var lon = 2.54; var zoom = 9
 // The input image to reduce, in this case an SRTM elevation map.
 var image = ee.Image('CGIAR/SRTM90_V4');
-Map.addLayer(image, {'min':0, 'max':800}, 'SRTM')
+Map.centerObject(ee.Geometry.Point(lon, lat), zoom);
+Map.addLayer(image, {'min':0, 'max':800}, 'Shuttle Radar Topography Mission (SRTM)')
 ```
 
 </TabItem>
@@ -397,14 +380,12 @@ Map.addLayer(image, {'min':0, 'max':800}, 'SRTM')
 
 ```python
 # Define the variables
-lat = 13.7; lon = 2.54
-zoom = 11
-
-name = 'Shuttle Radar Topography Mission (SRTM)'
+lat = 13.7; lon = 2.54; zoom = 9
 # The input image to reduce, in this case an SRTM elevation map.
 image = ee.Image('CGIAR/SRTM90_V4')
-map3 = build_map(lat, lon, zoom, {'min':0, 'max':800}, image, name)
-map3
+map = build_map(lat, lon, zoom, {'min':0, 'max':800}, image, 
+                 'Shuttle Radar Topography Mission (SRTM)')
+map
 ```
 </TabItem>
 </Tabs>
@@ -416,21 +397,12 @@ map3
 <TabItem value="js" label="JavaScript">
 
 ```javascript
-// Define the variables
-var lat = 13.7; var lon = 2.54
-var zoom = 11
-
-//name = 'Shuttle Radar Topography Mission (SRTM)'
-// The input image to reduce, in this case an SRTM elevation map.
-var image = ee.Image('CGIAR/SRTM90_V4');
-Map.addLayer(image, {'min':0, 'max':800}, 'SRTM')
-
 // Build a polygon within the country of Niger in GEE Code Editor
 var poly = ee.Geometry.Polygon(
-        [[[1.3574234405151886, 14.106344008176682],
-          [1.3574234405151886, 12.888520121683442],
-          [3.8842789092651886, 12.888520121683442],
-          [3.8842789092651886, 14.106344008176682]]]
+        [[[1.0381928005666774, 23.471775399486358],
+          [1.0381928005666774, 12.477838833503146],
+          [15.825790456816677, 12.477838833503146],
+          [15.825790456816677, 23.471775399486358]]]
 )
 
 //Reduce the image within the given region, using a reducer that
@@ -440,6 +412,7 @@ var poly = ee.Geometry.Polygon(
 var max = image.reduceRegion({
   reducer: ee.Reducer.max(),
   geometry: poly,
+  maxPixels: 1e10,
   scale: 200
 })
 // Print the result (a Dictionary) to the console.
@@ -450,20 +423,12 @@ print(max)
 <TabItem value="py" label="Python">
 
 ```python
-# Define the variables
-lat = 13.7; lon = 2.54
-zoom = 11
-
-name = 'Shuttle Radar Topography Mission (SRTM)'
-# The input image to reduce, in this case an SRTM elevation map.
-image = ee.Image('CGIAR/SRTM90_V4')
-
 # Build a polygon within the country of Niger in GEE Code Editor
 poly = ee.Geometry.Polygon(
-        [[[1.3574234405151886, 14.106344008176682],
-          [1.3574234405151886, 12.888520121683442],
-          [3.8842789092651886, 12.888520121683442],
-          [3.8842789092651886, 14.106344008176682]]]
+        [[[1.0381928005666774, 23.471775399486358],
+          [1.0381928005666774, 12.477838833503146],
+          [15.825790456816677, 12.477838833503146],
+          [15.825790456816677, 23.471775399486358]]]
 )
 
 # Reduce the image within the given region, using a reducer that
@@ -473,6 +438,7 @@ poly = ee.Geometry.Polygon(
 max = image.reduceRegion(
   reducer = ee.Reducer.max(),
   geometry = poly,
+  maxPixels = 1e10,
   scale = 200
 )
 # Print the result (a Dictionary) to the console.

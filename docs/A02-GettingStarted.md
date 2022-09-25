@@ -65,3 +65,22 @@ import ee, geemap
 ee.Initialize()
 ```
 
+#### Introduction Code Chunk
+
+For each script, include this at the top of your Python Notebook. Configuring this depends upon whether you are using Colab or your local environment. 
+
+If using Colab, run it in it's current format - this will install `geemap` (you might have to restart your kernel, which you can do in the button that shows up or in the tab under 'runtime') and then take you through the authentication process. Once the library is installed and you are authenticated, put a comment (#) in front of the `geemap` install line and the `ee.Authenticate()` line. This way you will not have to authenticate each time you re-run your script. 
+
+If working locally and have already installed `geemap` and authenticated, you can either remove those two blocks or comment them out. 
+
+```python
+!pip install geemap
+import ee, geemap, pprint
+ee.Authenticate()
+def build_map(lat, lon, zoom, vizParams, image, name):
+    map = geemap.Map(center = [lat, lon], zoom = zoom)
+    map.addLayer(image, vizParams, name)
+    return map
+ee.Initialize()
+```
+
