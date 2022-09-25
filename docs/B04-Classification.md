@@ -556,7 +556,7 @@ var train = sample.filter(ee.Filter.lt('random', 0.6));
 var test = sample.filter(ee.Filter.gte('random', 0.6));
 var numTrees = ee.List.sequence(5, 50, 5);
 var accuracies = numTrees.map(function(t) {
-var classifier =  ee.Classifier.smileRandomForest(t)
+var classifier = ee.Classifier.smileRandomForest(t)
 				.train({
           features: train,
           classProperty: 'class',
@@ -645,17 +645,14 @@ Map.addLayer(percentTree, visualization, 'percent tree cover');
 ```python
 mod44b = ee.ImageCollection("MODIS/006/MOD44B")
 tree = ee.Image(mod44b.sort('system:time_start', False).first());
-
 percentTree = (tree.select('Percent_Tree_Cover')
   .where(tree.select('Percent_Tree_Cover').eq(200), 0))
-
 vizParams = {
   'bands': ['Percent_Tree_Cover'],
   'min': 0.0,
   'max': 100.0,
   'palette': ['bbe029', '0a9501', '074b03']
 }
-
 map = build_map(lat, lon, zoom, vizParams, percentTree, 'percent tree cover')
 display(map)
 ```
@@ -683,7 +680,7 @@ var landsat5_raw = ee.ImageCollection("LANDSAT/LT05/C01/T1");
 var landsat5_filtered = landsat5_raw.filterDate('2010-01-01', '2010-12-31')
   .filterBounds(point)
 var landsat = ee.Algorithms.Landsat.simpleComposite({
-  collection: l5filtered,
+  collection: landsat5_filtered,
   asFloat: true
 });
 Map.setCenter(-121.9, 37.7, 10)
