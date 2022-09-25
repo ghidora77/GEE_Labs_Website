@@ -1,3 +1,6 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 # Lab 04 - Classification 
 
 ## Overview
@@ -40,14 +43,11 @@ Begin by creating a study region - in this case we will be working in an area ne
 
 We will be working with Landsat 8 imagery, which we will filter to the region and to the year of 2019. `maskl8sr()` is a function used to mask out cloud pixels. Visualize the true color image first to get an understanding of the region. 
 
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
 ```javascript
-// Create region
-var region = 
-    ee.Geometry.Polygon(
-        [[[-80.62707329831015, 37.333629367422276],
-          [-80.62707329831015, 37.144488460273884],
-          [-80.19517327389609, 37.144488460273884],
-          [-80.19517327389609, 37.333629367422276]]]);
+// Keep this function at the top of your script
 // Function to mask clouds based on the pixel_qa band of Landsat 8 SR data.
 function maskL8sr(image) {
 // Bits 3 and 5 are cloud shadow and cloud, respectively.
@@ -60,6 +60,62 @@ function maskL8sr(image) {
                 .and(qa.bitwiseAnd(cloudsBitMask).eq(0));
            return image.updateMask(mask);
 }
+```
+
+</TabItem>
+
+<TabItem value="py" label="Python">
+
+```python
+# Keep this function at the top of your script
+# Function to mask clouds based on the pixel_qa band of Landsat 8 SR data.
+def maskL8sr(image):
+# Bits 3 and 5 are cloud shadow and cloud, respectively.
+        cloudShadowBitMask = (1 << 3)
+        cloudsBitMask = (1 << 5)
+        # Get the pixel QA band.
+        qa = image.select('pixel_qa')
+        # Both flags should be set to zero, indicating clear conditions.
+        mask = (qa.bitwiseAnd(cloudShadowBitMask).eq(0).And(qa.bitwiseAnd(cloudsBitMask).eq(0)))
+        return image.updateMask(mask)
+```
+</TabItem>
+</Tabs>
+
+
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
+// Create region
+var region = 
+    ee.Geometry.Polygon(
+        [[[-80.62707329831015, 37.333629367422276],
+          [-80.62707329831015, 37.144488460273884],
+          [-80.19517327389609, 37.144488460273884],
+          [-80.19517327389609, 37.333629367422276]]]);
+```
+
+</TabItem>
+
+<TabItem value="py" label="Python">
+
+```python
+# Create region
+region = ee.Geometry.Polygon(
+        [[[-80.62707329831015, 37.333629367422276],
+          [-80.62707329831015, 37.144488460273884],
+          [-80.19517327389609, 37.144488460273884],
+          [-80.19517327389609, 37.333629367422276]]])
+```
+</TabItem>
+</Tabs>
+
+
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```javascript
 // Load Landsat 8 annual composites.
 var landsat = ee.ImageCollection('LANDSAT/LC08/C01/T1_SR')
       .filterDate('2019-01-01', '2019-12-31')
@@ -77,11 +133,42 @@ Map.centerObject(region, 9);
 Map.addLayer(landsat, visParams, "Landsat 8 (2016)");
 ```
 
+</TabItem>
+
+<TabItem value="py" label="Python">
+
+```python
+image = (
+    ee.ImageCollection('LANDSAT/LC08/C01/T1_SR')
+      .filterDate('2019-01-01', '2019-12-31')
+      .map(maskL8sr)
+      .filterBounds(region)
+      .median();
+)
+
+bands = ['B4', 'B3', 'B2']
+
+vizParams = {
+    'bands': bands, 
+    'min': 0, 
+    'max': 3000,
+    'gamma': 1.4
+}
+
+map = build_map(lat, lon, zoom, vizParams, image, 'Landsat 8 (2016)')
+display(map)
+```
+</TabItem>
+</Tabs>
+
 ![](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B04-01.png)
 
 In this case, we will randomly select a sample of 5000 pixels in the region to build a clustering model - we will use this sample data to find clustering groups and then apply it to the rest of the data. 
 
 We will also set the variable `clusterNum` to idenfity how many categories to use. Start with 15 and continue to modify based on the output and needs of your experiment. Note that we are using `ee.Clusterer.wekaKMeans`, 
+
+<Tabs>
+<TabItem value="js" label="JavaScript">
 
 ```javascript
 // Create a training dataset.
@@ -99,6 +186,30 @@ print("result", result.getInfo());
 // Display the clusters with random colors.
 Map.addLayer(result.randomVisualizer(), {}, 'Unsupervised Classification');
 ```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```python
+# Create a training dataset.
+sample = image.sample(
+     region= region,
+     scale= 30,
+     numPixels= 5000
+)
+clusterNum = 15  
+# Instantiate the clusterer and train it.
+clusterer = ee.Clusterer.wekaKMeans(clusterNum).train(sample)
+# Cluster the input using the trained clusterer.
+result = image.cluster(clusterer)
+print("result", result.getInfo())
+# Display the clusters with random colors.
+map = build_map(lat, lon, zoom, {}, result.randomVisualizer(), 'Unsupervised Classification')
+display(map)
+```
+</TabItem>
+</Tabs>
+
 
 As you can see from the output, the result is quite vivid. On the 'layers' toggle on the top-right of the map section, increase the transparency of the layer to compare it to the satellite imagery.
 
@@ -128,6 +239,9 @@ We will begin by creating training data manually within GEE. Using the geometry 
 4. You should have three FeatureCollection imports named 'bare', 'vegetation' and 'water'. Merge them into one FeatureCollection:
 
 > *Note*: We are providing a few starting point polygons to begin experimenting with - in the exercises, you will use the above instructions to build your own polygons. 
+
+<Tabs>
+<TabItem value="js" label="JavaScript">
 
 ```javascript
 var water = ee.FeatureCollection(
@@ -175,9 +289,65 @@ var bare = ee.FeatureCollection(
 var trainingFeatures = bare.merge(vegetation).merge(water);
 ```
 
+</TabItem>
+
+<TabItem value="py" label="Python">
+
+```python
+water = ee.FeatureCollection(
+        [ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-80.6172789596943, 37.04886769922969],
+                  [-80.60715093845407, 37.058183583673205],
+                  [-80.60612097019235, 37.06201920367848],
+                  [-80.60165777439157, 37.06530672362588],
+                  [-80.59273138279, 37.07133347348626],
+                  [-80.59873953098337, 37.075168428598126],
+                  [-80.61418905490915, 37.060512376088454]]]),
+            {
+              "class": 2,
+              "system:index": "0"
+            })])
+bare = ee.FeatureCollection(
+        [ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-80.53788557285348, 37.08119439478304],
+                  [-80.53960218662301, 37.07551082587341],
+                  [-80.53076162570993, 37.07688039951336],
+                  [-80.52380933994333, 37.078523855226926],
+                  [-80.52483930820505, 37.085371203913176],
+                  [-80.53101911777536, 37.08311164722038],
+                  [-80.53608312839548, 37.08044117520197]]]),
+            {
+              "class": 1,
+              "system:index": "0"
+            })])
+vegetation = ee.FeatureCollection(
+        [ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-80.57367696994821, 37.07931133179868],
+                  [-80.56517973178903, 37.07801027914314],
+                  [-80.56080236667673, 37.083008938497635],
+                  [-80.55749788517038, 37.08516579245161],
+                  [-80.5611027740864, 37.08978741569377],
+                  [-80.56612386936227, 37.08879464631953],
+                  [-80.57337656253854, 37.08420719827087]]]),
+            {
+              "class": 0,
+              "system:index": "0"
+            })])
+
+trainingFeatures = bare.merge(vegetation).merge(water)
+```
+</TabItem>
+</Tabs>
+
 In the merged FeatureCollection, each Feature should have a property called 'class' where the classes are consecutive integers, starting at 0.
 
 For Landsat, we will use the following bands for their predictive values - we could just keep the visual bands, but using a larger number of predictive values in many cases improves the model's ability to find relationships and patterns in the data. Create a training set **T** for the classifier by sampling the Landsat composite with the merged features. The choice of classifier is not always obvious, but a CART (a [decision tree](https://en.wikipedia.org/wiki/Decision_tree_learning) when running in classification mode) is an excellent starting point. Instantiate a CART and train it.
+
+<Tabs>
+<TabItem value="js" label="JavaScript">
 
 ```javascript
 var predictionBands = ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B10', 'B11'];
@@ -199,6 +369,41 @@ Map.addLayer(classified,
               palette: ['red', 'green', 'blue']}, 
              'classified');
 ```
+
+</TabItem>
+
+<TabItem value="py" label="Python">
+
+```python
+predictionBands = ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B10', 'B11'];
+classifierTraining = (
+    image.select(predictionBands)
+        .sampleRegions(
+            collection = trainingFeatures, 
+            properties = ['class'], 
+            scale= 30
+        )
+    )
+classifier = (
+    ee.Classifier.smileCart().train(
+        features = classifierTraining, 
+        classProperty = 'class', 
+        inputProperties = predictionBands
+    )
+)
+classified = image.select(predictionBands).classify(classifier)
+vizParams = {
+    'min': 0, 
+    'max': 2,
+    'palette': ['red', 'green', 'blue']
+}
+map = build_map(lat, lon, zoom, vizParams, classified, name)
+display(map)
+```
+</TabItem>
+</Tabs>
+
+
 
 ![Supervised Image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B04-03.png)
 
@@ -225,6 +430,9 @@ There are a total of 640 pixels of water in the test sample - of these 640 pixel
 
 You can test different classifiers by replacing CART with some other classifier of interest. Also note that because of the randomness in the partition, you may get different results from different runs. 
 
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
 ```javascript
 var trainingTesting = classifierTraining.randomColumn();
 var trainingSet = trainingTesting.filter(ee.Filter.lessThan('random', 0.6));
@@ -243,11 +451,45 @@ print('Producers Accuracy:', confusionMatrix.producersAccuracy());
 print('Consumers Accuracy:', confusionMatrix.consumersAccuracy());  
 ```
 
+</TabItem>
+
+<TabItem value="py" label="Python">
+
+```python
+trainingTesting = classifierTraining.randomColumn()
+trainingSet = trainingTesting.filter(ee.Filter.lessThan('random', 0.6))
+testingSet = trainingTesting.filter(ee.Filter.greaterThanOrEquals('random', 0.6));
+trained = ee.Classifier.smileCart().train(
+  features=trainingSet,
+  classProperty='class',
+  inputProperties=predictionBands
+); 
+confusionMatrix =  (ee.ConfusionMatrix(
+    testingSet.classify(trained)
+    .errorMatrix(
+        actual= 'class',
+        predicted= 'classification'
+    )
+))
+
+print('Confusion matrix:', confusionMatrix.getInfo())
+print('Overall Accuracy:', confusionMatrix.accuracy().getInfo())
+print('Producers Accuracy:', confusionMatrix.producersAccuracy().getInfo())
+print('Consumers Accuracy:', confusionMatrix.consumersAccuracy().getInfo())
+
+
+```
+</TabItem>
+</Tabs>
+
 > **Important**: this is a simplified example to simply showcase how to get started with supervised classification. These accuracy levels are artificially high, and as you increase the number of categories and add complexity to the model, you will have to fine-tune your process along the way. 
 
 ## Hyperparameter Tuning
 
 Another well-known classifier used extensively in Remote Sensing is a random forest. A random forest is a collection of decision trees that find optimal splits in the data to compute an average (regression) or vote on a label (classification). Their adaptability makes them one of the most effective classification models, and is an excellent starting point. Because random forests are so effective, we need to make things a little harder for it to be interesting. Do that by adding noise to the training data.
+
+<Tabs>
+<TabItem value="js" label="JavaScript">
 
 ```javascript
 // Load Landsat 8 annual composites.
@@ -267,15 +509,46 @@ var classifier = ee.Classifier.smileRandomForest(10)
                 classProperty: 'class',
                 inputProperties: predictionBands
                });
-var classified =  landsat.select(predictionBands).classify(classifier);   Map.addLayer(classified, {min: 0, max: 2,  palette: 
-             ['red', 'green', 'blue']}, 'classified')                                                                     
+var classified =  landsat.select(predictionBands).classify(classifier);   
+Map.addLayer(classified, {min: 0, max: 2,  palette: 
+             ['red', 'green', 'blue']}, 'classified')  
 ```
+
+</TabItem>
+
+<TabItem value="py" label="Python">
+
+```python
+predictionBands = ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B10', 'B11']
+sample = (image.select(predictionBands).sampleRegions(
+  collection = trainingFeatures.map(lambda f: f.buffer(300)), 
+          properties=['class'], 
+          scale= 30))
+classifier = (ee.Classifier.smileRandomForest(10)
+                    .train(
+                        features= sample,
+                classProperty= 'class',
+                inputProperties= predictionBands
+               ))
+classified =  image.select(predictionBands).classify(classifier)  
+vizParams = {
+    'min': 0, 
+    'max': 2,
+    'palette': ['red', 'green', 'blue']
+}
+map = build_map(lat, lon, zoom, vizParams, classified, name)
+map
+```
+</TabItem>
+</Tabs>
+
 
 ![Accuracy versus Tree](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B04-05.png)
 
-
-
 Note that the only parameter to the classifier is the number of trees (10). How many trees should you use? Making that choice is best done by hyperparameter tuning. For example,  
+
+<Tabs>
+<TabItem value="js" label="JavaScript">
 
 ```javascript
 var sample  = sample.randomColumn();
@@ -299,6 +572,30 @@ print(ui.Chart.array.values({
   xLabels: numTrees
 }));  
 ```
+
+</TabItem>
+
+<TabItem value="py" label="Python">
+
+```python
+sample  = sample.randomColumn()
+train = sample.filter(ee.Filter.lt('random', 0.6))
+test = sample.filter(ee.Filter.gte('random', 0.6))
+numTrees = ee.List.sequence(5, 50, 5)
+
+def f_classifier(t): 
+    c = (ee.Classifier.smileRandomForest(t).train(
+          features= train,
+          classProperty= 'class',
+          inputProperties= predictionBands
+      ))
+    return c
+classifier = numTrees.map(lambda t: f_classifier(t))
+acccuracies = test.classify(classifier).errorMatrix('class',  'classification').accuracy()
+array_class = ee.Array(classifier)
+```
+</TabItem>
+</Tabs>
 
 You should see something like the following chart, in which the number of trees is on the x-axis and estimated accuracy is on the y-axis.
 
@@ -324,6 +621,9 @@ Suppose the goal is to estimate percent tree cover in each Landsat pixel.
 
 For this exercise, we will use data that has a known values for *g*., 'MODIS Terra Vegetation Continuous Fields Yearly Global 250m'. Since water is coded as 200 in this image, replace the 200's with 0's and display the result. Documentation for the `.where` clause is at this [link](https://developers.google.com/earth-engine/apidocs/ee-image-where?hl=en). Scroll in and note that when you click on a water area it will say 'masked', where as land areas will provide a numerical value listed as 'Percent_Tree_Cover'. Each pixel represents percent tree cover (as an integer value) at 250 meter resolution in 2010.
 
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
 ```javascript
 var mod44b = ee.ImageCollection("MODIS/006/MOD44B")
 var tree = ee.Image(mod44b.sort('system:time_start', false).first());
@@ -338,6 +638,30 @@ var visualization = {
 Map.addLayer(percentTree, visualization, 'percent tree cover'); 
 ```
 
+</TabItem>
+
+<TabItem value="py" label="Python">
+
+```python
+mod44b = ee.ImageCollection("MODIS/006/MOD44B")
+tree = ee.Image(mod44b.sort('system:time_start', False).first());
+
+percentTree = (tree.select('Percent_Tree_Cover')
+  .where(tree.select('Percent_Tree_Cover').eq(200), 0))
+
+vizParams = {
+  'bands': ['Percent_Tree_Cover'],
+  'min': 0.0,
+  'max': 100.0,
+  'palette': ['bbe029', '0a9501', '074b03']
+}
+
+map = build_map(lat, lon, zoom, vizParams, percentTree, 'percent tree cover')
+display(map)
+```
+</TabItem>
+</Tabs>
+
 ![Accuracy versus Tree](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B04-07.png)
 
 For predictor variables (**p**)we will use 'USGS Landsat 5 TM Collection 1 Tier 1 Raw Scenes'. Filter to the year 2010 and the [WRS-2](https://www.usgs.gov/faqs/what-worldwide-reference-system-wrs?qt-news_science_products=0#qt-news_science_products) path and row (or given point) to get only scenes over the San Francisco Bay area in 2010. Use an Earth Engine algorithm to get a cloud-free composite of Landsat imagery.
@@ -349,6 +673,9 @@ Now that all the input data is ready, we can build the shell of our linear regre
 $$y = \beta_0 + \beta_1X_1 + ... + \beta_nX_n + \epsilon$$
 
 Sample 1000 pixels out of `trainingImage`, to get a table of Feature Collections, each containing a value for each band (1-7), a value for the 'Percent Tree Cover', and a constant (value of 1).
+
+<Tabs>
+<TabItem value="js" label="JavaScript">
 
 ```javascript
 var point = ee.Geometry.Point([-122.10, 37.70]);
@@ -379,6 +706,48 @@ var regression = training.reduceColumns({
   });
 ```
 
+</TabItem>
+<TabItem value="py" label="Python">
+
+```python
+image_filtered = (ee.ImageCollection("LANDSAT/LT05/C01/T1")
+             .filterBounds(ee.Geometry.Point([lon, lat]))
+             .filterDate('2010-01-01', '2010-12-31'))
+image = (ee.Algorithms.Landsat.simpleComposite(
+  collection= image_filtered,
+  asFloat= True
+))     
+bands = ['B4', 'B3', 'B2']
+vizParams = {
+    'bands': bands, 
+    'min': 0, 
+    'max': 0.3,
+}
+
+predictionBands = ['B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7'];
+trainingImage = (
+    ee.Image(1)
+      .addBands(image.select(predictionBands))
+      .addBands(percentTree)
+)
+training = trainingImage.sample(
+ region= image_filtered.first().geometry(), 
+ scale= 30, 
+ numPixels= 1000
+)
+trainingList = (ee.List(predictionBands)
+  .insert(0, 'constant')
+  .add('Percent_Tree_Cover'))
+regression = training.reduceColumns(
+    reducer= ee.Reducer.linearRegression(8),  
+    selectors= trainingList
+  )
+map = build_map(lat, lon, zoom, vizParams, image, 'Landsat 5 (2010)')
+map
+```
+</TabItem>
+</Tabs>
+
 Inspect the first element of `training` to make sure it has all of the expected data. 
 
 > **Question 1**: What do you expect to see when you inspect the first element of training, and how does that compare with what you ultimately end up seeing?
@@ -392,7 +761,11 @@ Print `regression` - we now have a coefficient for each of the predictor variabl
 ![Regression Coefficients](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B04-08.png)
 To use the coefficients to make a prediction in every pixel, first turn the output coefficients into an image, then perform the multiplication and addition that implements $\beta_p$: 
 
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
 ```javascript
+// May take a minute to process
 var coefficients = ee.Array(regression.get('coefficients'))
 		.project([0])  
 		.toList();
@@ -406,6 +779,37 @@ Map.addLayer(predictedTreeCover,
               palette:['bbe029', '0a9501', '074b03']}, 
              'prediction');
 ```
+
+</TabItem>
+
+<TabItem value="py" label="Python">
+
+```python
+# May take a minute to process
+coefficients = (ee.Array(regression.get('coefficients'))
+            .project([0])  
+            .toList())
+
+predictedTreeCover = (ee.Image(1)
+    .addBands(image.select(predictionBands))
+    .multiply(ee.Image.constant(coefficients))
+    .reduce(ee.Reducer.sum())
+    .rename('predictedTreeCover'))
+
+vizParams = {
+    'min': 0, 
+    'max': 100,
+    'palette': ['bbe029', '0a9501', '074b03']
+}
+
+map = build_map(lat, lon, zoom, vizParams, predictedTreeCover, 'predictedTreeCover')
+(map)  
+
+
+```
+</TabItem>
+</Tabs>
+
 
 Carefully inspect this result by using the inspector on the prediction layer and comparing it to the imagery basemap. Is it satisfactory?
 
@@ -421,6 +825,9 @@ If ordinary linear regression is not satisfactory, Earth Engine contains other f
 
 For example, a Classification and Regression Tree (CART) is a machine learning algorithm that can learn non-linear patterns in your data. Reusing the **T** table (without the constant term), train a CART as follows:
 
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
 ```javascript
 var cartRegression = ee.Classifier.smileCart()
   .setOutputMode('REGRESSION')
@@ -435,13 +842,30 @@ var cartRegressionImage = landsat.select(predictionBands)
 Map.addLayer(cartRegressionImage, {min: 0, max: 100}, 'CART regression');
 ```
 
+</TabItem>
+
+<TabItem value="py" label="Python">
+
+```python
+cartRegression = (ee.Classifier.smileCart()
+  .setOutputMode('REGRESSION')
+  .train(
+       features= training, 
+       classProperty= 'Percent_Tree_Cover', 
+       inputProperties= predictionBands
+  ))
+
+cartRegressionImage = (image.select(predictionBands)
+  .classify(cartRegression, 'cartRegression'))
+
+map = build_map(lat, lon, zoom, {'min': 0, 'max': 100}, cartRegressionImage, 'CART regression')
+map
+```
+</TabItem>
+</Tabs>
+
 Use the 'inspector' to compare the linear regression to the CART regression. Although CART can work in both classification and regression mode, not all classifiers are as easily adaptable. 
 
 ![NonLinear Regression](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B04-10.png)
 
 > **Question 3**: What do you observe when comparing the linear regression to the CART regression? Are the prediction values similar? If the output for both are similar, does the value seem to match the background imagery?
-
----
-
-
-
