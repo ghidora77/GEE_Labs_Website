@@ -233,8 +233,8 @@ Just like in unsupervised classification, GEE has [documentation](https://develo
 
 We will begin by creating training data manually within GEE. Using the geometry tools and the Landsat composite as a background, we can digitize training polygons. We’ll need to do two things: identify where polygons occur on the ground, and label them with the proper class number.
 
-1. Draw a polygon around an area of bare earth (dirt, no vegetation), then [configure the import](https://developers.google.com/earth-engine/playground#geometry-tools). Import as FeatureCollection, then click **`+ New property`**. Name the new property 'class' and give it a value of 0. The dialog should show **class**: 0. Name the import 'bare'. 
-2. **`+ New property`** > Draw a polygon around vegetation > import as FeatureCollection > add a property > name it 'class' and give it a value of 1. Name the import 'vegetation'. 
+1. Draw a polygon around an area of bare earth (dirt, no vegetation), then [configure the import](https://developers.google.com/earth-engine/playground#geometry-tools). Import as FeatureCollection, then click **`+ New property`**. Name the new property 'class' and give it a value of 1. The dialog should show **class**: 0. Name the import 'bare'. 
+2. **`+ New property`** > Draw a polygon around vegetation > import as FeatureCollection > add a property > name it 'class' and give it a value of 0. Name the import 'vegetation'. 
 3. **`+ New property`** > Draw a polygon around water > import as FeatureCollection > add a property > name it 'class' and give it a value of 2. Name the import 'water'. 
 4. You should have three FeatureCollection imports named 'bare', 'vegetation' and 'water'. Merge them into one FeatureCollection:
 
@@ -471,13 +471,10 @@ confusionMatrix =  (ee.ConfusionMatrix(
         predicted= 'classification'
     )
 ))
-
 print('Confusion matrix:', confusionMatrix.getInfo())
 print('Overall Accuracy:', confusionMatrix.accuracy().getInfo())
 print('Producers Accuracy:', confusionMatrix.producersAccuracy().getInfo())
 print('Consumers Accuracy:', confusionMatrix.consumersAccuracy().getInfo())
-
-
 ```
 </TabItem>
 </Tabs>
