@@ -286,6 +286,7 @@ var bare = ee.FeatureCollection(
               "class": 0,
               "system:index": "0"
             })]);
+// Merge together the three separate features
 var trainingFeatures = bare.merge(vegetation).merge(water);
 ```
 
@@ -336,7 +337,7 @@ vegetation = ee.FeatureCollection(
               "class": 0,
               "system:index": "0"
             })])
-
+# Merge together the three separate features
 trainingFeatures = bare.merge(vegetation).merge(water)
 ```
 </TabItem>
@@ -351,6 +352,7 @@ For Landsat, we will use the following bands for their predictive values - we co
 
 ```javascript
 var predictionBands = ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B10', 'B11'];
+// Converts each pixel of an image (at a given scale) that intersects one or more regions // to a Feature, returning them as a FeatureCollection 
 var classifierTraining = landsat.select(predictionBands)
   .sampleRegions({
    collection: trainingFeatures, 
@@ -362,6 +364,7 @@ var classifier = ee.Classifier.smileCart().train({
  classProperty: 'class', 
  inputProperties: predictionBands
 });
+// Results in a 1-layer classification band
 var classified = landsat.select(predictionBands)
 				.classify(classifier);
 Map.addLayer(classified, 
@@ -376,6 +379,8 @@ Map.addLayer(classified,
 
 ```python
 predictionBands = ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B10', 'B11'];
+# Converts each pixel of an image (at a given scale) that intersects one or more regions 
+# to a Feature, returning them as a FeatureCollection 
 classifierTraining = (
     image.select(predictionBands)
         .sampleRegions(
@@ -391,6 +396,7 @@ classifier = (
         inputProperties = predictionBands
     )
 )
+# Results in a 1-layer classification band
 classified = image.select(predictionBands).classify(classifier)
 vizParams = {
     'min': 0, 
@@ -434,7 +440,10 @@ You can test different classifiers by replacing CART with some other classifier 
 <TabItem value="js" label="JavaScript">
 
 ```javascript
+// Adds a column of deterministic pseudorandom numbers to a collection
+// Between 0-1
 var trainingTesting = classifierTraining.randomColumn();
+// Split the training and testing data
 var trainingSet = trainingTesting.filter(ee.Filter.lessThan('random', 0.6));
 var testingSet = trainingTesting.filter(ee.Filter.greaterThanOrEquals('random', 0.6));  
 var trained = ee.Classifier.smileCart().train({
@@ -456,7 +465,10 @@ print('Consumers Accuracy:', confusionMatrix.consumersAccuracy());
 <TabItem value="py" label="Python">
 
 ```python
+# Adds a column of deterministic pseudorandom numbers to a collection 
+# Between 0-1
 trainingTesting = classifierTraining.randomColumn()
+# Split the training and testing data
 trainingSet = trainingTesting.filter(ee.Filter.lessThan('random', 0.6))
 testingSet = trainingTesting.filter(ee.Filter.greaterThanOrEquals('random', 0.6));
 trained = ee.Classifier.smileCart().train(
@@ -489,7 +501,7 @@ Another well-known classifier used extensively in Remote Sensing is a random for
 <TabItem value="js" label="JavaScript">
 
 ```javascript
-// Load Landsat 8 annual composites.
+// Load Landsat 8 annual composites
 var landsat = ee.ImageCollection('LANDSAT/LC08/C01/T1_SR')
       .filterDate('2019-01-01', '2019-12-31')
       .map(maskL8sr)
