@@ -4,7 +4,7 @@
 
 The purpose of this tutorial is to establish a foundation for time series analysis on remotely sensed data. You will be introduced to the fundamentals of time series modeling, including decomposition, autocorrelation and modeling historical changes. At the completion of this tutorial, you will be able to build an explanatory model for temporal data which can be used in many different avenues of research.
 
-## Background
+## 5.1 - Background
 
 One of the paradigm-changing features of Earth Engine is the ability to access decades of imagery without the previous limitation of needing to download, organize, store and process this information. For instance, within the Landsat image collection we can access imagery back to 1972, allowing us to look at an area to visualize and quantify how much it's changed over time. With Earth Engine, Google maintains the data and offers it's computing power for processing - users can access tens or hundreds of time-sequenced images and quantify change across decades.
 
@@ -25,20 +25,20 @@ To explain the concepts of time series modeling, let's begin with a dataset that
 
 ![Time Series Decomposition](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B05-02.png)
 
-### Limitations in Remote Sensing Time Series
+### 5.1.1 - Limitations in Remote Sensing Time Series
 
 Time series modeling aims to build an explanatory model of the data without overfitting the problem set—to use as simple a model as possible while accounting for as much of the data as possible. The previous example was used to illustrate the concepts of breaking down time series data into component parts, but remote sensing data has additional limitations that make this more challenging. Note that in the previous example there was a well-formed data point for every single month—nothing was missing or obviously erroneous. It is almost inevitable that you will not get this same level of precision from remote sensing data. [Landsat-8](https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LC08_C02_T1_L2) has 16-day temporal resolution, but depending on the area, removing cloudy pixels will remove a significant portion. In a test area in the Galapagos Islands, over 85% of the data was removed due to cloud masking or atmospheric conditions. Issues such as the [Landsat 7 Scan Line Corrector malfunction](https://www.usgs.gov/faqs/what-landsat-7-etm-slc-data) might prevent a cohesive time series dataset depending on your time period of research. Also, while the time series example we used involved measured values on the same scale throughout the time series (e.g., a gigawatt is the same unit of measurement throughout the entire time series), with remote sensing we often run into situations where the magnitude of measurement changes. If we are researching winter crop yield and an image is collected right after a heavy snowfall, how do we compare this value? Do we keep this data or remove it? Additionally, atmospheric conditions can skew the visual results, where the hue of the vegetation changes drastically from image to image due to atmospheric conditions (fog, ground moisture, cloud cover).
 
 It is important to understand the characteristics of both your data and what you are trying to measure. Building a time series model to understand cyclical changes in vegetation can provide useful information in understanding crop yield, but if you do not account for issues in the data, you can end up building a time series model with erroneous results. Many time series modeling tools, such as [ARIMA modeling](https://otexts.com/fpp2/arima.html), are not directly applicable in certain settings due to missing data, non-standard collection periods and varying intensity due to atmospheric conditions. In this tutorial, we will focus on understanding linear trends and harmonic modeling.
 
-### Multi-Temporal Data in Earth Engine
+### 5.1.2 - Multi-Temporal Data in Earth Engine
 
 Time series data in Earth Engine are represented as a series of images called '[Image Collections](https://developers.google.com/earth-engine/guides/ic_creating)'. As a result of the complicating factors in remote sensing discussed earlier, analyzing time series in Earth Engine is unlike time series modeling in traditional methods. From a programming sense, we will join data together to define temporal relationships between collection items and build functions to reduce this time.
 
 First, some very basic mathematical notation for time series. A time series is an array of the value being measured, sorted chronologically: $\textbf{p}_{t}  = t_{0} + t_{1}... t_{N}$, where each *t* is the given value in the series.
 
 
-### Data Preparation and Preprocessing
+### 5.1.3 - Data Preparation and Preprocessing
 The first step in analysis of time series data is to import data of interest and plot the data around our region of interest, a deciduous forest near Blacksburg, VA, USA.
 
 We begin by loading in the Landsat 8 collection and provide a point at the region of interest. Additionally, we will create a time field.
@@ -118,7 +118,7 @@ You can click on the 'export' button next to the chart to view an interactive ch
 ![Linear Trend](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B05-03.png)
 
 
-### Linear Modeling of Time
+### 5.1.4 - Linear Modeling of Time
 Lots of interesting analyses can be done to time series by harnessing the `linearRegression()` [reducer](https://developers.google.com/earth-engine/api_docs#eereducerlinearregression). To estimate linear trends over time, consider the following linear model, where $\epsilon_t$ is a random error:
 
 $$ y = \beta_0 + \beta_1X_1 + ... + \beta_nX_n + \epsilon_t \tag{1} $$
@@ -172,7 +172,7 @@ Compared to our earlier graph, the data looks similar—but now, the slight down
 
 ![Detrended Data](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B05-04.png)
 
-## Estimate Seasonality with a Harmonic Model
+## 5.2 - Estimate Seasonality with a Harmonic Model
 
 Consider the following linear model, where $e_t$ is random error, $A$ is amplitude, $\omega$ is frequency, and $\phi$ is phase:
 
@@ -275,7 +275,7 @@ Map.addLayer(rgb, {}, 'phase (hue), amplitude (sat), ndvi (val)');
 
 ---
 
-###  Complex Time Series Modeling
+###  5.2.1 - Complex Time Series Modeling
 
 A time series can be decomposed as the sum of sinusoids at different frequencies. The harmonic model presented here can be extended by adding bands that represent higher frequencies and the corresponding `sin()` band for a harmonic component to account for two cycles per year.
 
@@ -285,13 +285,13 @@ You can look at this GEE [example](https://code.earthengine.google.com/f2f039895
 
 More complex harmonic models might not be appropriate due to overfitting—in other words, this model might provide a false sense of comfort in its explanatory ability. Time series modeling of remote sensing data is more difficult than many business or scientific contexts due to masked data, missing data, irregular atmospheric conditions, and natural variability.
 
-### Exporting Data
+### 5.2.2 - Exporting Data
 
 Many of you might be more familiar with building statistical models in other languages or tools, such as Python, R or JMP. In that case, you might want to export the data for your own analysis. There are several ways to do it, but the simplest method is to click the 'expand into new tab' button next to the chart that contains the data you want to work with (likely the raw NDVI data). In the new tab, you can click 'Download .csv', which is a data table that you can use with whichever software you prefer.
 
 ![Exporting Data](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B05-06.png)
 
-## Time Series Thresholding
+## 5.3 - Time Series Thresholding
 
 Urban change detection is a burgeoning field in remote sensing that identifies historical urban development and works to predict where future urban development will occur. Remote sensing is a vital partner in this field, as it can provide an unbiased, quantitative assessment of change over time. For instance, [Greece](https://www.spiegel.de/international/europe/finding-swimming-pools-with-google-earth-greek-government-hauls-in-billions-in-back-taxes-a-709703.html) is using Google Earth Pro to scour the countryside for signs of tax evaders (ex., a luxury pool built without a permit may indicate sheltered money). Other countries are using classification models in Google Earth Engine to characterize urban development. 
 
