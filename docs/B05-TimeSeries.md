@@ -1,4 +1,4 @@
-# Lab 05 -Time Series Modeling
+# Lab 5 -Time Series Modeling
 
 ## Overview
 

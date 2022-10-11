@@ -1,7 +1,7 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Prelab - Intro to GEE
+# PreLab - Intro to GEE
 
 ## Overview
 

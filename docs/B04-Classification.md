@@ -1,7 +1,7 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Lab 04 - Classification 
+# Lab 4 - Classification 
 
 ## Overview
 
