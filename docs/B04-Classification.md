@@ -3,11 +3,11 @@ import TabItem from '@theme/TabItem';
 
 # Lab 4 - Classification 
 
-## Overview
+## 4.1 - Overview
 
 This lab will cover the process of using machine learning (ML) to create both unsupervised and supervised classification models for land use categorization. We will discuss the methodology involved and potential use cases, explore parameter tuning and go through the process of building a relatively simple classification model using Random Forest and CART, which you can use as a starting point for future research.   
 
-## Introduction to Classification
+## 4.2 - Introduction to Classification
 
 While it is possible for a human to look at a satellite image and identify objects or land cover types based on their visual characteristics, the sheer magnitude and volume of imagery makes it virtually impossible to do this manually at scale. To compensate, machine learning allows computers to process this information much quicker than a human and find meaningful insights in the imagery. Image classification is an essential component in today's remote sensing, and there are many opportunities in this growing field. By training ML models to efficiently process the data and return labeled information, we can focus on the higher-level insights.
 
@@ -25,7 +25,7 @@ When `g` is numeric (ex., {0, 1, 2, 3}), we call this regression.
 
 This is a simplistic description of a problem addressed in a broad range of fields including mathematics, statistics, data mining and machine learning. For our purposes, we will go through some examples using these concepts in Google Earth Engine and then provide more resources for further reading at the end. 
 
-## Unsupervised Classification
+## 4.3 - Unsupervised Classification
 
 Unsupervised classification finds unique groupings in the dataset without manually developed training data (no guidance). The computer will cycle through the pixels, look at the characteristics of the different bands, and pixel-by-pixel begin to group information together. Perhaps pixels with a blue hue and a low NIR value are grouped together, while green-dominant pixels are also grouped together. The outcome of unsupervised classification is that each pixel is categorized within the context of the image and the number of categories specified. Take note that the number of clusters is set by the user, and this plays a major role in how the algorithm operates. Too many clusters create unnecessary noise, while too few clusters does not have yield enough granularity.
 
@@ -219,7 +219,7 @@ Unsupervised classification is a great starting point for understanding your dat
 
 > **Question 1**: If you were going to use a clustering model to identify water in the image, is 15 an appropriate cluster number? What would you deem to be an optimal number of clusters?
 
-## Supervised Classification
+## 4.4 - Supervised Classification
 
 Just like in unsupervised classification, GEE has [documentation](https://developers.google.com/earth-engine/classification) that works through several examples. Supervised classification is an iterative process of obtaining training data, creating an initial model, reviewing the results and tuning the parameters. Many projects using supervised classification may take several months or years of fine-tuning, requiring constant refinement and maintenance. Below is a list of the steps in building a supervised classification model according to GEE. 
 
@@ -409,8 +409,6 @@ display(map)
 </TabItem>
 </Tabs>
 
-
-
 ![Supervised Image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B04-03.png)
 
 Inspect the result. Some things to test if the result is unsatisfactory:
@@ -422,7 +420,7 @@ Inspect the result. Some things to test if the result is unsatisfactory:
 3. Add more predictors. 
    1. Try adding spectral indices to the input variables.
 
-## Accuracy Assessment
+### 4.4.1 - Accuracy Assessment
 
 The previous section asked the question whether the result is satisfactory or not. In remote sensing, the quantification of the answer is called accuracy assessment. In the regression context, a standard measure of accuracy is the [Root Mean Square Error](https://en.wikipedia.org/wiki/Root-mean-square_deviation) (RMSE) or the [correlation](https://en.wikipedia.org/wiki/Correlation_and_dependence) between known and predicted values. (Although the RMSE is returned by the linear regression reducer, beware: this is computed from the training data and is NOT a fair estimate of expected prediction error when guessing a pixel not in the training set). It is testing how accurate the model is based on the existing training data, but proper methodology uses separate ground-truth values for testing. In the classification context, accuracy measurements are often derived from a [confusion matrix](https://en.wikipedia.org/wiki/Confusion_matrix).
 
@@ -493,7 +491,7 @@ print('Consumers Accuracy:', confusionMatrix.consumersAccuracy().getInfo())
 
 > **Important**: this is a simplified example to simply showcase how to get started with supervised classification. These accuracy levels are artificially high, and as you increase the number of categories and add complexity to the model, you will have to fine-tune your process along the way. 
 
-## Hyperparameter Tuning
+### 4.4.2 - Hyperparameter Tuning
 
 Another well-known classifier used extensively in Remote Sensing is a random forest. A random forest is a collection of decision trees that find optimal splits in the data to compute an average (regression) or vote on a label (classification). Their adaptability makes them one of the most effective classification models, and is an excellent starting point. Because random forests are so effective, we need to make things a little harder for it to be interesting. Do that by adding noise to the training data.
 
@@ -616,13 +614,13 @@ We always get very good accuracy in this simple example, as mentioned before. We
 
 > **Assignment**: Design a four-class classification for your area of interest. Decide on suitable input data and manually collect training points (or polygons) and instantiate a random forest classifier. In your code, have a variable called trees that sets the optimal number of trees according to your hyper-parameter tuning. Have a variable called `maxAccuracy` that stores the estimated accuracy for the optimal number of trees.
 
-## Regression
+### 4.5 - Regression
 
 Classifying imagery is an essential part of remote sensing research. In the previous lab, we began working with classification and regression, and we will continue on this same path for the first half of this lab. We will begin to explore Random Forest models more in depth, which were briefly introduced in the previous lab.  Ultimately, the purpose of classification in this context is to use known characteristics of a subset of the image to make a best-estimate classification of the rest of the image.  
 
 In the present context, regression means predicting a numeric variable instead of a class label. No lab on regression would be complete without the requisite introduction to least squares regression.
 
-### Ordinary Least Squares (OLS)
+### 4.5.1 - Ordinary Least Squares (OLS)
 
 [Ordinary regression](https://en.wikipedia.org/wiki/Ordinary_least_squares) is when *G* is a linear function of the form *G*(**p**) = **βp** where **β** is a vector of coefficients. Once *G* is trained by some training set **T**, we can estimate the value for some unknown **p** by multiplying it with **β**. 
 
@@ -729,7 +727,6 @@ vizParams = {
     'min': 0, 
     'max': 0.3,
 }
-
 predictionBands = ['B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7'];
 trainingImage = (
     ee.Image(1)
@@ -795,23 +792,18 @@ Map.addLayer(predictedTreeCover,
 coefficients = (ee.Array(regression.get('coefficients'))
             .project([0])  
             .toList())
-
 predictedTreeCover = (ee.Image(1)
     .addBands(image.select(predictionBands))
     .multiply(ee.Image.constant(coefficients))
     .reduce(ee.Reducer.sum())
     .rename('predictedTreeCover'))
-
 vizParams = {
     'min': 0, 
     'max': 100,
     'palette': ['bbe029', '0a9501', '074b03']
 }
-
 map = build_map(lat, lon, zoom, vizParams, predictedTreeCover, 'predictedTreeCover')
-(map)  
-
-
+map
 ```
 </TabItem>
 </Tabs>
@@ -825,7 +817,7 @@ If not, it might be worth testing some other regression functions, adding more p
 
 > **Question 2**: Upload your predicted layer and your satellite imagery basemap. Discuss the features of the predicted output and which steps you may want to take to improve the results.
 
-## Nonlinear Regression
+### 4.5.2 - Nonlinear Regression
 
 If ordinary linear regression is not satisfactory, Earth Engine contains other functions that can make predictions of a continuous variable. Unlike linear regression, other regression functions are implemented by the classifier library. 
 
@@ -842,7 +834,6 @@ var cartRegression = ee.Classifier.smileCart()
    classProperty: 'Percent_Tree_Cover', 
    inputProperties: predictionBands
   });
-
 var cartRegressionImage = landsat.select(predictionBands)
   .classify(cartRegression, 'cartRegression');
 Map.addLayer(cartRegressionImage, {min: 0, max: 100}, 'CART regression');
@@ -860,10 +851,8 @@ cartRegression = (ee.Classifier.smileCart()
        classProperty= 'Percent_Tree_Cover', 
        inputProperties= predictionBands
   ))
-
 cartRegressionImage = (image.select(predictionBands)
   .classify(cartRegression, 'cartRegression'))
-
 map = build_map(lat, lon, zoom, {'min': 0, 'max': 100}, cartRegressionImage, 'CART regression')
 map
 ```
