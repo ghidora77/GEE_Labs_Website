@@ -3,7 +3,7 @@ import TabItem from '@theme/TabItem';
 
 # Lab 1 - Remote Sensing Basics
 
-## Overview
+## 1.1 - Overview
 
 The purpose of this lab is to introduce you to the core concepts of remote sensing. We will cover digital images, datum and projections, and the different types of resolution: spatial, spectral, temporal and radiometric. We will also cover some of the most well-known satellite platforms that we will be working with. At the completion of this lab, you will be able to work within Google Earth Engine to select the data that is the best fit for your use case, visualize the data and begin to extract insights from it.
 
@@ -17,7 +17,7 @@ The purpose of this lab is to introduce you to the core concepts of remote sensi
 2. Navigate the Google Earth Engine console to gather information about the imagery contained within a satellite platform
 3. Visualize a digital image within Google Earth Engine and use inspector to look at pixel values
 
-## Digital Image
+## 1.2 - Digital Image
 
 A digital image is a matrix of equally-sized square pixels that are each defined by two attributes:
 
@@ -26,7 +26,7 @@ A digital image is a matrix of equally-sized square pixels that are each defined
 
 In the context of geospatial imagery, we refer to these pixel-based data structures as 'raster', as opposed to 'vector' data (points, lines, polygons). While vector and raster data work in conjunction with one another, they have different attributes and characteristics. Before we discuss geospatial raster imagery, let's understand how a regular photograph is created. All of the images below were used from example photographs in the documentation in MatLab and OpenCV. 
 
-#### One Layer Grayscale
+### 1.2.1 - One Layer Grayscale
 
 Let's start with a grayscale image of some peppers. This image is a rectangle that contains 384 rows and 512 columns of pixels - because it is greyscale, there is only one brightness magnitude value (between 0 and 255) for each position. While humans see shapes, hues and definition, a computer is only recording a brightness value for each pixel. 
 
@@ -40,21 +40,19 @@ Below is a small segment of the matrix of values of the greyscale image between 
 
 ![Matrix of Grayscale Image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B01-02.png)
 
-
-
-#### Three Layer Color Image
+### 1.2.2 - Three Layer Color Image
 
 The image is still the same, although this now has color. The number of rows, columns and the size of each pixel remain the same, but unlike the greyscale image, we now have three layers, or bands. Each band represents the value in each of the three primary colors: red, green, blue. If we look at the size of our matrix, it is now 384x512x3. For each row and column position, we now have 3 separate values between 0 and 255, which blend together into a color that we, as humans, can process. 
 
 ![Color Image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B01-03.png)
 
-#### Extension to Geospatial Imagery
+### 1.2.3 - Extension to Geospatial Imagery
 
 Geospatial imagery poses two additional complications on top of a traditional color photograph. For analysis, we need to be able to tie our imagery to the real world. In the image of peppers, each pixel was built on an arbitrary axis of rows and columns that start at zero. However, this gives us no meaningful information about where in the world the red bell pepper is located. With geospatial imagery, we need to associate pixels with location. We need to know the exact size of the pixel, and position on earth. The high-resolution imagery below is produced by the 'National Agriculture Imagery Program'. This imagery has a red, green and blue value and a latitude and longitude (-74.01, 40.72), in addition to a size (each pixel represents 1 meter by 1 meter). With this information, we can associate our pixel values with location on earth (New York), and aggregate the information we need. 
 
 ![Pixel Location](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B01-04.png)
 
-#### Bands in Satellite Imagery
+### 1.2.4 - Bands in Satellite Imagery
 
 The other complexity we are faced with is that satellite imagery often has many layers. While our image of peppers had only a red, green and blue value, many satellite platforms are equipped to provide much more information. Most platforms have a value in the near infrared range, while others might have numerous bands, with different scales and resolutions. For instance, the Landsat 8 sensor has eleven bands capturing information from eleven different portions of the electromagentic spectrum, including near infrared (NIR) and thermal bands that are invisible to the human eye. Many machine learning projects, which we will explore in later labs, involve normalizing or transforming the information contained within each of these layers. Note that while each pixel size must be the same within each individual layer, the layers can have different sizes. For instance, a satellite platform may have 5 meter spatial resolution in the red/green/blue range, but 60m resolution in the near infra-red range. While visualizing satellite imagery as a traditional photograph is a good starting point, there's much more information that we can incorporate into our analysis. We often build false or pseudocolor images by utilizing different combintions of bands, or we can focus in on certain infrared signatures to detect asphalt roads and roofs. The possibilities of analysis within remote sensing are endless, but this also leads to complications. 
 
@@ -62,7 +60,7 @@ The other complexity we are faced with is that satellite imagery often has many 
 
 As said before, digital images are often referred to as 'raster' data. ESRI, makers of ArcGIS has an excellent overview of using raster imagery in geospatial analysis featured [here](https://desktop.arcgis.com/en/arcmap/10.3/manage-data/raster-and-images/what-is-raster-data.htm).
 
-### From Digital Image to Geospatial Image
+### 1.2.5 - From Digital Image to Geospatial Image
 
 To make the connection between our satellite imagery and real-world location even more complicated is the fact that a digital image is a flat, square surface - the earth is spherical. 
 
@@ -76,7 +74,7 @@ ESRI has an [article](https://www.esri.com/arcgis-blog/products/arcgis-pro/mappi
 
 Understanding the bands available in your datasets, identifying which bands are necessary (and appropriate) for your analysis, and ensuring that these data represent consistent spatial locations is essential. While GEE simplifies many complex calculations behind the scenes, this lab will help us unpack the products available to us and their essential characteristics.
 
-### Visualize a Digital Image
+## 1.3 - Visualize a Digital Image
 
 Let’s view a digital image in GEE to better understand this concept. There are three major ways to import imagery within GEE. 
 
@@ -90,7 +88,7 @@ Let’s view a digital image in GEE to better understand this concept. There are
 
 In the map window of GEE, click on the `point` geometry tool using the [geometry drawing tools](https://developers.google.com/earth-engine/playground#geometry-tools) to define your area of interest. For the purpose of consistency in this exercise, place a point on the Virginia Tech Drillfield, which will bring you roughly to (-80.42, 37.23). As a reminder, you can find more information on geometry drawing tools in GEE’s Guides. Name the import `point`.
 
-> Note: some programming languages and frameworks read in latitude and longitude differently - Most read in the values as longitude / latitude. Double check your values, if you are importing data from Google Maps, you will have to switch the latitude and longitude when using within GEE
+> **Note**: some programming languages and frameworks read in latitude and longitude differently - Most read in the values as longitude / latitude. Double check your values, if you are importing data from Google Maps, you will have to switch the latitude and longitude when using within GEE
 
 Import NAIP imagery by searching for 'naip' and choosing the *'NAIP: National Agriculture Imagery Program'* raster dataset. Name the import `naip`. 
 
@@ -159,7 +157,7 @@ print('Inspect the projection of band 0:', image.select(0).projection().getInfo(
 
 Note that the projection can differ by band, which is why it's good practice to inspect the projection of individual image bands. If you call `.projection()` on an image for which the projection differs by band, you'll get an error. Exchange the NAIP imagery with the Planet SkySat MultiSpectral image collection, and note that the error occurs because the 'P' band has a different pixel size than the others. Explore the `ee.Projection` docs to learn about useful methods offered by the `Projection` object. To play with projections offline, try [this tool](http://www.giss.nasa.gov/tools/gprojector/).
 
-# Resolution
+## 1.4 - Resolution
 
 In this section of the lab, we will discuss resolution in the context of satellite imagery. We will focus on the four primary types:
 
@@ -174,13 +172,13 @@ While doing this, we will introduce three of the most well-known satellite missi
 2. Landsat
 3. Sentinel
 
-## Spatial Resolution                                                     
+### 1.4.1 - Spatial Resolution                                                     
 
 Spatial resolution refers to the real-world representation of each pixel. This ranges widely, with the private satellite company Maxar announcing 15cm [resolution](https://blog.maxar.com/earth-intelligence/2020/introducing-15-cm-hd-the-highest-clarity-from-commercial-satellite-imagery), Sentinel at 10m, Landsat at 30m, and MODIS at 500. There are also large global products that have spatial resolution in the kilometers. The key point in dealing with spatial resolution is ensuring that your analysis drives your data collection, as there are tradeoffs involved. Using high resolution imagery can be expensive, both monetarily and computationally, if conducting continent wide analysis. Yet using low-resolution imagery will not be effective if your use case necessitates identifying individual buildings or small vehicles. Understanding the appropriate spatial resolution needed for your analysis is essential, and is why there are different platforms that focus on different spatial resolutions.
 
 In practice, spatial resolution depends on the projection of the sensor's instantaneous field of view (IFOV) of the ground and how a set of radiometric measurements are resampled into a regular grid. To see the difference in spatial resolution resulting from different sensors, let's visualize data from the three primary platforms.
 
-### MODIS 
+#### MODIS 
 
 There are two Moderate Resolution Imaging Spectro-Radiometers ([MODIS](http://modis.gsfc.nasa.gov/)) aboard the [Terra](http://terra.nasa.gov/) and [Aqua](http://aqua.nasa.gov/) satellites. Different MODIS [bands](http://modis.gsfc.nasa.gov/about/specifications.php) produce data at different spatial resolutions. For the visible bands, the lowest common resolution is 500 meters. Data from the MODIS platforms are used to produce a large number of data sets having daily, weekly, 16-day, monthly, and annual data sets. Outside this lab, you can find a list of MODIS land products [here](https://lpdaac.usgs.gov/dataset_discovery/modis/modis_products_table). 
 
@@ -313,9 +311,9 @@ print('MODIS scale:', modisScale.getInfo());
 </TabItem>
 </Tabs>
 
-> Question: What is the size of the pixel?
+> **Question**: What is the size of the pixel?
 
-### Landsat
+#### Landsat
 
 Multi-spectral [scanners](https://landsat.gsfc.nasa.gov/multispectral-scanner-system) (MSS) were flown aboard Landsat missions 1-5 and have a spatial resolution of 60 meters. Let's look at the Landsat 5 MSS Collection 2 Tier 1 (Level 2) Raw Scenes - we can find the information about the bands for Landsat 5 in the [documentation](https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LT05_C02_T1_L2) and then build out some imagery. 
 
@@ -429,8 +427,7 @@ map
 
 > **Question 1**: By assigning the NIR, red, and green bands to RGB (4-3-2), what features appear bright red in a Landsat 5 image and why? Explore water bodies, urban centers, farms and forests to find relationships between the bands. 
 
-
-### Sentinel
+#### Sentinel
 
 The Copernicus Program is a European incentive that is run by the European Space Agency (ESA). Sentinel is the satellite constellation that collects high-resolution and Synthetic Aperture Radar imagery globally. Sentinel has 10m resolution. 
 
@@ -483,7 +480,7 @@ map
 
 ![Sentinel](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B01-14.png)
 
-### High Resolution Data
+#### High Resolution Data
 
 Very high resolution data exists, but in many cases is not widely available for free. Companies such as Planet Labs and Maxar operate satellites that are cabable of collecting imagery in the sub-meter resolution range, and academics may be able to obtain sample data, but it is not generally available. 
 
@@ -564,7 +561,7 @@ print('NAIP scale:', naipScale.getInfo());
 
 > **Question 2**: We looked at NAIP imagery from 2012 and found that the spatial resolution was 1m around Blacksburg. What is the scale of the most recent round (2018) of NAIP imagery for the area around Blacksburg, VA? How did you determine the scale?
 
-## Temporal Resolution
+## 1.5 - Temporal Resolution
 
 Temporal resolution refers to the *revisit time*, or how often the same satellite platform covers the same place on earth. Historically, satellites have been large, solitary objects that had to make tradeoffs between spatial and temporal resolution - MODIS measures wide swathes of land with each sweep, and has relatively high temporal resolution. Landsat has improved spatial resolution but a revisit rate of 16 days, and NAIP is aggregated either annually or bi-annually. Over the past decade, satellite technology has improved and there is more diversity in mission sets. Cube satellites are small, shoe-box sized satellites that can provide both high-resolution imagery and, when mosaiced together, provide high temporal resolution as well. The tradeoff is that these satellites do not have the same array of sophisticated sensors that larger satellites are equipped with. Other satellites, such as those run by the intelligence community and private satellite companies, are designed for rapid revisit times of certain cities or political areas while not scanning the rest of the world. 
 
@@ -628,7 +625,7 @@ print(dates.getInfo())
 **Question 4**: What is the temporal resolution of the Sentinel-2 satellites? How can you determine this?
 
 
-## Spectral Resolution
+## 1.6 - Spectral Resolution
 
 Spectral resolution refers to the number and width of spectral bands in which the sensor takes measurements. You can think of the width of spectral bands as the wavelength interval on the electromagnetic spectrum for each band. A sensor that measures radiance in multiple bands (e.g., collects a value for red, green, blue and near infrared) is called a *multispectral* sensor (generally 3-10 bands), while a sensor with many bands (possibly hundreds) is called a *hyperspectral* sensor (these are not hard and fast definitions). For example, compare the [multi-spectral OLI](http://landsat.gsfc.nasa.gov/?p=5779) aboard Landsat 8 to [Hyperion](https://eo1.usgs.gov/sensors/hyperioncoverage), a hyperspectral sensor that collects 220 unique spectral channels aboard the EO-1 satellite.
 
@@ -678,7 +675,7 @@ print('Length of the bands list:', modisBands.length().getInfo());
 
 > **Question 3.2**: Investigate the bands available for the USDA NASS Cropland Data Layers (CDL). What do the individual bands within the CDL represent? Which band(s) would you select if you were interested in evaluating the extent of pasture areas in the US?
 
-## Radiometric Resolution
+## 1.7 - Radiometric Resolution
 
 Radiometric resolution refers to the value, or 'digital number' that the sensor records: _coarse_ radiometric resolution would record a scene with only a narrow range of values, whereas _fine_ radiometric resolution would record the same scene using a wide range of values. The _precision_ of the sensing, or the level of _quantization_ is another way to refer to radiometric resolution. 8 bit values (0-255) is the standard in many image processing tools. 
 
@@ -691,7 +688,7 @@ $$  \text{Radiometric resolution} = \frac{(L_{max} - L_{min})}{2^Q} $$
 
 It might be possible to dig around in the metadata to find values for L<sub>min</sub> and L<sub>max</sub>, but computing radiometric resolution is generally not necessary unless you're studying phenomena that are distinguished by very subtle changes in radiance. One thing to keep in mind is that while sensors have developed and become more sensitive / accurate, capable of recording collecting data in upwards of 16 bits, that may not necessarily be beneficial for your work. Computation and storage costs grow, and normalizing the data to 8-bit values to work with tools such as OpenCV defeats the purpose of this sensitive colllection rate. There are use cases where high bit rate collection makes sense (e.g., looking for a very narrow range in a custom spectral range to identify mineral deposits), but ensure that you understand where and why higher radiometric resolution is necessary. 
 
-### Digital Image Visualization and Stretching
+### 1.7.1 - Digital Image Visualization and Stretching
 
 You've learned about how an image stores pixel data in each band as digital numbers (DNs) and how the pixels are organized spatially. When you add an image to the map, Earth Engine handles the spatial display for you by recognizing the projection and putting all the pixels in the right place. However, you must specify how to stretch the DNs to fit the standard 8-bit display image  that GEE uses ( `min` and `max` parameters). Specifying `min` and `max` applies (where DN' is the displayed value):
 
@@ -780,7 +777,7 @@ map
 
 
 
-## Resampling and ReProjection
+## 1.8 - Resampling and ReProjection
 
 Earth Engine makes every effort to handle projection and scale so that you don't have to. However, there are occasions where an understanding of projections is important to get the output you need. Earth Engine requests inputs to your computations in the projection and scale of the output. The map in the console uses a [Mercator projection](http://epsg.io/3857). 
 
