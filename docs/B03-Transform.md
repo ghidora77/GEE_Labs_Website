@@ -7,7 +7,7 @@ We've gone over indices to highlight unique characteristics in our imagery by ut
 
 Linear transforms are linear combinations of input pixel values. These can result from a variety of different strategies, but a common theme is that pixels are treated as arrays of band values, and we can use these arrays to create weighted values for specific purposes.
 
-#### Tasseled cap (TC)
+### 3B.1.1 - Tasseled cap (TC)
 
 Based on observations of agricultural land covers in the NIR-red spectral space, [Kauth and Thomas (1976)](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.461.6381&rep=rep1&type=pdf) devised a [rotational transform](https://en.wikipedia.org/wiki/Change_of_basis) of the form 
 
@@ -126,7 +126,7 @@ map8
 
 > **Question 3:** Upload the a tasseled cap image from a point near Blacksburg, VA and interpret the output. what are some of the values that you can extract when using **Inspector**? Are the results meaningful? 
 
-#### Principal Component Analysis (PCA)
+### 3B.1.2 - Principal Component Analysis (PCA)
 
 Like the Tasseled Cap transform, the [PCA transform](https://en.wikipedia.org/wiki/Principal_component_analysis) is a rotational transform in which the new basis is orthonormal, but the axes are determined from statistics of the input image, rather than empirical data. Specifically, the new basis is the [eigenvector](https://en.wikipedia.org/wiki/Eigenvalues_and_eigenvectors) of the image's [variance-covariance matrix](https://en.wikipedia.org/wiki/Covariance_matrix). As a result, the principal components are uncorrelated. To demonstrate, use the Landsat 8 image converted to an array image. Use the `reduceRegion()` [method](https://developers.google.com/earth-engine/reducers_reduce_region) to compute statistics (band covariances) for the image.
 
@@ -235,9 +235,7 @@ map8
 >
 > How do you interpret each PC band? On what basis do you make that interpretation? 
 
-
-
-#### Spectral Unmixing
+### 3B.1.3 - Spectral Unmixing
 
 The [linear spectral mixing model](http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=974727&tag=1) is based on the assumption that each pixel is a mixture of "pure" spectra. The pure spectra, called *endmembers*, are from land cover classes such as water, bare land, vegetation. The goal is to solve the following equation for **f**, the *P*x1 vector of endmember fractions in the pixel:  
 
@@ -338,9 +336,6 @@ Your chart should look something like:
 
 
 
-
-# TODO: Need to update charts 
-
 ```javascript
 var unmixImage = image.select(['B2', 'B3', 'B4', 'B5', 'B6', 'B7']);  
 print(Chart.image.regions(unmixImage, ee.FeatureCollection([
@@ -418,7 +413,7 @@ map8
 
 > Question 5: Repeat this process for Blacksburg, VA. Upload the mean spectra chart you generated for bare, water, and land and the map. Interpret the output of the image by selecting different pixels with **Inspector**
 
-#### Hue-Saturation-Value Transform
+### 3B.1.4 - Hue-Saturation-Value Transform
 
 The Hue-Saturation-Value (HSV) model [is a color transform of the RGB color space](https://en.wikipedia.org/wiki/HSL_and_HSV). Among many other things, it is useful for [pan-sharpening](https://en.wikipedia.org/wiki/Pansharpened_image). This involves converting an RGB to HSV, swapping the panchromatic band for the value (V), then converting back to RGB. For example, using the Landsat 8 scene:
 
@@ -481,13 +476,13 @@ map8
 
 > **Question 6**: Compare the pan-sharpened image with the original image. What do you notice that's different? The same? 
 
-## Spectral Transformation
+## 3B.2 - Spectral Transformation
 
-### Linear Filtering
+### 3B.2.1 - Linear Filtering
 
 In the present context, linear *filtering* (or [convolution](http://www.dspguide.com/ch24/1.htm)) refers to a linear combination of pixel values in a 'neighborhood', or [kernel](https://en.wikipedia.org/wiki/Kernel_(image_processing)), where the weights of the kernel determine the coefficients in the linear combination (for this lab, the terms *kernel* and *filter* are interchangeable.) Filtering an image can be useful for extracting image information at different [spatial frequencies](http://www.dspguide.com/ch24/5.htm) by reducing noise. For this reason, smoothing filters are called *low-pass* filters (they let *low*-frequency data *pass* through) and edge detection filters are called *high-pass* filters. To implement filtering in Earth Engine use [image.convolve()](https://developers.google.com/earth-engine/guides/image_convolutions) with an ee.Kernel for the argument.
 
-#### Smoothing
+### 3B.2.2 - Smoothing
 
 Smoothing means to convolve an image with a smoothing kernel. 
 
@@ -571,14 +566,12 @@ uniformKernel = ee.Kernel.square(
  radius =  2,
  units = 'meters',
 )
-
 # Filter the image by convolving with the smoothing filter.
 smoothed = image.convolve(uniformKernel)
 vizParams = {
   'min': 0.0,
   'max': 255,
 }
-
 map9 = build_map(lat, lon, zoom, vizParams, smoothed, 'Smoothed')
 map9
 ```
@@ -638,8 +631,7 @@ map9
 
 > **Question 7**: What happens as you increase the pixel radius for each smoothing? What differences can you discern between the weights and the visualizations of the two smoothing kernels?
 
-
-#### Edge Detection
+### 3B.2.3 - Edge Detection
 
 Convolving with an edge-detection kernel is used to find rapid changes in values that usually signify the edges of objects in the image data. 
 
