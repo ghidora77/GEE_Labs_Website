@@ -3,7 +3,7 @@ import TabItem from '@theme/TabItem';
 
 # Lab 2 - Image Processing
 
-## Overview
+## 2.1 - Overview
 In this lab, we will search for and visualize imagery in Google Earth Engine. We will discuss the difference between radiance and reflectance, make true color and false color composites from different bands and visually identify land cover types based on characteristics from the imagery. We will also discuss atmospheric effect on data collection by looking at the different data products available. 
 
 ####  Learning Outcomes
@@ -13,7 +13,7 @@ In this lab, we will search for and visualize imagery in Google Earth Engine. We
 - Use the Inspector tab to assess pixel values
 - Understand the difference between radiance and reflectance through visualization
 
-## Searching for Imagery
+## 2.2 - Searching for Imagery
 
 The Landsat program is a joint program between NASA and the United States Geological Survey (USGS) that has launched a sequence of Earth observation satellites (Landsat 1-9).  Originating in 1984, the Landsat program provides the [longest continuous observation of the Earth's surface](https://www.youtube.com/embed/ZZx1xmNGcXI?list=PLD240BBC85537B9BE). Take the time to monitor some of the fascinating [timelapses](https://earthengine.google.com/timelapse/) using Landsat to showcase things like urban development, glacial retreat and deforestation.  
 
@@ -147,11 +147,11 @@ Expand and explore the image by clicking the triangle next to the image name to 
 
 There are band specific coefficients (`RADIANCE_ADD_*`, `RADIANCE_MULT_*` where \* is a band name) in the metadata for converting from the digital number (DN) stored by the image into physical units of radiance. These coefficients will be useful in later exercises.
 
-## Visualizing Landsat Imagery
+## 2.3 - Visualizing Landsat Imagery
 
 Recall from the last lab that Landsat 8 measures radiance in multiple spectral bands. A common way to visualize images is to set the red band to display in red, the green band to display in green and the blue band to display in blue - just as you would create a normal photograph. This means trying to match the [spectral response of the instrument](http://landsat.gsfc.nasa.gov/?p=5779) to the spectral response of the photoreceptors in the human eye. It's not a perfect match but this is called a *true-color* image. When the display bands don't match human visual perception (as we will see later), the visualization is called a *false-color composite*. 
 
-#### True Color Composite
+#### 2.3.1 - True Color Composite
 
 To build a true color image we are building a variable called `trueColor`  that selects the red / green / blue bands in order and includes the min and max value to account for the appropriate radiometric resolution - this piece can be tricky, as it is unique for each dataset you work with. You can find the band names and min-max values to use from the dataset documentation page, but a great starting point is to use the 'code example' snippet for each dataset, which will set up the visualization parameters for you.  
 
@@ -230,7 +230,7 @@ map1
 
 There is more than one way to discover the appropriate min and max values to display. Try going to the **Inspector** tab and clicking somewhere on the map. The value in each band, in the pixel where you clicked, is displayed as a list in the console. Try clicking on dark and bright objects to get a sense of the range of pixel values. Also, [layer manager](https://developers.google.com/earth-engine/playground#layer-manager) in the upper right of the map display lets you automatically compute a linear stretch based on the pixels in the map display. 
 
-#### False Color Composite
+#### 2.3.2 - False Color Composite
 
 Let's do the same thing, but this time we will build a false-color composite. This particular set of bands results in a *color-IR composite* because the near infra-red (NIR) band is set to red. As you inspect the map, look at the pixel values and try to find relationships between the NIR band and different land types. Using false color composites is a very common and powerful method of identifying land characteristics by leveraging the power of signals outside of the visible realm. Mining engineers commonly use hyperspectral data to pinpoint composites with unique signatures, and urban growth researchers commonly use the infrared band to pinpoint roads and urban areas. 
 
@@ -319,7 +319,7 @@ Read through the Landsat data documentation and try playing with different band 
 
 ![Layer Manager](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B02-06.png))
 
-## At-Sensor Radiance
+## 2.4 - At-Sensor Radiance
 
 The image data you have used so far is stored as a digital number that measures the intensity within the bit range - if data is collected in an 8-bit system, 255 would be very high intensity and 0 will be no intensity. To convert each digital number into a physical unit (at-sensor [radiance](https://en.wikipedia.org/wiki/Radiance) in Watts/m2/sr/𝝁m), we can use a linear equation:
 
@@ -409,7 +409,7 @@ Examine the radiance image by using **Inspector** and clicking different land co
 
 ![image](https://loz-webimages.s3.amazonaws.com/GEE_Labs/B02-08.png)
 
-## Top-of-Atmosphere (TOA) Reflectance 
+## 2.5 - Top-of-Atmosphere (TOA) Reflectance 
 
 The Landsat sensor is in orbit approximately 700 kilometers above Earth. If we are focused on the imagery of remote sensing (as opposed to studying something like atmospheric conditions or ambient temperature), then we want to find insights about the surface of the earth. To understand the way we calculate information, there are three main components.
 
@@ -525,7 +525,7 @@ There are several new methods in this code. The `slice()` method gets entries in
 
 > **Question 1**: Upload the TOA reflectance plot you generated for Blacksburg, VA and briefly describe the relationship of reflectance peaks and troughs in the chart to the electromagnetic spectrum. 
 
-## Surface Reflectance 
+## 2.6 - Surface Reflectance 
 
 The ratio of upward radiance *at the Earth's surface* to downward radiance *at the Earth's surface* is called surface reflectance. Unlike TOA reflectance, in which this information is collected at the sensor, the radiances at the Earth's surface have been affected by the atmosphere. both the inbound and outbound radiance from the sun is affected by its path through the atmosphere to the sensor. Unravelling those effects is called atmospheric correction ("compensation" is probably a more accurate term) and is beyond our scope of this lab. However, most satellite imagery providers complete this correction for the consumers. While you could use the raw scenes directly, if your goal is conduct analysis quickly and effectively, using the corrected Surface Reflectance image collections are quite beneficial and will save you quite a bit of time.
 
