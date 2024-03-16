@@ -36,37 +36,32 @@ const config = {
     locales: ['en'],
   },
 
-  presets: [
-    [
-        '@docusaurus/preset-classic',
-        {
-          googleTagManager: {
-            containerId: 'GTM-5SRT964N',
-          },
-      /** @type {import('@docusaurus/preset-classic').Options} */
-      ({
-        docs: {
-            sidebarPath: require.resolve('./sidebars.js'),
-            remarkPlugins: [remarkMath],
-            rehypePlugins: [rehypeKatex],
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
-        },
-        blog: {
-          showReadingTime: true,
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
-        },
-        theme: {
-          customCss: './src/css/custom.css',
-        },
-      }),
-    ],
+presets: [
+  [
+    '@docusaurus/preset-classic',
+    {
+      googleTagManager: {
+        containerId: 'GTM-5SRT964N',
+      },
+      // Options for `@docusaurus/preset-classic`
+      docs: {
+        sidebarPath: require.resolve('./sidebars.js'),
+        // Assuming remarkMath and rehypeKatex are properly imported at the top of your file
+        remarkPlugins: [remarkMath],
+        rehypePlugins: [rehypeKatex],
+        editUrl: 'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+      },
+      blog: {
+        showReadingTime: true,
+        editUrl: 'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+      },
+      theme: {
+        customCss: require.resolve('./src/css/custom.css'),
+      },
+    },
   ],
+],
+
 
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
