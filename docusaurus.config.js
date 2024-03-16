@@ -39,6 +39,10 @@ const config = {
   presets: [
     [
         '@docusaurus/preset-classic',
+        {
+          googleTagManager: {
+            containerId: 'GTM-5SRT964N',
+          },
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
