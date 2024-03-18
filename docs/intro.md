@@ -19,3 +19,7 @@ With the advent of Google Earth Engine (GEE) in 2010, the landscape of remote se
 **Implications for Remote Sensing Research:**
 
 Google Earth Engine has emerged as an invaluable resource for remote sensing researchers. It provides a versatile toolset that supports a wide range of applications, from environmental monitoring and resource management to climate change research. By simplifying data access, processing, and analysis, GEE enables researchers to focus more on insights and less on the intricacies of data management and computational challenges.
+
+## Structure of Site
+
+This site is structured to facilitate a comprehensive learning journey through remote sensing, organized into three main sections. The **Tutorials** section forms the bulk of the material, introducing foundational and advanced remote sensing concepts designed to equip users with the knowledge needed to harness the power of geospatial analysis. For practical aspects such as software setup, understanding data structures, and other preparatory knowledge, the **Appendix** serves as a vital resource, offering detailed guides and explanations. Lastly, the **Miscellaneous** section addresses a variety of specialized topics, including the handling of NetCDF and other file types, catering to more specific or advanced user needs. This structured approach ensures users can easily navigate through the material, from basic concepts to complex applications.
