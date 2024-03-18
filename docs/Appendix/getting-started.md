@@ -29,7 +29,7 @@ pip install earthengine-api --upgrade
 pip install geemap
 ```
 
-This is enough to get started - however, if working within Python it is very likely that you will need to use additional libraries. If comfortable using Conda / Mamba, we suggest using the `geospatial` [package]([https://geospatial.gishub.org/installation/]), which consolidates the install of numerous important geospatial libraries while avoiding dependency conflicts. Instructions are in the linked website. 
+This is enough to get started - however, if working within Python it is very likely that you will need to use additional libraries. If comfortable using Conda / Mamba, we suggest using the `geospatial` [package](https://geospatial.gishub.org/installation/), which consolidates the install of numerous important geospatial libraries while avoiding dependency conflicts. Instructions are in the linked website. 
 
 ### Authenticate Earth Engine
 
