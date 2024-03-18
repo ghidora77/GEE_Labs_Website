@@ -41,7 +41,7 @@ presets: [
     '@docusaurus/preset-classic',
     {
       googleTagManager: {
-        containerId: 'G-LKV5Q79Q2B',
+        containerId: 'GTM-5SRT964N',
       },
       // Options for `@docusaurus/preset-classic`
       docs: {
