@@ -10,7 +10,7 @@ const sidebars = {
     },
     {
       type: 'doc',
-      id: 'attribution',
+      id: 'attributions',
     },
     {
       type: 'category',
