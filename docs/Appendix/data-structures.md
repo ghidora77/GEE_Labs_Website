@@ -19,6 +19,7 @@ A thorough review of all of the data types can be found on the Google Earth docu
 **[Feature](https://developers.google.com/earth-engine/guides/features)**
 
   -  A specific geometry paired with associated attributes. For example, a point geometry representing the city of Paris with its name and population as attributes.
+  
 **[FeatureCollection](https://developers.google.com/earth-engine/guides/feature_collections)**
 
   - A collection of features that share a common theme, such as a set of points representing the capitals of all countries.
