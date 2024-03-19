@@ -4,32 +4,29 @@ import styles from './styles.module.css';
 
 const FeatureList = [
   {
-    title: 'Easy to Use',
+    title: 'Comprehensive Workflow Coverage',
     Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        Tutorials provide an end-to-end guide through the entire remote sensing workflow, ensuring you grasp each step from data acquisition to analysis.
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
+    title: 'In-Depth Tutorials',
     Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        Dive deep into the functionalities of Google Earth Engine with tutorials that offer detailed explanations and insights, making complex concepts accessible.
       </>
     ),
   },
   {
-    title: 'Powered by React',
+    title: 'Hands-On Learning',
     Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        Engage with practical examples and hands-on exercises designed to reinforce learning and apply theoretical knowledge to real-world scenarios.
       </>
     ),
   },
