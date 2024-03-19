@@ -6,11 +6,11 @@ const sidebars = {
   tutorialSidebar: [
     {
       type: 'doc',
-      id: 'intro', // document id (filename without the '.md' extension)
+      id: 'intro',
     },
     {
       type: 'doc',
-      id: 'attribution', // document id
+      id: 'attribution',
     },
     {
       type: 'category',
