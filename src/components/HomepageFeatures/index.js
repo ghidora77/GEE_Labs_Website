@@ -5,7 +5,7 @@ import styles from './styles.module.css';
 const FeatureList = [
   {
     title: 'Comprehensive Workflow Coverage',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
+    Svg: require('@site/static/img/icon_tractor.svg').default,
     description: (
       <>
         Tutorials provide an end-to-end guide through the entire remote sensing workflow, ensuring you grasp each step from data acquisition to analysis.
@@ -14,7 +14,7 @@ const FeatureList = [
   },
   {
     title: 'In-Depth Tutorials',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
+    Svg: require('@site/static/img/icon_earth.svg').default,
     description: (
       <>
         Dive deep into the functionalities of Google Earth Engine with tutorials that offer detailed explanations and insights, making complex concepts accessible.
@@ -23,7 +23,7 @@ const FeatureList = [
   },
   {
     title: 'Hands-On Learning',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
+    Svg: require('@site/static/img/icon_satellite.svg').default,
     description: (
       <>
         Engage with practical examples and hands-on exercises designed to reinforce learning and apply theoretical knowledge to real-world scenarios.
